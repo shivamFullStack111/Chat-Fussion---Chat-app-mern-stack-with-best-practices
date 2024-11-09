@@ -8,7 +8,19 @@ export default {
         // primary: "#7F27FF",
         primary: "#ec70ff",
         darkbg: "#373940",
+        darkbg_2: "#212121",
+        black: {
+          300: "#D1D1D1", // Light grayish black
+          400: "#A3A3A3", // Grayish black
+          500: "#757575", // Medium gray black
+          600: "#4B4B4B", // Darker gray black
+          700: "#2E2E2E", // Dark black
+          800: "#1A1A1A", // Very dark black
+          900: "#0D0D0D", // Almost pure black
+          DEFAULT: "#000000", // Pure black
+        },
       },
+
       screens: {
         "300px": "300px",
         "350px": "350px",

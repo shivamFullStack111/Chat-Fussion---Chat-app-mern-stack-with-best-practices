@@ -7,13 +7,14 @@ body {
   font-weight: 400;
   font-style: normal;
 }
+
 * {
-  scrollbar-width: thin;  /* Firefox */
+  scrollbar-width: thin; /* Firefox */
   scrollbar-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0); /* Firefox */
 }
 
 ::-webkit-scrollbar {
-  width: 6px;  /* Width of the scrollbar */
+  width: 6px; /* Width of the scrollbar */
   height: 6px; /* Height of the scrollbar (for horizontal scrollbar) */
 }
 
@@ -32,4 +33,14 @@ body {
 /* Thumb hover effect */
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.4); /* Darker thumb on hover */
+}
+
+/* Class to hide the scrollbar but keep content scrollable */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* For Internet Explorer and Edge */
+  scrollbar-width: none;      /* For Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* For Webkit browsers like Chrome, Safari */
 }
