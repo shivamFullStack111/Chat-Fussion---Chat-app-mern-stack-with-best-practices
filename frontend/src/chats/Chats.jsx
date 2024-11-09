@@ -1,5 +1,7 @@
 import HomeSideBar from "../components/HomeSideBar";
 import { useEffect, useState } from "react";
+import ChatLeft from "./ChatsLeft";
+import ChatScreen from "./ChatScreen";
 
 const Chats = () => {
   const [dimensions, setdimensions] = useState({ width: 0, height: 0 });
@@ -24,6 +26,9 @@ const Chats = () => {
   return (
     <div className="flex h-[100vh] overflow-hidden">
       <HomeSideBar active={3}></HomeSideBar>
+      <ChatLeft dimensions={dimensions} />
+      <ChatScreen />
+      {/* <HomeRight /> */}
       {/* profile left side  */}
     </div>
   );

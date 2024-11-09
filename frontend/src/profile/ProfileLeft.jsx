@@ -1,31 +1,11 @@
 /* eslint-disable react/prop-types */
-import { MdGroups, MdMail, MdModeEdit } from "react-icons/md";
-import { IoIosCamera } from "react-icons/io";
-import {
-  FaAngleDown,
-  FaHandsHelping,
-  FaLock,
-  FaUser,
-  FaUserAlt,
-} from "react-icons/fa";
-import { motion } from "framer-motion";
-import {
-  RiContactsBook2Fill,
-  RiEyeCloseFill,
-  RiPencilFill,
-} from "react-icons/ri";
+import { MdGroups, MdMail } from "react-icons/md";
+import { FaUser } from "react-icons/fa";
+import { RiContactsBook2Fill } from "react-icons/ri";
 import { PiClockUserThin, PiDotsThreeVerticalBold } from "react-icons/pi";
-// import { IoLocationOutline } from "react-icons/io5";
-// import { ImLocation } from "react-icons/im";
 import { FaLocationPin } from "react-icons/fa6";
 
-const ProfileLeft = ({
-  setstatusOpen,
-  statusOpen,
-  active,
-  setactive,
-  dimensions,
-}) => {
+const ProfileLeft = () => {
   return (
     <div className="w-full 1000px:min-w-[330px] 1000px:max-w-[330px]  h-[100vh] bg-darkbg_2">
       <div className=" w-full h-[150px] bg-gray-600 relative">
@@ -94,7 +74,6 @@ const ProfileLeft = ({
               <p>8</p>
             </div>
           </div>
-          
         </div>
       </div>
     </div>
