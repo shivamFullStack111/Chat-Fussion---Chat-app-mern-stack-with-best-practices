@@ -1,8 +1,9 @@
+/* eslint-disable react/prop-types */
 import { FaDashcube, FaUsers } from "react-icons/fa";
 import { FaRegUserCircle } from "react-icons/fa";
 import { TiMessages } from "react-icons/ti";
 import { PiUserListFill } from "react-icons/pi";
-import { MdOutlineDarkMode, MdSettings, MdWifiCalling3 } from "react-icons/md";
+import {  MdSettings, MdWifiCalling3 } from "react-icons/md";
 
 const HomeSideBar = ({ active }) => {
   let mobileContainerClassName =
