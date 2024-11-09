@@ -13,7 +13,7 @@ const HomeLeft = ({
   dimensions,
 }) => {
   return (
-    <div className="w-full 1000px:w-[400px]  h-[100vh] bg-darkbg_2">
+    <div className="w-full 1000px:min-w-[330px] 1000px:max-w-[330px]  h-[100vh] bg-darkbg_2">
       <div className=" w-full h-[150px] bg-gray-600 relative">
         <div className="absolute top-0 left-0 w-full h-full bg-[#0001] flex justify-between p-3">
           <p className="text-white  font-semibold tracking-wide">Settings</p>
