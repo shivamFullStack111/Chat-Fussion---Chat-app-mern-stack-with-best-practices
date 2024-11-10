@@ -1,7 +1,7 @@
 import HomeSideBar from "../components/HomeSideBar";
 import { useEffect, useState } from "react";
 import UserLeft from "./UserLeft";
-
+import HomeRight from '../home/HomeRight'
 const Users = () => {
   const [dimensions, setdimensions] = useState({ width: 0, height: 0 });
 
@@ -26,6 +26,7 @@ const Users = () => {
     <div className="flex h-[100vh] overflow-hidden">
       <HomeSideBar active={6}></HomeSideBar>
       <UserLeft dimensions={dimensions} />
+      <HomeRight/>
       {/* profile left side  */}
     </div>
   );
