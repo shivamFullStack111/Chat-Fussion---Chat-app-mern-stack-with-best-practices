@@ -158,6 +158,7 @@ const MobileChatScreen = ({ setmoreOptionOpen, moreOptionOpen }) => {
             <TextMessage />
             <PdfMessage />
             <DateDivider />
+            <ImageMessage/>
             <TextMessage />
           </div>
           <MoreOption

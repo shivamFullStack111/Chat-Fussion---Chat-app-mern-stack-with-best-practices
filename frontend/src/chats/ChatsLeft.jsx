@@ -1,9 +1,5 @@
 /* eslint-disable react/prop-types */
-import { MdGroups, MdMail } from "react-icons/md";
-import { FaSearch, FaUser } from "react-icons/fa";
-import { RiContactsBook2Fill } from "react-icons/ri";
-import { PiClockUserThin, PiDotsThreeVerticalBold } from "react-icons/pi";
-import { FaLocationPin } from "react-icons/fa6";
+import { FaSearch } from "react-icons/fa";
 import brandLogo from "../images/brandLogo.png";
 
 const ChatLeft = ({ dimensions }) => {
