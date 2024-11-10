@@ -1,22 +1,58 @@
-import React from "react";
-import whatsappbg from "../images/whatsappbg.png";
-import { FaPhoneAlt, FaSearch, FaVideo, FaVoicemail } from "react-icons/fa";
+/* eslint-disable react/prop-types */
+import  { useState } from "react";
+import {
+  
+  FaPhoneAlt,
+  FaSearch,
+  FaVideo,
+} from "react-icons/fa";
 import {
   PiDotsThreeOutlineFill,
   PiDotsThreeOutlineVerticalFill,
   PiSmiley,
 } from "react-icons/pi";
-import { MdDownload, MdOutlineAttachment, MdOutlineKeyboardVoice, MdSend } from "react-icons/md";
+import {
+  MdOutlineKeyboardVoice,
+  MdSend,
+} from "react-icons/md";
 import { FaArrowLeftLong } from "react-icons/fa6";
+import TextMessage from "./messages_components/TextMessage";
+import DateDivider from "./messages_components/DateDivider";
+import MoreOption from "./MoreOption";
+import PdfMessage from "./messages_components/PdfMessage";
+import ImageMessage from "./messages_components/ImageMessage";
 
 const ChatScreen = () => {
+  const [moreOptionOpen, setmoreOptionOpen] = useState(false);
   return (
     <>
+      {/* desktop chat screen  */}
+      <DesktopChatScreen
+        moreOptionOpen={moreOptionOpen}
+        setmoreOptionOpen={setmoreOptionOpen}
+      />
+      {/* mobile chat screen  */}
+      <MobileChatScreen
+        moreOptionOpen={moreOptionOpen}
+        setmoreOptionOpen={setmoreOptionOpen}
+      />
+    </>
+  );
+};
+
+export default ChatScreen;
+
+const DesktopChatScreen = ({ moreOptionOpen, setmoreOptionOpen }) => {
+  return (
+    <>
+      {" "}
       <div
-        style={{
-          backgroundImage: `url('${whatsappbg}')`,
-        }}
-        className="h-full max-1000px:hidden w-full relative flex flex-col   bg-cover bg-no-repeat "
+        style={
+          {
+            // backgroundImage: `url('${whatsappbg}')`,
+          }
+        }
+        className="h-full max-1000px:hidden w-full bg-darkbg relative flex flex-col   bg-cover bg-no-repeat "
       >
         <div className="w-full h-20 bg-[#0004]  backdrop-blur-md flex justify-between items-center">
           <div className="flex px-4 items-center gap-2">
@@ -40,17 +76,25 @@ const ChatScreen = () => {
           </div>
         </div>
         {/* messages  */}
-        <div className="w-full h-full overflow-y-scroll py-2 flex flex-col gap-2 px-2">
-          <TextMessage />
+        <div className="w-full h-full relative overflow-y-scroll scroll-smooth py-2 flex flex-col gap-2 px-2">
           <TextMessage />
           <DateDivider />
-          <TextMessage />
-          <TextMessage />
+          <ImageMessage />
+          <PdfMessage />
+          <DateDivider />
         </div>
+        {/* more options like document camera audio pdf etc...  */}
+        <MoreOption
+          moreOptionOpen={moreOptionOpen}
+          setmoreOptionOpen={setmoreOptionOpen}
+        />
         {/* bottom  */}
-        <div className="h-[60px] min-w-[100%] max-1000px:hidden gap-4 max-w-[100%] bg-darkbg flex p-2 mt-auto bottom-0 items-center text-gray-400 justify-between">
+        <div className="h-[60px] min-w-[100%] z-30 max-1000px:hidden gap-4 max-w-[100%] bg-darkbg flex p-2 mt-auto bottom-0 items-center text-gray-400 justify-between">
           <div className="flex text-lg gap-2 items-center">
-            <PiDotsThreeOutlineFill />
+            <PiDotsThreeOutlineFill
+              className="cursor-pointer"
+              onClick={() => setmoreOptionOpen((p) => !p)}
+            />
             <PiSmiley className="text-2xl" />
           </div>
           <div className="bg-darkbg_2 w-full h-full rounded-md px-3 flex items-center gap-2">
@@ -66,13 +110,20 @@ const ChatScreen = () => {
           </div>
         </div>
       </div>
+    </>
+  );
+};
 
-      {/* mobile chat screen  */}
+const MobileChatScreen = ({ setmoreOptionOpen, moreOptionOpen }) => {
+  return (
+    <>
       <div className="fixed 1000px:hidden bg-darkbg_2 w-full h-full top-0 left-0 z-50">
         <div
-          style={{
-            // backgroundImage: `url('${whatsappbg}')`,
-          }}
+          style={
+            {
+              // backgroundImage: `url('${whatsappbg}')`,
+            }
+          }
           className="h-full  w-full relative flex flex-col   bg-cover bg-no-repeat "
         >
           {/* header  */}
@@ -103,16 +154,23 @@ const ChatScreen = () => {
           </div>
 
           {/* messages  */}
-          <div className="w-full h-full overflow-y-scroll py-2 flex flex-col gap-2 px-2">
+          <div className="w-full h-full overflow-y-scroll scroll-smooth py-2 flex flex-col gap-2 px-2">
             <TextMessage />
             <PdfMessage />
             <DateDivider />
             <TextMessage />
           </div>
+          <MoreOption
+            moreOptionOpen={moreOptionOpen}
+            setmoreOptionOpen={setmoreOptionOpen}
+          />
           {/* bottom  */}
-          <div className="h-[60px] min-w-[100%]  gap-4 max-w-[100%] bg-darkbg flex p-2 mt-auto bottom-0 items-center text-gray-400 justify-between">
+          <div className="h-[60px] min-w-[100%] z-30  gap-4 max-w-[100%] bg-darkbg flex p-2 mt-auto bottom-0 items-center text-gray-400 justify-between">
             <div className="flex text-lg gap-2 items-center">
-              <PiDotsThreeOutlineFill />
+              <PiDotsThreeOutlineFill
+                className="cursor-pointer"
+                onClick={() => setmoreOptionOpen((p) => !p)}
+              />
               <PiSmiley className="text-2xl" />
             </div>
             <div className="bg-darkbg_2 w-full h-full rounded-md px-3 flex items-center gap-2">
@@ -130,60 +188,5 @@ const ChatScreen = () => {
         </div>
       </div>
     </>
-  );
-};
-
-export default ChatScreen;
-
-const TextMessage = () => {
-  return (
-    <>
-      {" "}
-      <div className=" text-gray-300   flex ">
-        <div className="bg-[#1964dd4b]  rounded-tl-md inline max-w-[60%]    rounded-bl-xl   rounded-tr-xl  p-2 backdrop-blur-[2px]">
-          {" "}
-          hii dear . Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Culpa nostrum consequatur totam modi deserunt. Asperiores debitis ab
-          reprehenderit totam error cupiditate a dolorum nisi quam? A corporis,
-          hic odio enim culpa laborum deleniti aut assumenda ab ratione magnam
-          voluptatibus tempore asperiores temporibus quos illo, soluta optio
-          voluptatem suscipit, ea beatae?
-        </div>
-      </div>
-      <div className=" text-gray-300  pt-3  flex ">
-        <span className="bg-[#31fc5d3e] rounded-tl-xl  rounded-br-xl  max-w-[60%]    rounded-tr-md p-2 ml-auto backdrop-blur-[2px]">
-          {" "}
-          hii dear Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Temporibus quibusdam provident nostrum quisquam repellendus,
-          architecto minima, excepturi, molestias suscipit voluptatibus
-          voluptates perferendis beatae obcaecati? Voluptate vitae soluta
-          laboriosam, illo aspernatur labore! Eveniet odit impedit velit in
-          natus cum placeat itaque aspernatur, nisi fugiat, autem nemo, commodi
-          esse. Quo, incidunt dolore?
-        </span>
-      </div>
-    </>
-  );
-};
-
-const DateDivider = ({ date }) => {
-  return (
-    <div className="flex items-center gap-2 text-white justify-center">
-      <p className="h-[2px] bg-gray-400 w-[35%] "></p>
-      <p className="text-sm bg-black px-2 py-1 rounded-md">3 july 2024</p>
-      <p className="h-[2px] bg-gray-400 w-[35%] "></p>
-    </div>
-  );
-};
-
-const PdfMessage = () => {
-  return (
-    <div className="p-2 max-w-[60%] rounded-lg bg-[#31fc5d3e]">
-      <div className="flex  border-2 border-green-500 p-2 gap-1  rounded-md justify-between items-center">
-        <MdOutlineAttachment className="text-green-500 text-[35px] rounded-full  bg-[#31fc5d26] p-2"/>
-        <p className="text-sm text-darkbg_2">No 2838 jhhd...</p>
-        <MdDownload className="text-2xl"/>
-      </div>
-    </div>
   );
 };
