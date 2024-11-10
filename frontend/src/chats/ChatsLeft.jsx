@@ -17,6 +17,7 @@ const ChatLeft = ({ dimensions }) => {
         </div>
         <div className="flex items-center bg-darkbg p-3 py-1 mt-5 rounded-md">
           <input
+          placeholder="Search..."
             spellCheck={false}
             className="outline-none text-sm text-gray-300 w-full p-[5px] bg-darkbg "
             type="text "
@@ -82,3 +83,6 @@ const ChatLeft = ({ dimensions }) => {
 };
 
 export default ChatLeft;
+
+
+
