@@ -50,7 +50,9 @@ const Register = () => {
 
   return (
     <>
-      {otpTakingOpen && <OtpModal setotpTakingOpen={setotpTakingOpen} />}
+      {otpTakingOpen && (
+        <OtpModal email={data?.email} setotpTakingOpen={setotpTakingOpen} />
+      )}
       <Toaster position="top-right" />
       <div className="h-screen w-full dark:bg-darkbg bg-primary  flex  max-1000px:justify-center items-center ">
         <div className="w-[30%] max-1000px:hidden flex fle-col   min-h-[100vh] pt-[7vh] justify-center ">

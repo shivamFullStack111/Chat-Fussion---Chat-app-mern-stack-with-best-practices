@@ -25,7 +25,13 @@ const userSchema = new mongoose.Schema({
     default: false,
   },
   otpData: {
-    type: Object,
+    otp: {
+      type: String,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
 });
 

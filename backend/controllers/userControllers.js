@@ -133,6 +133,45 @@ const register = async (req, res) => {
   }
 };
 
+const verifyOtp = async (req, res) => {
+  try {
+    const { otp, email } = req.body;
+
+    const user = await Users.findOne({ email });
+
+    const isSameOtp = await bcrypt.compare(otp, user?.otpData?.otp);
+
+    if (!isSameOtp) return res.send({ success: false, message: "invalid otp" });
+
+    const currentTime = Date.now();
+    console.log("current time", currentTime);
+    const otpTime = new Date(user?.otpData.createdAt).getTime();
+    console.log("otp time", otpTime);
+
+    const timeDifference = currentTime - otpTime;
+    console.log("time difference", timeDifference);
+
+    const tenMinutesinMS = 10 * 60 * 1000;
+    console.log("ten minutes in ms", tenMinutesinMS);
+
+    if (timeDifference > tenMinutesinMS) {
+      return res.send({ success: false, message: "otp is expired" });
+    }
+
+    user.isVarified = true;
+
+    await user.save();
+
+    return res.send({
+      success: true,
+      message: "Registration successful",
+      user,
+    });
+  } catch (error) {
+    return res.send({ success: false, message: error.message });
+  }
+};
+
 const login = async (req, res) => {
   try {
   } catch (error) {
@@ -140,4 +179,4 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+module.exports = { register, login, verifyOtp };
