@@ -1,8 +1,9 @@
 import React from "react";
 
-const Button = ({ title, className, Logo, loading }) => {
+const Button = ({ title, className, Logo, loading, onClick }) => {
   return (
     <div
+      onClick={onClick}
       className={`flex justify-center items-center cursor-pointer bg-darkbg hover:bg-gray-600 text-lg  text-white w-full h-[35px] ${className}  `}
     >
       {loading ? (

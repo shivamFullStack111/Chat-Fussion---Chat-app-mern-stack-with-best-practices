@@ -1,9 +1,6 @@
 /* eslint-disable react/prop-types */
 import { FaSearch } from "react-icons/fa";
 import brandLogo from "../images/brandLogo.png";
-import { GoArrowDown } from "react-icons/go";
-import { IoCall } from "react-icons/io5";
-import { IoVideocam } from "react-icons/io5";
 const UserLeft = ({ dimensions }) => {
   return (
     <div className="w-full 1000px:min-w-[330px] 1000px:max-w-[330px]  h-[100vh] bg-darkbg_2">

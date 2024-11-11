@@ -9,6 +9,8 @@ export const LogoInput = ({
   placeholder,
   styles,
   className,
+  value,
+  onChange,
   Logo = FaRegUser, // Default to FaRegUser if no logo is passed
 }) => {
   const [focus, setfocus] = useState(false);
@@ -28,6 +30,8 @@ export const LogoInput = ({
         />{" "}
         {/* Render dynamic logo */}
         <input
+          value={value}
+          onChange={onChange}
           onFocus={() => {
             console.log("Input focused");
             setfocus(true);

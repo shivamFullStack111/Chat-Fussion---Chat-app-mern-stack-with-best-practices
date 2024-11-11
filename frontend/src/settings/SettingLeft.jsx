@@ -2,9 +2,8 @@
 import { MdBlockFlipped, MdGroups, MdMail } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { RiContactsBook2Fill } from "react-icons/ri";
-import { PiClockUserThin, PiDotsThreeVerticalBold } from "react-icons/pi";
-import { FaGroupArrowsRotate, FaLocationPin, FaPencil } from "react-icons/fa6";
-import { IoPencil } from "react-icons/io5";
+import { PiClockUserThin, } from "react-icons/pi";
+import {  FaLocationPin } from "react-icons/fa6";
 import { RiContactsBook3Fill } from "react-icons/ri";
 import { IoIosLogOut } from "react-icons/io";
 
