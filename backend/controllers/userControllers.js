@@ -1,7 +1,17 @@
+const { isAuthenticate } = require("../middlewares/isAuthenticate");
 const { transporter } = require("../middlewares/nodemailer");
 const Users = require("../schemas/userSchema");
-const { generateOtp } = require("../utils");
+const { generateOtp, JWTSECRET } = require("../utils");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
+const checkAuthenticated = async (req, res) => {
+  try {
+    return res.send({ success: true, message: "api working", user: req?.user });
+  } catch (error) {
+    return res.send({ success: false, message: error.message });
+  }
+};
 
 const register = async (req, res) => {
   try {
@@ -143,16 +153,11 @@ const verifyOtp = async (req, res) => {
 
     if (!isSameOtp) return res.send({ success: false, message: "invalid otp" });
 
+    // conparing the otp time is it is expire or not according to 10 minutes
     const currentTime = Date.now();
-    console.log("current time", currentTime);
     const otpTime = new Date(user?.otpData.createdAt).getTime();
-    console.log("otp time", otpTime);
-
     const timeDifference = currentTime - otpTime;
-    console.log("time difference", timeDifference);
-
     const tenMinutesinMS = 10 * 60 * 1000;
-    console.log("ten minutes in ms", tenMinutesinMS);
 
     if (timeDifference > tenMinutesinMS) {
       return res.send({ success: false, message: "otp is expired" });
@@ -161,11 +166,12 @@ const verifyOtp = async (req, res) => {
     user.isVarified = true;
 
     await user.save();
-
+    const token = jwt.sign({ user }, JWTSECRET, { expiresIn: "365d" });
     return res.send({
       success: true,
       message: "Registration successful",
       user,
+      token,
     });
   } catch (error) {
     return res.send({ success: false, message: error.message });
@@ -179,4 +185,4 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login, verifyOtp };
+module.exports = { register, login, verifyOtp, checkAuthenticated };

@@ -11,17 +11,45 @@ import Setting from "./settings/Settings";
 import { useDispatch, useSelector } from "react-redux";
 import Transparent_Loader from "./components/Transparent_Loader";
 import { useEffect } from "react";
-import { setIsLoading } from "../store/slices/userSlice";
+import {
+  setisAuthenticated,
+  setIsLoading,
+  setUser,
+} from "../store/slices/userSlice";
 import ProtectedRouteForLogin from "../protectedRoutes/ProtectedRouteForLogin";
+import ProtectedRoute_IfLoginNavigateToHome from "../protectedRoutes/ProtectedRoute_IfLoginNavigateToHome";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 const App = () => {
-  const { isLoading, isAuthenticated } = useSelector((state) => state.user);
+  const { isLoading } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  // check-authentication
+
+  const checkAuthentication = async (token) => {
+    try {
+      const res = await axios.get(
+        "http://localhost:8000/check-authentication",
+        { headers: { Authorization: token } }
+      );
+      if (res?.data?.success) {
+        dispatch(setUser(res?.data?.user));
+        dispatch(setisAuthenticated(true));
+      }
+      console.log(res.data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   useEffect(() => {
+    const token = Cookies.get("token");
+    if (token) {
+      checkAuthentication(token);
+    }
     setTimeout(() => {
       dispatch(setIsLoading(false));
-    }, 2000);
+    }, 2200);
   }, [dispatch]);
 
   return (
@@ -32,25 +60,81 @@ const App = () => {
         <BrowserRouter>
           <Routes>
             {/* Public Routes */}
-            <Route path="/signin" element={<Login />} />
-            <Route path="/signup" element={<Register />} />
+            <Route
+              path="/signin"
+              element={
+                <ProtectedRoute_IfLoginNavigateToHome>
+                  <Login />
+                </ProtectedRoute_IfLoginNavigateToHome>
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                <ProtectedRoute_IfLoginNavigateToHome>
+                  <Register />
+                </ProtectedRoute_IfLoginNavigateToHome>
+              }
+            />
 
             {/* Protected Parent Route */}
+            {/* Child Routes under Protected Parent */}
             <Route
+              path="/"
               element={
-                <ProtectedRouteForLogin
-                />
+                <ProtectedRouteForLogin>
+                  <Home />{" "}
+                </ProtectedRouteForLogin>
               }
-            >
-              {/* Child Routes under Protected Parent */}
-              <Route path="/" element={<Home />} />
-              <Route path="/users" element={<Users />} />
-              <Route path="/chats" element={<Chats />} />
-              <Route path="/contacts" element={<Contacts />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/calls" element={<Calls />} />
-              <Route path="/settings" element={<Setting />} />
-            </Route>
+            />
+            <Route
+              path="/users"
+              element={
+                <ProtectedRouteForLogin>
+                  <Users />{" "}
+                </ProtectedRouteForLogin>
+              }
+            />
+            <Route
+              path="/chats"
+              element={
+                <ProtectedRouteForLogin>
+                  <Chats />{" "}
+                </ProtectedRouteForLogin>
+              }
+            />
+            <Route
+              path="/contacts"
+              element={
+                <ProtectedRouteForLogin>
+                  <Contacts />{" "}
+                </ProtectedRouteForLogin>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRouteForLogin>
+                  <Profile />{" "}
+                </ProtectedRouteForLogin>
+              }
+            />
+            <Route
+              path="/calls"
+              element={
+                <ProtectedRouteForLogin>
+                  <Calls />{" "}
+                </ProtectedRouteForLogin>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRouteForLogin>
+                  <Setting />{" "}
+                </ProtectedRouteForLogin>
+              }
+            />
           </Routes>
         </BrowserRouter>
       )}

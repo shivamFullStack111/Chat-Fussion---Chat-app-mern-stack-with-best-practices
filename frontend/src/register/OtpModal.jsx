@@ -4,11 +4,11 @@ import "primereact/resources/themes/saga-blue/theme.css"; // Theme CSS
 import "primereact/resources/primereact.min.css"; // Core CSS
 import "primeicons/primeicons.css"; // Icons
 import { InputOtp } from "primereact/inputotp";
-
+import Cookies from "js-cookie";
 import { RxCross1 } from "react-icons/rx";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { setIsAutheticated, setUser } from "../../store/slices/userSlice";
+import { setisAuthenticated, setUser } from "../../store/slices/userSlice";
 
 const OtpModal = ({ setotpTakingOpen, email }) => {
   const [token, setTokens] = useState(null);
@@ -26,10 +26,11 @@ const OtpModal = ({ setotpTakingOpen, email }) => {
         });
         console.log(res.data);
         if (res.data?.success) {
-          dispatch(setIsAutheticated(true));
+          Cookies.set("token", res?.data?.token);
+          dispatch(setisAuthenticated(true));
           dispatch(setUser(res?.data?.user));
           setisRequesting(false);
-          setotpTakingOpen(false)
+          setotpTakingOpen(false);
         }
         setisRequesting(false);
       } catch (error) {
