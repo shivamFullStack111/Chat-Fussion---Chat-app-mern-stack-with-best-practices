@@ -1,4 +1,4 @@
-import { MdEmail, MdMessage, MdSecurityUpdate } from "react-icons/md";
+import { MdEmail, MdMessage } from "react-icons/md";
 import { FaPhoneAlt, FaRegUser } from "react-icons/fa";
 import { LogoInput } from "../components/loginAndRegister";
 import { PiPassword } from "react-icons/pi";
@@ -6,13 +6,36 @@ import Button from "../components/Button";
 import { Link } from "react-router-dom";
 import Transparent_Loader from "../components/Transparent_Loader";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { setisAuthenticated, setUser } from "../../store/slices/userSlice.js";
 
+import Cookies from "js-cookie";
+import axios from "axios";
+import { toast, Toaster } from "react-hot-toast";
 const Login = () => {
-  const [isLoading, setisLoading] = useState(false);
+  const [isRequesting, setisRequesting] = useState(false);
+  const [data, setdata] = useState(null);
+  const dispatch = useDispatch();
+
+  const handleSubmit = async () => {
+    try {
+      const res = await axios.post("http://localhost:8000/login", data);
+      if (res.data.success) {
+        Cookies.set("token", res.data.token);
+        toast.success(res.data.message);
+        dispatch(setUser(res.data.user));
+        dispatch(setisAuthenticated(true));
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <>
-      {isLoading && <Transparent_Loader />}
-
+      {isRequesting && <Transparent_Loader />}
+      <Toaster />
       <div className="h-screen w-full dark:bg-darkbg bg-primary  flex  max-1000px:justify-center items-center ">
         <div className="w-[30%] max-1000px:hidden flex fle-col   min-h-[100vh] pt-[7vh] justify-center ">
           <div>
@@ -37,15 +60,33 @@ const Login = () => {
 
           <div className="mt-8 flex flex-col w-full gap-2 items-center">
             <div className="w-[90%] 500px:w-[80%] 700px:w-[60%] flex flex-col gap-3 1200px:w-[400px]">
-              <LogoInput title="Email" inputType="email" Logo={MdEmail} />
+              <LogoInput
+                onChange={(e) =>
+                  setdata((p) => ({ ...p, email: e.target.value }))
+                }
+                title="Email"
+                inputType="email"
+                Logo={MdEmail}
+              />
 
               <LogoInput
+                onChange={(e) =>
+                  setdata((p) => ({ ...p, password: e.target.value }))
+                }
                 title="Password"
                 inputType="password"
                 Logo={PiPassword}
               />
 
-              <Button title={"Register"} className={"rounded-md"} />
+              <Button
+                onClick={async () => {
+                  setisRequesting(true);
+                  await handleSubmit();
+                  setisRequesting(false);
+                }}
+                title={"Login"}
+                className={"rounded-md"}
+              />
               <div className="text-sm text-gray-600 text-center">
                 Already have an account ?{" "}
                 <Link

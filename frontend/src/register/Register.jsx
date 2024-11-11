@@ -8,10 +8,12 @@ import { useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import OtpModal from "./OtpModal";
 import axios from "axios";
+import Transparent_Loader from "../components/Transparent_Loader";
 
 const Register = () => {
   const [data, setdata] = useState(null);
   const [otpTakingOpen, setotpTakingOpen] = useState(false);
+  const [isRequesting, setisRequesting] = useState(false);
 
   const handleSubmit = async () => {
     try {
@@ -42,6 +44,8 @@ const Register = () => {
       if (res.data?.success) {
         toast.success(res.data?.message);
         setotpTakingOpen(true);
+      } else {
+        toast.error(res.data?.message);
       }
     } catch (error) {
       console.log(error.message);
@@ -53,6 +57,7 @@ const Register = () => {
       {otpTakingOpen && (
         <OtpModal email={data?.email} setotpTakingOpen={setotpTakingOpen} />
       )}
+      {isRequesting && <Transparent_Loader />}
       <Toaster position="top-right" />
       <div className="h-screen w-full dark:bg-darkbg bg-primary  flex  max-1000px:justify-center items-center ">
         <div className="w-[30%] max-1000px:hidden flex fle-col   min-h-[100vh] pt-[7vh] justify-center ">
@@ -131,7 +136,11 @@ const Register = () => {
                 <p className="text-green-500 inline">Terms of Use</p>{" "}
               </div>
               <Button
-                onClick={handleSubmit}
+                onClick={async () => {
+                  setisRequesting(true);
+                  await handleSubmit();
+                  setisRequesting(false);
+                }}
                 title={"Register"}
                 className={"rounded-md"}
               />

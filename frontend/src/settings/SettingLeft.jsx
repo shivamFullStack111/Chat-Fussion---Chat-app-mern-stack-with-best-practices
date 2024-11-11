@@ -2,12 +2,16 @@
 import { MdBlockFlipped, MdGroups, MdMail } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { RiContactsBook2Fill } from "react-icons/ri";
-import { PiClockUserThin, } from "react-icons/pi";
-import {  FaLocationPin } from "react-icons/fa6";
+import { PiClockUserThin } from "react-icons/pi";
+import { FaLocationPin } from "react-icons/fa6";
 import { RiContactsBook3Fill } from "react-icons/ri";
 import { IoIosLogOut } from "react-icons/io";
+import Cookies from "js-cookie";
+import { useDispatch } from "react-redux";
 
+import { setisAuthenticated } from "../../store/slices/userSlice.js";
 const SettingLeft = ({ dimensions }) => {
+  const dispatch = useDispatch();
   return (
     <div className="w-full 1000px:min-w-[330px] 1000px:max-w-[330px]  h-[100vh] bg-darkbg_2">
       <div className=" w-full h-[150px] bg-gray-600 relative">
@@ -107,7 +111,13 @@ const SettingLeft = ({ dimensions }) => {
               </div>
             </div>
           </div>
-          <div className="bg-red-500  py-1 rounded-sm ml-auto max-w-[130px] text-white hover:bg-red-400 cursor-pointer flex justify-center items-center gap-2">
+          <div
+            onClick={() => {
+              Cookies.remove("token");
+              dispatch(setisAuthenticated(false));
+            }}
+            className="bg-red-500  py-1 rounded-sm ml-auto max-w-[130px] text-white hover:bg-red-400 cursor-pointer flex justify-center items-center gap-2"
+          >
             <p>Log Out</p>
             <IoIosLogOut />
           </div>

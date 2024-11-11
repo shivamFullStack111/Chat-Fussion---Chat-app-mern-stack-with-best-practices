@@ -23,11 +23,105 @@ const register = async (req, res) => {
 
     const isExistWithEmail = await Users.findOne({ email: email });
 
+    const hashPassword = await bcrypt.hash(password, 10);
+
     if (isExistWithEmail) {
-      return res.send({
-        success: false,
-        message: "account already exists with this email",
-      });
+      if (!isExistWithEmail.isVarified) {
+        if (password !== confirmPassword) {
+          return res.send({
+            success: false,
+            message: "password and confirm password do not match",
+          });
+        }
+
+        let otp = generateOtp(4);
+        console.log(otp);
+
+        const otpHash = await bcrypt.hash(otp, 10);
+
+        const info = await transporter.sendMail({
+          from: "shivamtestinghost@gmail.com", // sender address
+          to: email, // list of receivers
+          subject: "Registration otp", // Subject line
+          text: "use this otp to verify your chat fussion registration", // plain text body
+          html: `
+          <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>OTP Email</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #121212;
+          color: #ffffff;
+          margin: 0;
+          padding: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+        }
+        .email-container {
+          max-width: 400px;
+          background-color: #1e1e1e;
+          border-radius: 8px;
+          padding: 20px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          text-align: center;
+        }
+        .header {
+          font-size: 24px;
+          font-weight: bold;
+          color: #e0aaff;
+          margin-bottom: 10px;
+        }
+        .message {
+          font-size: 16px;
+          color: #bdbdbd;
+          margin-bottom: 20px;
+        }
+        .otp-code {
+          font-size: 32px;
+          font-weight: bold;
+          color: #00e676;
+          letter-spacing: 2px;
+          margin: 10px 0;
+        }
+        .footer {
+          font-size: 12px;
+          color: #757575;
+          margin-top: 20px;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="email-container">
+        <div class="header">ChatFussion</div>
+        <p class="message">Thank you for registering with ChatFussion! Use the OTP below to complete your registration:</p>
+        <div class="otp-code">${otp}</div>
+        <p class="footer">If you didn’t request this, please ignore this email.</p>
+      </div>
+    </body>
+    </html>
+    `, // html body
+        });
+
+        isExistWithEmail.otpData.otp = otpHash;
+        isExistWithEmail.otpData.createdAt = new Date();
+        isExistWithEmail.name = name;
+        isExistWithEmail.phoneNumber = phoneNumber;
+        isExistWithEmail.password = hashPassword;
+
+        await isExistWithEmail.save();
+        return res.send({ success: true, message: "otp send to your email " });
+      } else {
+        return res.send({
+          success: false,
+          message: "account already exists with this email",
+        });
+      }
     }
 
     const isExistWithNumber = await Users.findOne({ phoneNumber });
@@ -45,8 +139,6 @@ const register = async (req, res) => {
         message: "password and confirm password do not match",
       });
     }
-
-    const hashPassword = await bcrypt.hash(password, 10);
 
     let otp = generateOtp(4);
     console.log(otp);
@@ -180,6 +272,28 @@ const verifyOtp = async (req, res) => {
 
 const login = async (req, res) => {
   try {
+    const { email, password } = req.body;
+
+    if (!email || !password)
+      return res.send({ success: false, message: "All fields are required" });
+
+    const user = await Users.findOne({ email });
+
+    if (!user) return res.send({ success: false, message: "User not found" });
+
+    const isCompare = await bcrypt.compare(password, user?.password);
+
+    if (!isCompare)
+      return res.send({ success: false, message: "Credentials mismatch" });
+
+    const token = jwt.sign({ user }, JWTSECRET, { expiresIn: "365d" });
+
+    return res.send({
+      success: true,
+      message: "Login successful",
+      user,
+      token,
+    });
   } catch (error) {
     return res.send({ success: false, message: error.message });
   }
