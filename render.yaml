@@ -2,7 +2,7 @@ services:
   - type: web
     name: Chat-Fusion-Backend
     env: node
-    buildCommand: "cd backend && npm install"  # Backend folder mein navigate karke dependencies install karega
+    buildCommand: "cd backend && npm install --build-from-source"
     startCommand: "cd backend && node index.js"    # Backend folder mein navigate karke server start karega
     plan: free
     region: oregon
