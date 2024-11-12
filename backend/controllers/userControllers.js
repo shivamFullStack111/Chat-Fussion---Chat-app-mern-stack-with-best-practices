@@ -2,7 +2,7 @@ const { isAuthenticate } = require("../middlewares/isAuthenticate");
 const { transporter } = require("../middlewares/nodemailer");
 const Users = require("../schemas/userSchema");
 const { generateOtp, JWTSECRET } = require("../utils");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cloudinary = require("cloudinary").v2;
 
