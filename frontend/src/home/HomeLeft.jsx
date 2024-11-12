@@ -52,7 +52,7 @@ const HomeLeft = ({
     }
   }, []);
 
-  const handleChangeImage = async (userimagetype) => {
+  const handleChangeBackgroundImage = async (userimagetype) => {
     try {
       const token = returnToken();
 
@@ -66,6 +66,27 @@ const HomeLeft = ({
       if (res.data?.success) {
         toast.success(res.data.message);
         setbackGroundNewImage(null);
+        dispatch(setUser(res.data.user));
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+  const handleChangeProfileImage = async (image) => {
+    try {
+      const token = returnToken();
+
+      const formdata = new FormData();
+      formdata.append("file", image);
+      formdata.append("imageType", "profile");
+      const res = await axios.post(`${dbUrl}/update-image`, formdata, {
+        headers: { Authorization: token },
+      });
+
+      if (res.data?.success) {
+        toast.success(res.data.message);
         dispatch(setUser(res.data.user));
       } else {
         toast.error(res.data.message);
@@ -98,7 +119,7 @@ const HomeLeft = ({
             ) : (
               <div className="flex gap-2 items-start">
                 <TiTick
-                  onClick={() => handleChangeImage("background")}
+                  onClick={() => handleChangeBackgroundImage("background")}
                   className="text-green-500 cursor-pointer bg-white p-2 text-3xl rounded-full"
                 />
 
@@ -133,11 +154,24 @@ const HomeLeft = ({
             <div className="h-20 w-20 bg-white rounded-full absolute -bottom-10  ">
               <img
                 className="w-full h-full border-4 border-white rounded-full"
-                src="https://dootnode.themesbrand.website/assets/images/users/62188.png"
+                src={
+                  user?.profileImage
+                    ? user?.profileImage
+                    : "https://dootnode.themesbrand.website/assets/images/users/62188.png"
+                }
                 alt=""
               />
               <div>
-                <IoIosCamera className="absolute bg-white text-gray-700 p-1 text-3xl rounded-full right-0 bottom-0" />
+                <input
+                  onChange={(e) => handleChangeProfileImage(e.target.files[0])}
+                  type="file"
+                  name=""
+                  className="hidden"
+                  id="profile-image"
+                />
+                <label htmlFor="profile-image">
+                  <IoIosCamera className="absolute bg-white text-gray-700 p-1 text-3xl rounded-full right-0 bottom-0" />
+                </label>
               </div>
             </div>
           </div>
@@ -248,7 +282,7 @@ const HomeLeft = ({
                     <input
                       disabled
                       className="bg-transparent text-sm text-gray-300"
-                      value={"shivam@gmail.com"}
+                      value={user?.email}
                       type="text"
                       name=""
                       id=""
@@ -308,7 +342,7 @@ const HomeLeft = ({
                     onChange={(e) =>
                       setdata((p) => ({ ...p, lastSeen: e.target.checked }))
                     }
-                    value={data?.lastSeen}
+                    checked={data?.lastSeen}
                     className="w-4"
                     type="checkbox"
                   />
@@ -345,7 +379,7 @@ const HomeLeft = ({
                   </p>
 
                   <input
-                    value={data?.showNotifications}
+                    checked={data?.showNotifications}
                     onChange={(e) =>
                       setdata((p) => ({
                         ...p,
@@ -365,7 +399,7 @@ const HomeLeft = ({
                     Notification Sound
                   </p>
                   <input
-                    value={data?.notificationSound}
+                    checked={data?.notificationSound}
                     onChange={(e) =>
                       setdata((p) => ({
                         ...p,
