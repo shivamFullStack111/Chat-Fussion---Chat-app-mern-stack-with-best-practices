@@ -8,6 +8,6 @@ const generateOtp = (length) => {
   return otp;
 };
 
-const JWTSECRET = 'gerhjjehfu4y78687ryugewfubwje '
+const JWTSECRET = "gerhjjehfu4y78687ryugewfubwje ";
 
-module.exports = { generateOtp ,JWTSECRET};
+module.exports = { generateOtp, JWTSECRET };

@@ -4,6 +4,7 @@ const Users = require("../schemas/userSchema");
 const { generateOtp, JWTSECRET } = require("../utils");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const cloudinary = require("cloudinary").v2;
 
 const checkAuthenticated = async (req, res) => {
   try {
@@ -299,4 +300,22 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login, verifyOtp, checkAuthenticated };
+const updateUser = async (req, res) => {
+  try {
+    const userr = await Users.findOne({ email: req.user.email });
+
+    if (!userr) return res.send({ success: false, message: "user not found" });
+
+    await Users.findOneAndUpdate({ email: userr.email }, req.body, {
+      new: true,
+    });
+
+    return res.send({ success: true, message: "user updated successfully" });
+  } catch (error) {
+    return res.send({ success: false, message: error.message });
+  }
+};
+
+// const updateImage =
+
+module.exports = { register, login, verifyOtp, checkAuthenticated ,updateUser};
