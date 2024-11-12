@@ -31,9 +31,13 @@ const HomeLeft = ({
     try {
       const token = returnToken();
       if (!token) toast.error("Login to continue");
-      const res = await axios.post("http://localhost:8000/update-user", data, {
-        headers: { Authorization: token },
-      });
+      const res = await axios.post(
+        "https://chat-fusion-backend.onrender.com/update-user",
+        data,
+        {
+          headers: { Authorization: token },
+        }
+      );
 
       if (res.data?.success) {
         toast.success(res.data.message);

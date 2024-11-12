@@ -20,7 +20,7 @@ const OtpModal = ({ setotpTakingOpen, email }) => {
     const verifyWithOtp = async () => {
       setisRequesting(true);
       try {
-        const res = await axios.post("http://localhost:8000/verify-otp", {
+        const res = await axios.post("https://chat-fusion-backend.onrender.com/verify-otp", {
           otp: token,
           email: email,
         });

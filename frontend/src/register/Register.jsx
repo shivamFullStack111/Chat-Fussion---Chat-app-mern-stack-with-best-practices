@@ -39,7 +39,10 @@ const Register = () => {
         return toast.error("Password and confirm password must be the same");
 
       // api call here
-      const res = await axios.post("http://localhost:8000/register", data);
+      const res = await axios.post(
+        "https://chat-fusion-backend.onrender.com/register",
+        data
+      );
       console.log(res.data);
       if (res.data?.success) {
         toast.success(res.data?.message);

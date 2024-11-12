@@ -16,16 +16,6 @@ userRouter.get("/check-authentication", isAuthenticate, checkAuthenticated);
 userRouter.post("/login", login);
 userRouter.post("/update-user", isAuthenticate, updateUser);
 
-
-
-
-
-
-
-
-
-
-
 userRouter.post(
   "/update-image",
   isAuthenticate,
