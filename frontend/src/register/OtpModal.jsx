@@ -9,6 +9,7 @@ import { RxCross1 } from "react-icons/rx";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setisAuthenticated, setUser } from "../../store/slices/userSlice";
+import { dbUrl } from "../utils";
 
 const OtpModal = ({ setotpTakingOpen, email }) => {
   const [token, setTokens] = useState(null);
@@ -20,7 +21,7 @@ const OtpModal = ({ setotpTakingOpen, email }) => {
     const verifyWithOtp = async () => {
       setisRequesting(true);
       try {
-        const res = await axios.post("https://chat-fusion-backend.onrender.com/verify-otp", {
+        const res = await axios.post(`${dbUrl}/verify-otp`, {
           otp: token,
           email: email,
         });

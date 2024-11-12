@@ -9,6 +9,7 @@ import { Toaster, toast } from "react-hot-toast";
 import OtpModal from "./OtpModal";
 import axios from "axios";
 import Transparent_Loader from "../components/Transparent_Loader";
+import { dbUrl } from "../utils";
 
 const Register = () => {
   const [data, setdata] = useState(null);
@@ -39,10 +40,7 @@ const Register = () => {
         return toast.error("Password and confirm password must be the same");
 
       // api call here
-      const res = await axios.post(
-        "https://chat-fusion-backend.onrender.com/register",
-        data
-      );
+      const res = await axios.post(`${dbUrl}/register`, data);
       console.log(res.data);
       if (res.data?.success) {
         toast.success(res.data?.message);

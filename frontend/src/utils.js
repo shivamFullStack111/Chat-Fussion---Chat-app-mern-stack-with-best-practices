@@ -9,3 +9,6 @@ export const returnToken = () => {
   console.log(token);
   return token;
 };
+
+export const dbUrl = "https://chat-fusion-backend.onrender.com";
+// export const dbUrl = "http://localhost:8000";

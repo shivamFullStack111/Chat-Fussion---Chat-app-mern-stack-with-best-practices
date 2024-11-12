@@ -13,7 +13,7 @@ import { toast, Toaster } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "../components/Button";
 import axios from "axios";
-import { returnToken } from "../utils";
+import { dbUrl, returnToken } from "../utils";
 const HomeLeft = ({
   setstatusOpen,
   statusOpen,
@@ -31,13 +31,9 @@ const HomeLeft = ({
     try {
       const token = returnToken();
       if (!token) toast.error("Login to continue");
-      const res = await axios.post(
-        "https://chat-fusion-backend.onrender.com/update-user",
-        data,
-        {
-          headers: { Authorization: token },
-        }
-      );
+      const res = await axios.post(`${dbUrl}/update-user`, data, {
+        headers: { Authorization: token },
+      });
 
       if (res.data?.success) {
         toast.success(res.data.message);
@@ -63,11 +59,9 @@ const HomeLeft = ({
       const formdata = new FormData();
       formdata.append("file", backGroundNewImage);
       formdata.append("imageType", userimagetype);
-      const res = await axios.post(
-        "http://localhost:8000/update-image",
-        formdata,
-        { headers: { Authorization: token } }
-      );
+      const res = await axios.post(`${dbUrl}/update-image`, formdata, {
+        headers: { Authorization: token },
+      });
 
       if (res.data?.success) {
         toast.success(res.data.message);
@@ -157,10 +151,10 @@ const HomeLeft = ({
           >
             <p className="h-3 w-3 rounded-full bg-green-400"></p>
             <p className="text-[13px] text-gray-400 ">Active</p>
-            <FaAngleDown className="text-gray-400" />
+            {/* <FaAngleDown className="text-gray-400" /> */}
           </div>
           {/* status change box  */}
-          {statusOpen && (
+          {/* {statusOpen && (
             <div className="flex absolute w-full justify-end mt-2  px-6">
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
@@ -185,7 +179,7 @@ const HomeLeft = ({
                 </div>
               </motion.div>
             </div>
-          )}
+          )} */}
 
           {/* all about  */}
           <div

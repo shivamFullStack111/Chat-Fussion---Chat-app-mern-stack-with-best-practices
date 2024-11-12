@@ -2,8 +2,8 @@ import brandLogo from "../images/brandLogo.png";
 
 const HomeRight = () => {
   return (
-    <div className="w-full max-1000px:hidden bg-darkbg flex justify-center items-center ">
-      <div className="flex justify-center flex-col items-center">
+    <div style={{backgroundImage:`url("https://res.cloudinary.com/dosyxpa1r/image/upload/v1731433482/dosyxpa1r/y2olzazosvfnpc95vkz7.webp")`}} className="w-full max-1000px:hidden bg-darkbg flex justify-center items-center ">
+      <div className="flex justify-center bg-no-repeat bg-cover flex-col items-center">
         <img
           className="w-20 h-20 rounded-full bg-white animate-bounce"
           src={brandLogo}

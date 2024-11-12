@@ -12,6 +12,7 @@ import { setisAuthenticated, setUser } from "../../store/slices/userSlice.js";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
+import { dbUrl } from "../utils.js";
 const Login = () => {
   const [isRequesting, setisRequesting] = useState(false);
   const [data, setdata] = useState(null);
@@ -19,7 +20,7 @@ const Login = () => {
 
   const handleSubmit = async () => {
     try {
-      const res = await axios.post("http://localhost:8000/login", data);
+      const res = await axios.post(`${dbUrl}/login`, data);
       if (res.data.success) {
         Cookies.set("token", res.data.token);
         toast.success(res.data.message);
@@ -36,7 +37,12 @@ const Login = () => {
     <>
       {isRequesting && <Transparent_Loader />}
       <Toaster />
-      <div className="h-screen w-full dark:bg-darkbg bg-primary  flex  max-1000px:justify-center items-center ">
+      <div
+        style={{
+          backgroundImage: `url("https://res.cloudinary.com/dosyxpa1r/image/upload/v1731433036/dosyxpa1r/t6pmii4rrkz3b659vloa.gif")`,
+        }}
+        className="h-screen bg-no-repeat bg-cover w-full dark:bg-darkbg bg-primary  flex  max-1000px:justify-center items-center "
+      >
         <div className="w-[30%] max-1000px:hidden flex fle-col   min-h-[100vh] pt-[7vh] justify-center ">
           <div>
             <div className="text-2xl font-bold text-darkbg dark:text-white flex gap-2 h-min  items-center">

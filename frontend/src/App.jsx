@@ -20,6 +20,7 @@ import ProtectedRouteForLogin from "../protectedRoutes/ProtectedRouteForLogin";
 import ProtectedRoute_IfLoginNavigateToHome from "../protectedRoutes/ProtectedRoute_IfLoginNavigateToHome";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { dbUrl } from "./utils";
 
 const App = () => {
   const { isLoading } = useSelector((state) => state.user);
@@ -28,10 +29,9 @@ const App = () => {
 
   const checkAuthentication = async (token) => {
     try {
-      const res = await axios.get(
-        "http://localhost:8000/check-authentication",
-        { headers: { Authorization: token } }
-      );
+      const res = await axios.get(`${dbUrl}/check-authentication`, {
+        headers: { Authorization: token },
+      });
       if (res?.data?.success) {
         dispatch(setUser(res?.data?.user));
         dispatch(setisAuthenticated(true));
