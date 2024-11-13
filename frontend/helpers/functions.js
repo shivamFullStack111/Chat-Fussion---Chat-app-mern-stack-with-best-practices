@@ -35,3 +35,17 @@ export const getUsersBySearchOrNumber = async (searchText) => {
     console.log(error.message);
   }
 };
+
+export const handleBlockUser = async (userid) => {
+  try {
+    const token = returnToken();
+    const res = await axios.post(
+      `${dbUrl}/block-user`,
+      { userid },
+      { headers: { Authorization: token } }
+    );
+    return res
+  } catch (error) {
+    console.log(error.message);
+  }
+};

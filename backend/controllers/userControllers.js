@@ -405,6 +405,22 @@ const getContactsBySearch = async (req, res) => {
   }
 };
 
+const blockUser = async (req, res) => {
+  try {
+    const { userid } = req.body;
+
+    const user = await Users.findOne({ email: req.user.email });
+
+    user.blockUsers = [...user?.blockUsers, userid];
+
+    await user.save();
+
+    return res.send({ success: true, message: "user blocked", user });
+  } catch (error) {
+    return res.send({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   register,
   getContactsBySearch,
@@ -416,4 +432,5 @@ module.exports = {
   getAllUsers,
   addToContact,
   getUsersBySearch,
+  blockUser,
 };

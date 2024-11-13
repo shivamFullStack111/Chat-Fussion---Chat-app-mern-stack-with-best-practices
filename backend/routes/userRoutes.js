@@ -9,6 +9,7 @@ const {
   addToContact,
   getUsersBySearch,
   getContactsBySearch,
+  blockUser,
 } = require("../controllers/userControllers");
 const { isAuthenticate } = require("../middlewares/isAuthenticate");
 const { upload } = require("../uploadProvider");
@@ -30,5 +31,6 @@ userRouter.post(
 userRouter.post("/add-to-contact", isAuthenticate, addToContact);
 userRouter.post("/get-users-by-search-or-number", getUsersBySearch);
 userRouter.post("/get-contacts-by-search", isAuthenticate, getContactsBySearch);
+userRouter.post("/block-user", isAuthenticate, blockUser);
 
 module.exports = userRouter;

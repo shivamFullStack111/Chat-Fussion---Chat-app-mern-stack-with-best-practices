@@ -5,83 +5,152 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { RxCross1 } from "react-icons/rx";
-import { MdBlock, MdDelete } from "react-icons/md";
-
+import { MdBlock, MdBlockFlipped, MdDelete } from "react-icons/md";
+import { dbUrl, returnToken } from "../utils";
+import axios from "axios";
+import { handleBlockUser } from "../../helpers/functions";
+import { useDispatch, useSelector } from "react-redux";
+import { Toaster, toast } from "react-hot-toast";
+import { setUser } from "../../store/slices/userSlice";
 const ContactLeft = ({ dimensions }) => {
   const [groupedData, setgroupedData] = useState([]);
+  const [searchText, setsearchText] = useState("");
+  const [contacts, setcontacts] = useState([]);
+
+  const getContactsBySearch = async () => {
+    try {
+      const token = returnToken();
+      const res = await axios.post(
+        `${dbUrl}/get-contacts-by-search`,
+        { searchText },
+        { headers: { Authorization: token } }
+      );
+      const resContacts = res.data.contacts || [];
+      let alphabets = [];
+
+      const sortedData = resContacts.sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
+
+      sortedData.forEach((contact) => {
+        if (alphabets.includes(contact.name[0].toLowerCase())) {
+          setgroupedData((p) => [...p, { type: "user", ...contact }]);
+        } else {
+          alphabets.push(contact.name[0].toLowerCase());
+          setgroupedData((p) => [
+            ...p,
+            { type: "alphabet", letter: contact.name[0] },
+          ]);
+          setgroupedData((p) => [...p, { type: "user", ...contact }]);
+        }
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   useEffect(() => {
-    let alphabets = [];
+    const time = setTimeout(() => {
+      setgroupedData([]);
+      getContactsBySearch();
+    }, 300);
 
-    let sortedData = users.sort((a, b) => a.name.localeCompare(b.name));
+    return () => {
+      clearTimeout(time);
+    };
+  }, [searchText]);
 
-    sortedData.forEach((user) => {
-      if (alphabets.includes(user.name[0].toLowerCase())) {
-        setgroupedData((p) => [...p, { type: "user", ...user }]);
-      } else {
-        alphabets.push(user.name[0].toLowerCase());
-        setgroupedData((p) => [
-          ...p,
-          { type: "alphabet", letter: user.name[0] },
-        ]);
-        setgroupedData((p) => [...p, { type: "user", ...user }]);
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   let alphabets = [];
+
+  //   let sortedData = contacts.sort((a, b) => a.name.localeCompare(b.name));
+
+  //   sortedData.forEach((user) => {
+  //     if (alphabets.includes(user.name[0].toLowerCase())) {
+  //       setgroupedData((p) => [...p, { type: "user", ...user }]);
+  //     } else {
+  //       alphabets.push(user.name[0].toLowerCase());
+  //       setgroupedData((p) => [
+  //         ...p,
+  //         { type: "alphabet", letter: user.name[0] },
+  //       ]);
+  //       setgroupedData((p) => [...p, { type: "user", ...user }]);
+  //     }
+  //   });
+  // }, [contacts]);
 
   return (
-    <div className="w-full 1000px:min-w-[330px] 1000px:max-w-[330px]  h-[100vh] bg-darkbg_2">
-      <div className="p-7 pb-0">
-        <div className="flex justify-between items-center">
-          <p className="text-2xl font-semibold text-gray-500">Contacts</p>
-          <img
-            className="w-10 h-10 rounded-full bg-darkbg"
-            src={brandLogo}
-            alt=""
-          />
-        </div>
-        <div className="flex items-center bg-darkbg p-3 py-1 mt-5 rounded-md">
-          <input
-            placeholder="Search..."
-            spellCheck={false}
-            className="outline-none text-sm text-gray-300 w-full p-[5px] bg-darkbg "
-            type="text "
-          />
-          <FaSearch className=" text-gray-400" />
-        </div>
+    <>
+      <Toaster />
+      <div className="w-full 1000px:min-w-[330px] 1000px:max-w-[330px]  h-[100vh] bg-darkbg_2">
+        <div className="p-7 pb-0">
+          <div className="flex justify-between items-center">
+            <p className="text-2xl font-semibold text-gray-500">Contacts</p>
+            <img
+              className="w-10 h-10 rounded-full bg-darkbg"
+              src={brandLogo}
+              alt=""
+            />
+          </div>
+          <div className="flex items-center bg-darkbg p-3 py-1 mt-5 rounded-md">
+            <input
+              onChange={(e) => setsearchText(e.target.value)}
+              value={searchText}
+              placeholder="Search..."
+              spellCheck={false}
+              className="outline-none text-sm text-gray-300 w-full p-[5px] bg-darkbg "
+              type="text "
+            />
+            <FaSearch className=" text-gray-400" />
+          </div>
 
-        <div
-          style={{
-            height:
-              dimensions?.width > 1000
-                ? dimensions?.height - 130
-                : dimensions?.height - 180,
-          }}
-          className=" overflow-y-scroll overflow-x-hidden scroll-smooth"
-        >
-          <div className="flex flex-col gap-2 mt-4">
-            {groupedData.map((data, i) => {
-              if (data?.type == "user")
-                return <UserListItem key={i} user={data} />;
-              else
-                return (
-                  <div className="flex gap-2 items-center" key={i}>
-                    <p className="text-green-400 text-sm">{data?.letter}</p>
-                    <p className="w-full h-min border-b border-gray-600"></p>
-                  </div>
-                );
-            })}
+          <div
+            style={{
+              height:
+                dimensions?.width > 1000
+                  ? dimensions?.height - 130
+                  : dimensions?.height - 180,
+            }}
+            className=" overflow-y-scroll overflow-x-hidden scroll-smooth"
+          >
+            <div className="flex flex-col gap-2 mt-4">
+              {groupedData.map((data, i) => {
+                if (data?.type == "user")
+                  return <UserListItem key={i} userr={data} />;
+                else
+                  return (
+                    <div className="flex gap-2 items-center" key={i}>
+                      <p className="text-green-400 text-sm">{data?.letter}</p>
+                      <p className="w-full h-min border-b border-gray-600"></p>
+                    </div>
+                  );
+              })}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
 export default ContactLeft;
 
-const UserListItem = ({ user, i }) => {
+const UserListItem = ({ userr, i }) => {
   const [optionActive, setoptionActive] = useState(false);
+  const [isBlocked, setisBlocked] = useState(false);
+  const { user } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (user && userr) {
+      if (user?.blockUsers.includes(userr._id)) {
+        setisBlocked(true);
+      } else {
+        setisBlocked(false);
+      }
+    }
+  }, [user, userr]);
+
   return (
     <motion.div
       initial={{ y: 10, opacity: 0 }}
@@ -97,62 +166,55 @@ const UserListItem = ({ user, i }) => {
             src=""
             alt=""
           >
-            {user?.name[0]}
+            {userr?.name[0]}
           </div>
           <div>
-            <p className="text-gray-500  text-[12px]">{user?.name}</p>
-            <p className="text-[12px] text-gray-600">{user?.number}</p>
+            <p className="text-gray-500  text-[12px]">{userr?.name}</p>
+            <p className="text-[12px] text-gray-600">{userr?.phoneNumber}</p>
           </div>
         </div>
-        <div className="relative">
-          {!optionActive ? (
-            <PiDotsThreeVerticalBold
-              onClick={() => setoptionActive((p) => !p)}
-              className={`mr-2 text-gray-400 cursor-pointer `}
-            />
-          ) : (
-            <RxCross1
-              onClick={() => setoptionActive((p) => !p)}
-              className={`mr-2 text-gray-400 cursor-pointer `}
-            />
-          )}
-          {optionActive && (
-            <div className="h-auto w-28  bg-darkbg  z-50  rounded-md absolute right-10 top-0  ">
-              <div className="flex items-center cursor-pointer text-sm text-gray-400 rounded-t-md justify-between p-2 hover:bg-gray-700">
-                <p>Block</p>
-                <MdBlock />
+        {isBlocked ? (
+          <MdBlockFlipped className="mr-2 text-red-400" />
+        ) : (
+          <div className="relative">
+            {!optionActive ? (
+              <PiDotsThreeVerticalBold
+                onClick={() => setoptionActive((p) => !p)}
+                className={`mr-2 text-gray-400 cursor-pointer `}
+              />
+            ) : (
+              <RxCross1
+                onClick={() => setoptionActive((p) => !p)}
+                className={`mr-2 text-gray-400 cursor-pointer `}
+              />
+            )}
+            {optionActive && (
+              <div className="h-auto w-28  bg-darkbg  z-50  rounded-md absolute right-10 top-0  ">
+                <div
+                  onClick={async () => {
+                    const res = await handleBlockUser(userr?._id);
+                    if (res.data.success) {
+                      toast.success(res.data.message);
+                      setisBlocked(true);
+                      return dispatch(setUser(res.data.user));
+                    } else {
+                      return toast.error(res.data.message);
+                    }
+                  }}
+                  className="flex items-center cursor-pointer text-sm text-gray-400 rounded-t-md justify-between p-2 hover:bg-gray-700"
+                >
+                  <p>Block</p>
+                  <MdBlock />
+                </div>
+                <div className="flex items-center cursor-pointer text-sm text-gray-400 rounded-b-md justify-between p-2 hover:bg-gray-700">
+                  <p>Remove</p>
+                  <MdDelete />
+                </div>
               </div>
-              <div className="flex items-center cursor-pointer text-sm text-gray-400 rounded-b-md justify-between p-2 hover:bg-gray-700">
-                <p>Remove</p>
-                <MdDelete />
-              </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
     </motion.div>
   );
 };
-
-const users = [
-  { name: "Aarav", number: "+91 9123456781" },
-  { name: "Vihaan", number: "+91 9123456782" },
-  { name: "Aditya", number: "+91 9123456783" },
-  { name: "Ishaan", number: "+91 9123456784" },
-  { name: "Shaurya", number: "+91 9123456785" },
-  { name: "Vivaan", number: "+91 9123456786" },
-  { name: "Arjun", number: "+91 9123456787" },
-  { name: "Sai", number: "+91 9123456788" },
-  { name: "Reyansh", number: "+91 9123456789" },
-  { name: "Krishna", number: "+91 9123456790" },
-  { name: "Kartik", number: "+91 9123456791" },
-  { name: "Rishi", number: "+91 9123456792" },
-  { name: "Rohan", number: "+91 9123456793" },
-  { name: "Om", number: "+91 9123456794" },
-  { name: "Aryan", number: "+91 9123456795" },
-  { name: "Laksh", number: "+91 9123456796" },
-  { name: "Kabir", number: "+91 9123456797" },
-  { name: "Ayaan", number: "+91 9123456798" },
-  { name: "Dhruv", number: "+91 9123456799" },
-  { name: "Jay", number: "+91 9123456800" },
-];

@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { addToContact } from "../../helpers/functions";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IoMdPersonAdd } from "react-icons/io";
+import { setUser } from "../../store/slices/userSlice";
 
 const UserContactCart_users = ({ userr }) => {
   const { user } = useSelector((state) => state.user);
   const [isAlreadyInContact, setisAlreadyInContact] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (user && userr) {
@@ -22,8 +24,13 @@ const UserContactCart_users = ({ userr }) => {
     <div
       onClick={async () => {
         if (!isAlreadyInContact) {
-          const res =await addToContact(userr?._id);
-          if (res.data.success) setisAlreadyInContact(true);
+          const res = await addToContact(userr?._id);
+          if (res.data.success) {
+            setisAlreadyInContact(true);
+            dispatch(
+              setUser({ ...userr, contacts: [...user?.contacts, userr._id] })
+            );
+          }
         }
       }}
       className=" flex cursor-pointer items-center justify-between"

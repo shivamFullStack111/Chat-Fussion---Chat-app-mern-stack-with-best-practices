@@ -25,7 +25,7 @@ import { dbUrl } from "./utils";
 import { getAllUsers } from "../helpers/functions";
 
 const App = () => {
-  const { isLoading } = useSelector((state) => state.user);
+  const { isLoading, user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   // check-authentication
 
@@ -44,17 +44,17 @@ const App = () => {
     }
   };
 
-  const getusers=async()=>{
-    const res =await getAllUsers();
+  const getusers = async () => {
+    const res = await getAllUsers();
     if (res.data?.success) {
       console.log(res?.data);
       dispatch(setAllUsers(res?.data?.users));
     }
-  }
+  };
 
   useEffect(() => {
-  getusers()
-  }, []);
+    if (user) getusers();
+  }, [user]);
 
   useEffect(() => {
     const token = Cookies.get("token");

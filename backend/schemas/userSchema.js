@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     phoneNumber: {
-      type: Number,
+      type: String,
       required: true,
       minlength: 10,
       maxlength: 10,
@@ -61,6 +61,7 @@ const userSchema = new mongoose.Schema(
     backgroundImage: {
       type: String,
     },
+    blockUsers: Array,
     contacts: Array,
   },
   { timestamps: true }
