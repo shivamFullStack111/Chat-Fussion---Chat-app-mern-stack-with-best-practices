@@ -4,6 +4,7 @@ const Users = require("../schemas/userSchema");
 const { generateOtp, JWTSECRET } = require("../utils");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { upload } = require("../uploadProvider");
 const cloudinary = require("cloudinary").v2;
 
 const checkAuthenticated = async (req, res) => {
@@ -36,7 +37,6 @@ const register = async (req, res) => {
         }
 
         let otp = generateOtp(4);
-        console.log(otp);
 
         const otpHash = await bcrypt.hash(otp, 10);
 
@@ -142,7 +142,6 @@ const register = async (req, res) => {
     }
 
     let otp = generateOtp(4);
-    console.log(otp);
 
     const otpHash = await bcrypt.hash(otp, 10);
 
@@ -213,8 +212,6 @@ const register = async (req, res) => {
 </html>
 `, // html body
     });
-
-    console.log("Message sent: %s", info.messageId);
 
     const newUser = new Users({
       name,
@@ -316,6 +313,107 @@ const updateUser = async (req, res) => {
   }
 };
 
-// const updateImage =
+const uploadprofileImage = async (req, res) => {
+  try {
+    const { imageType } = req.body;
+    const user = await Users.findOne({ email: req?.user?.email });
 
-module.exports = { register, login, verifyOtp, checkAuthenticated ,updateUser};
+    if (!user) return res.send({ success: false, message: "User not found" });
+    if (imageType === "background") {
+      user.backgroundImage = req.file.path;
+      await user.save();
+    }
+    if (imageType === "profile") {
+      user.profileImage = req.file.path;
+      await user.save();
+    }
+
+    return res.send({
+      success: true,
+      message: "Image update successfully",
+      user,
+    });
+  } catch (error) {
+    res.send({ success: false, message: error.message });
+  }
+};
+
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await Users.find();
+
+    return res.send({ success: true, message: "all users get", users });
+  } catch (error) {
+    return res.send({ success: false, message: error.message });
+  }
+};
+
+const addToContact = async (req, res) => {
+  try {
+    const { userid } = req.body;
+    const user = await Users.findOne({ email: req.user.email });
+    user.contacts = [...user.contacts, userid];
+
+    await user.save();
+
+    return res.send({ success: true, message: "Successfully added" });
+  } catch (error) {
+    return res.send({ success: false, message: error.message });
+  }
+};
+
+const getUsersBySearch = async (req, res) => {
+  try {
+    const { searchText } = req.body;
+    const users = await Users.find({
+      $or: [
+        { name: { $regex: searchText, $options: "i" } },
+        { phoneNumber: { $regex: searchText, $options: "i" } },
+      ],
+    });
+
+    return res.send({ success: true, message: "users found", users });
+  } catch (error) {
+    return res.send({ success: false, message: error.message });
+  }
+};
+
+const getContactsBySearch = async (req, res) => {
+  try {
+    let contacts;
+    if (req.body?.searchText) {
+      const searchValue = req.body.searchText.toLowerCase();
+      contacts = await Users.find({
+        $and: [
+          {
+            $or: [
+              { name: { $regex: searchValue, $options: "i" } },
+              { email: { $regex: searchValue, $options: "i" } },
+              { phoneNumber: { $regex: searchValue, $options: "i" } },
+            ],
+          },
+          { _id: { $in: req.user?.contacts } },
+        ],
+      });
+    } else {
+      contacts = await Users.find({ _id: { $in: req.user?.contacts || [] } });
+    }
+
+    return res.send({ success: true, message: "contacts get", contacts });
+  } catch (error) {
+    return res.send({ success: false, message: error.message });
+  }
+};
+
+module.exports = {
+  register,
+  getContactsBySearch,
+  login,
+  verifyOtp,
+  checkAuthenticated,
+  updateUser,
+  uploadprofileImage,
+  getAllUsers,
+  addToContact,
+  getUsersBySearch,
+};

@@ -61,6 +61,7 @@ const userSchema = new mongoose.Schema(
     backgroundImage: {
       type: String,
     },
+    contacts: Array,
   },
   { timestamps: true }
 );

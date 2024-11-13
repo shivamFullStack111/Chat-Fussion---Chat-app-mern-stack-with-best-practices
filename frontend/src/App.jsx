@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Transparent_Loader from "./components/Transparent_Loader";
 import { useEffect } from "react";
 import {
+  setAllUsers,
   setisAuthenticated,
   setIsLoading,
   setUser,
@@ -21,6 +22,7 @@ import ProtectedRoute_IfLoginNavigateToHome from "../protectedRoutes/ProtectedRo
 import axios from "axios";
 import Cookies from "js-cookie";
 import { dbUrl } from "./utils";
+import { getAllUsers } from "../helpers/functions";
 
 const App = () => {
   const { isLoading } = useSelector((state) => state.user);
@@ -41,6 +43,18 @@ const App = () => {
       console.log(error.message);
     }
   };
+
+  const getusers=async()=>{
+    const res =await getAllUsers();
+    if (res.data?.success) {
+      console.log(res?.data);
+      dispatch(setAllUsers(res?.data?.users));
+    }
+  }
+
+  useEffect(() => {
+  getusers()
+  }, []);
 
   useEffect(() => {
     const token = Cookies.get("token");

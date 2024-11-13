@@ -1,7 +1,41 @@
 /* eslint-disable react/prop-types */
 import { FaSearch } from "react-icons/fa";
 import brandLogo from "../images/brandLogo.png";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import UserContactCart_users from "./UserContactCart_users";
+
 const UserLeft = ({ dimensions }) => {
+  const { allUsers } = useSelector((state) => state.user);
+  const [searchUsers, setsearchUsers] = useState([]);
+
+  const [searchText, setsearchText] = useState('');
+
+  useEffect(() => {
+    if (allUsers?.length) setsearchUsers(allUsers);
+  }, [allUsers]);
+
+  useEffect(() => {
+    if (!allUsers?.length) return;
+    if (!searchText) {
+      setsearchUsers(allUsers);
+    }
+    const time = setTimeout(() => {
+      const filterUsers = allUsers?.filter(
+        (usr) =>
+          usr?.name?.toLowerCase().includes(searchText?.toLowerCase()) ||
+          usr?.email?.toLowerCase().includes(searchText?.toLowerCase()) ||
+          usr?.phoneNumber?.toString().includes(searchText)
+      );
+
+      setsearchUsers(filterUsers);
+    }, 200);
+
+    return () => {
+      clearTimeout(time);
+    };
+  }, [searchText, allUsers]);
+
   return (
     <div className="w-full 1000px:min-w-[330px] 1000px:max-w-[330px]  h-[100vh] bg-darkbg_2">
       <div className="p-7 pb-0">
@@ -15,6 +49,8 @@ const UserLeft = ({ dimensions }) => {
         </div>
         <div className="flex items-center bg-darkbg p-3 py-1 mt-5 rounded-md">
           <input
+            onChange={(e) => setsearchText(e.target.value)}
+            value={searchText}
             placeholder="Search..."
             spellCheck={false}
             className="outline-none text-sm text-gray-300 w-full p-[5px] bg-darkbg "
@@ -33,30 +69,11 @@ const UserLeft = ({ dimensions }) => {
           className=" overflow-y-scroll overflow-x-hidden scroll-smooth"
         >
           <div className="flex flex-col gap-3 mt-4">
-            {users.map((user, i) => (
-              <div className=" flex items-center justify-between" key={i}>
-                <div className="flex gap-2 items-center">
-                  <div
-                    className="h-9 w-9  rounded-full relative bg-primary flex justify-center items-center"
-                    src=""
-                    alt=""
-                  >
-                    {user?.userName[0]}
-                  </div>
-                  <div>
-                    <p className="text-[13px] text-gray-500 leading-tight">
-                      {user?.userName}
-                    </p>
-                    <div className="text-[12px] flex items-center gap-1 text-gray-600 leading-tight">
-                      {/* <GoArrowDown className="text-green-500 rotate-45" /> */}
-                      <p>{user?.userNumber}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* <p className="text-green-500 text-xl">{call?.type == "audioCall" ? <IoCall /> : <IoVideocam />}</p> */}
-              </div>
-            ))}
+            {searchUsers?.length
+              ? searchUsers?.map((user, i) => (
+                  <UserContactCart_users key={i} userr={user} i={i} />
+                ))
+              : null}
           </div>
         </div>
       </div>
@@ -66,125 +83,4 @@ const UserLeft = ({ dimensions }) => {
 
 export default UserLeft;
 
-const users = [
-  {
-    userName: "Amit",
-    type: "audioCall",
-    createdAt: "2024-10-01T09:00:00Z",
-    userNumber: "+91 9876543210",
-  },
-  {
-    userName: "Priya",
-    type: "videoCall",
-    createdAt: "2024-10-02T11:30:00Z",
-    userNumber: "+91 9876543211",
-  },
-  {
-    userName: "Rajesh",
-    type: "audioCall",
-    createdAt: "2024-10-03T14:15:00Z",
-    userNumber: "+91 9876543212",
-  },
-  {
-    userName: "Sneha",
-    type: "videoCall",
-    createdAt: "2024-10-04T08:45:00Z",
-    userNumber: "+91 9876543213",
-  },
-  {
-    userName: "Vikram",
-    type: "audioCall",
-    createdAt: "2024-10-05T10:20:00Z",
-    userNumber: "+91 9876543214",
-  },
-  {
-    userName: "Anjali",
-    type: "videoCall",
-    createdAt: "2024-10-06T12:00:00Z",
-    userNumber: "+91 9876543215",
-  },
-  {
-    userName: "Ravi",
-    type: "audioCall",
-    createdAt: "2024-10-07T16:40:00Z",
-    userNumber: "+91 9876543216",
-  },
-  {
-    userName: "Meera",
-    type: "videoCall",
-    createdAt: "2024-10-08T18:25:00Z",
-    userNumber: "+91 9876543217",
-  },
-  {
-    userName: "Suresh",
-    type: "audioCall",
-    createdAt: "2024-10-09T20:30:00Z",
-    userNumber: "+91 9876543218",
-  },
-  {
-    userName: "Simran",
-    type: "videoCall",
-    createdAt: "2024-10-10T22:10:00Z",
-    userNumber: "+91 9876543219",
-  },
-  {
-    userName: "Amit",
-    type: "audioCall",
-    createdAt: "2024-10-01T09:00:00Z",
-    userNumber: "+91 9876543210",
-  },
-  {
-    userName: "Priya",
-    type: "videoCall",
-    createdAt: "2024-10-02T11:30:00Z",
-    userNumber: "+91 9876543211",
-  },
-  {
-    userName: "Rajesh",
-    type: "audioCall",
-    createdAt: "2024-10-03T14:15:00Z",
-    userNumber: "+91 9876543212",
-  },
-  {
-    userName: "Sneha",
-    type: "videoCall",
-    createdAt: "2024-10-04T08:45:00Z",
-    userNumber: "+91 9876543213",
-  },
-  {
-    userName: "Vikram",
-    type: "audioCall",
-    createdAt: "2024-10-05T10:20:00Z",
-    userNumber: "+91 9876543214",
-  },
-  {
-    userName: "Anjali",
-    type: "videoCall",
-    createdAt: "2024-10-06T12:00:00Z",
-    userNumber: "+91 9876543215",
-  },
-  {
-    userName: "Ravi",
-    type: "audioCall",
-    createdAt: "2024-10-07T16:40:00Z",
-    userNumber: "+91 9876543216",
-  },
-  {
-    userName: "Meera",
-    type: "videoCall",
-    createdAt: "2024-10-08T18:25:00Z",
-    userNumber: "+91 9876543217",
-  },
-  {
-    userName: "Suresh",
-    type: "audioCall",
-    createdAt: "2024-10-09T20:30:00Z",
-    userNumber: "+91 9876543218",
-  },
-  {
-    userName: "Simran",
-    type: "videoCall",
-    createdAt: "2024-10-10T22:10:00Z",
-    userNumber: "+91 9876543219",
-  },
-];
+

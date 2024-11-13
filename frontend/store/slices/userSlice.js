@@ -6,6 +6,7 @@ const userSlice = createSlice({
     user: null,
     isLoading: true,
     isAuthenticated: false,
+    allUsers: null,
   },
   reducers: {
     setUser: (state, action) => {
@@ -17,8 +18,12 @@ const userSlice = createSlice({
     setisAuthenticated: (state, action) => {
       state.isAuthenticated = action.payload;
     },
+    setAllUsers: (state, action) => {
+      state.allUsers = action.payload;
+    },
   },
 });
 
 export default userSlice.reducer;
-export const { setUser, setIsLoading, setisAuthenticated } = userSlice.actions;
+export const { setUser, setIsLoading, setisAuthenticated, setAllUsers } =
+  userSlice.actions;
