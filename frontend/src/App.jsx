@@ -25,7 +25,9 @@ import { dbUrl } from "./utils";
 import { getAllUsers } from "../helpers/functions";
 
 const App = () => {
-  const { isLoading, user } = useSelector((state) => state.user);
+  const { isLoading, user, isAuthenticated } = useSelector(
+    (state) => state.user
+  );
   const dispatch = useDispatch();
   // check-authentication
 
@@ -53,8 +55,8 @@ const App = () => {
   };
 
   useEffect(() => {
-    if (user) getusers();
-  }, [user]);
+    if (isAuthenticated) getusers();
+  }, [isAuthenticated]);
 
   useEffect(() => {
     const token = Cookies.get("token");

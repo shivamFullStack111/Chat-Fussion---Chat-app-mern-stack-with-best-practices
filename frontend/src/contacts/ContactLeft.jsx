@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { FaSearch } from "react-icons/fa";
+import { CgUnblock } from "react-icons/cg";
 import brandLogo from "../images/brandLogo.png";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
@@ -8,16 +9,20 @@ import { RxCross1 } from "react-icons/rx";
 import { MdBlock, MdBlockFlipped, MdDelete } from "react-icons/md";
 import { dbUrl, returnToken } from "../utils";
 import axios from "axios";
-import { handleBlockUser } from "../../helpers/functions";
+import {
+  handleBlockUser,
+  handleUnblockUser,
+  removeFromContact,
+} from "../../helpers/functions";
 import { useDispatch, useSelector } from "react-redux";
 import { Toaster, toast } from "react-hot-toast";
 import { setUser } from "../../store/slices/userSlice";
 const ContactLeft = ({ dimensions }) => {
   const [groupedData, setgroupedData] = useState([]);
   const [searchText, setsearchText] = useState("");
-  const [contacts, setcontacts] = useState([]);
 
   const getContactsBySearch = async () => {
+    setgroupedData([]);
     try {
       const token = returnToken();
       const res = await axios.post(
@@ -51,7 +56,6 @@ const ContactLeft = ({ dimensions }) => {
 
   useEffect(() => {
     const time = setTimeout(() => {
-      setgroupedData([]);
       getContactsBySearch();
     }, 300);
 
@@ -59,25 +63,6 @@ const ContactLeft = ({ dimensions }) => {
       clearTimeout(time);
     };
   }, [searchText]);
-
-  // useEffect(() => {
-  //   let alphabets = [];
-
-  //   let sortedData = contacts.sort((a, b) => a.name.localeCompare(b.name));
-
-  //   sortedData.forEach((user) => {
-  //     if (alphabets.includes(user.name[0].toLowerCase())) {
-  //       setgroupedData((p) => [...p, { type: "user", ...user }]);
-  //     } else {
-  //       alphabets.push(user.name[0].toLowerCase());
-  //       setgroupedData((p) => [
-  //         ...p,
-  //         { type: "alphabet", letter: user.name[0] },
-  //       ]);
-  //       setgroupedData((p) => [...p, { type: "user", ...user }]);
-  //     }
-  //   });
-  // }, [contacts]);
 
   return (
     <>
@@ -116,7 +101,15 @@ const ContactLeft = ({ dimensions }) => {
             <div className="flex flex-col gap-2 mt-4">
               {groupedData.map((data, i) => {
                 if (data?.type == "user")
-                  return <UserListItem key={i} userr={data} />;
+                  return (
+                    <UserListItem
+                      getContactsBySearch={getContactsBySearch}
+                      groupedData={groupedData}
+                      setgroupedData={setgroupedData}
+                      key={i}
+                      userr={data}
+                    />
+                  );
                 else
                   return (
                     <div className="flex gap-2 items-center" key={i}>
@@ -135,7 +128,13 @@ const ContactLeft = ({ dimensions }) => {
 
 export default ContactLeft;
 
-const UserListItem = ({ userr, i }) => {
+const UserListItem = ({
+  userr,
+  i,
+  groupedData,
+  setgroupedData,
+  getContactsBySearch,
+}) => {
   const [optionActive, setoptionActive] = useState(false);
   const [isBlocked, setisBlocked] = useState(false);
   const { user } = useSelector((state) => state.user);
@@ -170,26 +169,44 @@ const UserListItem = ({ userr, i }) => {
           </div>
           <div>
             <p className="text-gray-500  text-[12px]">{userr?.name}</p>
-            <p className="text-[12px] text-gray-600">{userr?.phoneNumber}</p>
+            <p className="text-[12px] text-gray-600">
+              +91 {userr?.phoneNumber}
+            </p>
           </div>
         </div>
-        {isBlocked ? (
-          <MdBlockFlipped className="mr-2 text-red-400" />
-        ) : (
-          <div className="relative">
-            {!optionActive ? (
-              <PiDotsThreeVerticalBold
-                onClick={() => setoptionActive((p) => !p)}
-                className={`mr-2 text-gray-400 cursor-pointer `}
-              />
-            ) : (
-              <RxCross1
-                onClick={() => setoptionActive((p) => !p)}
-                className={`mr-2 text-gray-400 cursor-pointer `}
-              />
-            )}
-            {optionActive && (
-              <div className="h-auto w-28  bg-darkbg  z-50  rounded-md absolute right-10 top-0  ">
+
+        <div className="relative">
+          {!optionActive ? (
+            <PiDotsThreeVerticalBold
+              onClick={() => setoptionActive((p) => !p)}
+              className={`mr-2 text-gray-400 cursor-pointer `}
+            />
+          ) : (
+            <RxCross1
+              onClick={() => setoptionActive((p) => !p)}
+              className={`mr-2 text-gray-400 cursor-pointer `}
+            />
+          )}
+          {optionActive && (
+            <div className="h-auto w-28  bg-darkbg  z-50  rounded-md absolute right-10 top-0  ">
+              {isBlocked ? (
+                <div
+                  onClick={async () => {
+                    const res = await handleUnblockUser(userr?._id);
+                    if (res.data.success) {
+                      toast.success(res.data.message);
+                      setisBlocked(false);
+                      return dispatch(setUser(res.data.user));
+                    } else {
+                      return toast.error(res.data.message);
+                    }
+                  }}
+                  className="flex items-center cursor-pointer text-sm text-gray-400 rounded-t-md justify-between p-2 hover:bg-gray-700"
+                >
+                  <p>Unblock</p>
+                  <CgUnblock />
+                </div>
+              ) : (
                 <div
                   onClick={async () => {
                     const res = await handleBlockUser(userr?._id);
@@ -206,14 +223,33 @@ const UserListItem = ({ userr, i }) => {
                   <p>Block</p>
                   <MdBlock />
                 </div>
-                <div className="flex items-center cursor-pointer text-sm text-gray-400 rounded-b-md justify-between p-2 hover:bg-gray-700">
-                  <p>Remove</p>
-                  <MdDelete />
-                </div>
+              )}
+              <div
+                onClick={async () => {
+                  const res = await removeFromContact(userr._id);
+                  if (res.data.success) {
+                    toast.success(res.data.message);
+                    dispatch(setUser(res.data.user));
+                    getContactsBySearch();
+                    // const filterGroupData = groupedData.filter((usr) => {
+                    //   if (usr._id !== userr._id) {
+                    //     return usr;
+                    //   }
+                    // });
+
+                    // setgroupedData(filterGroupData);
+                  } else {
+                    toast.error(res.data.message);
+                  }
+                }}
+                className="flex items-center cursor-pointer text-sm text-gray-400 rounded-b-md justify-between p-2 hover:bg-gray-700"
+              >
+                <p>Remove</p>
+                <MdDelete />
               </div>
-            )}
-          </div>
-        )}
+            </div>
+          )}
+        </div>
       </div>
     </motion.div>
   );

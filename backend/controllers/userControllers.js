@@ -421,6 +421,40 @@ const blockUser = async (req, res) => {
   }
 };
 
+const unblockUser = async (req, res) => {
+  try {
+    console.log("]]]]]]]]]]]]]]]]]]];-----", req.user, req.body.userid);
+    const { userid } = req.body;
+    const user = await Users.findOne({ email: req.user.email });
+    user.blockUsers = user?.blockUsers?.filter((id) => id !== userid);
+
+    await user.save();
+
+    return res.send({ success: true, message: "unblock user", user });
+  } catch (error) {
+    return res.send({ success: false, message: error.message });
+  }
+};
+
+const removeFromContact = async (req, res) => {
+  try {
+    const { userid } = req.body;
+    const user = await Users.findOne({ _id: req.user._id });
+
+    user.contacts = user.contacts.filter((id) => id !== userid);
+
+    await user.save();
+
+    return res.send({
+      success: true,
+      message: "user remove from contact",
+      user,
+    });
+  } catch (error) {
+    return res.send({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   register,
   getContactsBySearch,
@@ -433,4 +467,6 @@ module.exports = {
   addToContact,
   getUsersBySearch,
   blockUser,
+  unblockUser,
+  removeFromContact,
 };

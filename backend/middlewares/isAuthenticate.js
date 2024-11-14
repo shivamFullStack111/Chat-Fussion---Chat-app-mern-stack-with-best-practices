@@ -5,13 +5,11 @@ const { JWTSECRET } = require("../utils");
 const isAuthenticate = async (req, res, next) => {
   try {
     const { authorization } = req.headers;
-    console.log("token:---------------", authorization);
 
     if (!authorization)
       return res.send({ success: false, message: "token not found" });
 
     const { user } = jwt.verify(authorization, JWTSECRET);
-    console.log(user);
     const userr = await Users.findOne({ email: user.email });
     if (!userr)
       return res.send({ success: false, message: "token is invalid" });

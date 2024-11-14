@@ -41,7 +41,7 @@ const Login = () => {
         style={{
           backgroundImage: `url("https://res.cloudinary.com/dosyxpa1r/image/upload/v1731433036/dosyxpa1r/t6pmii4rrkz3b659vloa.gif")`,
         }}
-        className="h-screen bg-no-repeat bg-cover w-full dark:bg-darkbg bg-primary  flex  max-1000px:justify-center items-center "
+        className="h-screen bg-no-repeat bg-cover w-full bg-black   flex  max-1000px:justify-center items-center "
       >
         <div className="w-[30%] max-1000px:hidden flex fle-col   min-h-[100vh] pt-[7vh] justify-center ">
           <div>

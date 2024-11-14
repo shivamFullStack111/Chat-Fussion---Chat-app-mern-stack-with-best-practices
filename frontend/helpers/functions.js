@@ -44,7 +44,36 @@ export const handleBlockUser = async (userid) => {
       { userid },
       { headers: { Authorization: token } }
     );
-    return res
+    return res;
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+export const handleUnblockUser = async (userid) => {
+  try {
+    const token = returnToken();
+    const res = await axios.post(
+      `${dbUrl}/unblock-user`,
+      { userid },
+      { headers: { Authorization: token } }
+    );
+
+    return res;
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+export const removeFromContact = async (userid) => {
+  try {
+    const token = returnToken();
+    const res = await axios.post(
+      `${dbUrl}/remove-from-contact`,
+      { userid },
+      { headers: { Authorization: token } }
+    );
+    return res;
   } catch (error) {
     console.log(error.message);
   }

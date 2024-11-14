@@ -10,8 +10,8 @@ export const returnToken = () => {
   return token;
 };
 
-export const dbUrl = "https://chat-fusion-backend.onrender.com";
-// export const dbUrl = "http://192.168.253.216:8000";
+// export const dbUrl = "https://chat-fusion-backend.onrender.com";
+export const dbUrl = "http://192.168.253.216:8000";
 export const starGif =
   "https://cdn.pixabay.com/animation/2023/03/19/02/34/02-34-11-741_512.gif";
 
