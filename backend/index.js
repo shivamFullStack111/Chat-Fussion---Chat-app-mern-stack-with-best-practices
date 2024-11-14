@@ -3,13 +3,16 @@ const cors = require("cors");
 const connectDb = require("./dbConnect");
 const userRouter = require("./routes/userRoutes");
 
+const http = require("http");
+const { Server } = require("socket.io");
+const { connectSocket } = require("./socketController");
+
 require("dotenv").config();
 const app = express();
+const server = http.createServer(app);
 
+connectSocket(server)
 // Configure Cloudinary
-
-
-
 
 // Middleware
 app.use(cors());
@@ -23,7 +26,7 @@ app.use(userRouter);
 connectDb();
 
 // Start server
-app.listen(8000, () => {
+server.listen(8000, () => {
   console.log("Server running on port 8000");
 });
 
