@@ -1,9 +1,19 @@
 /* eslint-disable react/prop-types */
 import { FaSearch } from "react-icons/fa";
 import brandLogo from "../images/brandLogo.png";
+import { useDispatch, useSelector } from "react-redux";
+import { createConversation } from "../../helpers/messageFunctions";
+import {
+  setConversation,
+  setIsChatOpen,
+  setOponentUser,
+} from "../../store/slices/chatSlice";
 
 const ChatLeft = ({ dimensions }) => {
-  console.log(dimensions)
+  const { allUsers, user } = useSelector((state) => state.user);
+  const { isChatOpen } = useSelector((state) => state.chat);
+  const dispatch = useDispatch();
+  console.log(dimensions);
   return (
     <div className="w-full 1000px:min-w-[330px] 1000px:max-w-[330px]  h-[100vh] bg-darkbg_2">
       <div className="p-7 pb-0">
@@ -17,7 +27,7 @@ const ChatLeft = ({ dimensions }) => {
         </div>
         <div className="flex items-center bg-darkbg p-3 py-1 mt-5 rounded-md">
           <input
-          placeholder="Search..."
+            placeholder="Search..."
             spellCheck={false}
             className="outline-none text-sm text-gray-300 w-full p-[5px] bg-darkbg "
             type="text "
@@ -36,33 +46,13 @@ const ChatLeft = ({ dimensions }) => {
         >
           <p className="mt-6 text-[13px] text-gray-400">FAVOURITES</p>
           <div className="flex flex-col gap-2 mt-4">
-            {[
-              "ram",
-              "Karan",
-              "priya",
-              "Sham",
-              "ram",
-              "Karan",
-              "priya",
-              "ram",
-              "Karan",
-            ].map((user, i) => (
-              <div className=" flex items-center  gap-2" key={i}>
-                <div
-                  className="h-8 w-8  rounded-full relative bg-primary flex justify-center items-center"
-                  src=""
-                  alt=""
-                >
-                  {user[0]}
-                  <p className="absolute h-3 w-3 bg-green-400 rounded-full -bottom-1 right-1"></p>
-                </div>
-                <p className="text-gray-500 text-[12px]">{user}</p>
-              </div>
+            {allUsers?.map((userr, i) => (
+              <UserCard key={i} dispatch={dispatch} userr={userr} user={user} />
             ))}
           </div>
           <p className="mt-8 text-[13px] text-gray-400">FAVOURITES</p>
           <div className="flex flex-col gap-2 mt-4">
-            {["ram", "Karan", "priya", "Sham"].map((user, i) => (
+            {/* {["ram", "Karan", "priya", "Sham"].map((user, i) => (
               <div className=" flex items-center  gap-2" key={i}>
                 <div
                   className="h-8 w-8  rounded-full relative bg-primary flex justify-center items-center"
@@ -74,7 +64,7 @@ const ChatLeft = ({ dimensions }) => {
                 </div>
                 <p className="text-gray-500 text-[12px]">{user}</p>
               </div>
-            ))}
+            ))} */}
           </div>
         </div>
       </div>
@@ -84,5 +74,28 @@ const ChatLeft = ({ dimensions }) => {
 
 export default ChatLeft;
 
-
-
+const UserCard = ({ userr, user, dispatch }) => {
+  return (
+    <div
+      onClick={async () => {
+        const res = await createConversation([userr, user]);
+        if (res.data.success) {
+          dispatch(setIsChatOpen(true));
+          dispatch(setOponentUser(userr));
+          dispatch(setConversation(res.data.conversation));
+        }
+      }}
+      className=" cursor-pointer flex items-center  gap-2"
+    >
+      <div
+        className="h-8 w-8  rounded-full relative bg-primary flex justify-center items-center"
+        src=""
+        alt=""
+      >
+        {userr?.name[0]}
+        <p className="absolute h-3 w-3 bg-green-400 rounded-full -bottom-1 right-1"></p>
+      </div>
+      <p className="text-gray-500 text-[12px]">{userr?.name}</p>
+    </div>
+  );
+};

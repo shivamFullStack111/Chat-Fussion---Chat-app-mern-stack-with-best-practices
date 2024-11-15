@@ -43,7 +43,7 @@ const App = () => {
     });
 
     return () => {
-      socket.off("activeUsers");
+       socket.off("activeUsers");
     };
   }, [socket]);
 

@@ -1,41 +1,61 @@
 /* eslint-disable react/prop-types */
-import  { useState } from "react";
-import {
-  
-  FaPhoneAlt,
-  FaSearch,
-  FaVideo,
-} from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { FaPhoneAlt, FaSearch, FaVideo } from "react-icons/fa";
 import {
   PiDotsThreeOutlineFill,
   PiDotsThreeOutlineVerticalFill,
   PiSmiley,
 } from "react-icons/pi";
-import {
-  MdOutlineKeyboardVoice,
-  MdSend,
-} from "react-icons/md";
+import { MdOutlineKeyboardVoice, MdSend } from "react-icons/md";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import TextMessage from "./messages_components/TextMessage";
 import DateDivider from "./messages_components/DateDivider";
 import MoreOption from "./MoreOption";
 import PdfMessage from "./messages_components/PdfMessage";
 import ImageMessage from "./messages_components/ImageMessage";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllMessages } from "../../helpers/messageFunctions";
+import Transparent_Loader from "../components/Transparent_Loader";
+import {
+  setallMessages,
+  setOponentUser,
+  setIsChatOpen,
+  setConversation,
+} from "../../store/slices/chatSlice";
 
 const ChatScreen = () => {
   const [moreOptionOpen, setmoreOptionOpen] = useState(false);
+  const { oponentUser, allMessages } = useSelector((state) => state.chat);
+  const { user } = useSelector((state) => state.user);
+  const [isRequesting, setisRequesting] = useState(true);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getMessages = async () => {
+      setisRequesting(true);
+      const res = await getAllMessages();
+      dispatch(setallMessages(res.data?.messages));
+      setisRequesting(false);
+    };
+    if (oponentUser) getMessages();
+  }, [oponentUser]);
+
   return (
     <>
-      {/* desktop chat screen  */}
-      <DesktopChatScreen
-        moreOptionOpen={moreOptionOpen}
-        setmoreOptionOpen={setmoreOptionOpen}
-      />
-      {/* mobile chat screen  */}
-      <MobileChatScreen
-        moreOptionOpen={moreOptionOpen}
-        setmoreOptionOpen={setmoreOptionOpen}
-      />
+      <div className="">
+        {isRequesting && <Transparent_Loader />}
+
+        {/* desktop chat screen  */}
+        <DesktopChatScreen
+          moreOptionOpen={moreOptionOpen}
+          setmoreOptionOpen={setmoreOptionOpen}
+        />
+        {/* mobile chat screen  */}
+        <MobileChatScreen
+          moreOptionOpen={moreOptionOpen}
+          setmoreOptionOpen={setmoreOptionOpen}
+        />
+      </div>
     </>
   );
 };
@@ -43,6 +63,9 @@ const ChatScreen = () => {
 export default ChatScreen;
 
 const DesktopChatScreen = ({ moreOptionOpen, setmoreOptionOpen }) => {
+  const { oponentUser } = useSelector((state) => state.chat);
+  const [isActive, setisActive] = useState(false);
+
   return (
     <>
       {" "}
@@ -52,17 +75,22 @@ const DesktopChatScreen = ({ moreOptionOpen, setmoreOptionOpen }) => {
             // backgroundImage: `url('${whatsappbg}')`,
           }
         }
-        className="h-full max-1000px:hidden w-full bg-darkbg relative flex flex-col   bg-cover bg-no-repeat "
+        className="h-full z-10 max-1000px:hidden w-full bg-darkbg relative flex flex-col   bg-cover bg-no-repeat "
       >
         <div className="w-full h-20 bg-[#0004]  backdrop-blur-md flex justify-between items-center">
           <div className="flex px-4 items-center gap-2">
             <img
               className="h-10 w-10 rounded-full bg-cover"
-              src="https://dootnode.themesbrand.website/assets/images/users/user-dummy-img.jpg"
+              src={
+                oponentUser?.profileImage ||
+                "https://dootnode.themesbrand.website/assets/images/users/user-dummy-img.jpg"
+              }
               alt=""
             />
             <div>
-              <p className="text-gray-400 tracking-wide font-semibold">Karan</p>
+              <p className="text-gray-400 tracking-wide font-semibold">
+                {oponentUser?.name}
+              </p>
               <p className="text-[12px] text-gray-500">
                 last seen 28-1-2023 , 7:31 pm
               </p>
@@ -115,9 +143,11 @@ const DesktopChatScreen = ({ moreOptionOpen, setmoreOptionOpen }) => {
 };
 
 const MobileChatScreen = ({ setmoreOptionOpen, moreOptionOpen }) => {
+  const { oponentUser } = useSelector((state) => state.chat);
+  const dispatch = useDispatch();
   return (
     <>
-      <div className="fixed 1000px:hidden bg-darkbg_2 w-full h-full top-0 left-0 z-50">
+      <div className="fixed 1000px:hidden bg-darkbg_2 w-full h-full top-0 left-0 z-30">
         <div
           style={
             {
@@ -129,15 +159,26 @@ const MobileChatScreen = ({ setmoreOptionOpen, moreOptionOpen }) => {
           {/* header  */}
           <div className="w-full h-16 px-2 bg-[#0004]  backdrop-blur-md flex justify-between items-center">
             <div className="flex  items-center gap-2">
-              <FaArrowLeftLong className="text-gray-300 mr-2" />
+              <FaArrowLeftLong
+                onClick={() => {
+                  dispatch(setallMessages([]));
+                  dispatch(setOponentUser(null));
+                  dispatch(setConversation(null));
+                  dispatch(setIsChatOpen(false));
+                }}
+                className="text-gray-300 cursor-pointer mr-2"
+              />
               <img
                 className="h-8 w-8 rounded-full bg-cover"
-                src="https://dootnode.themesbrand.website/assets/images/users/user-dummy-img.jpg"
+                src={
+                  oponentUser?.profileImage ||
+                  "https://dootnode.themesbrand.website/assets/images/users/user-dummy-img.jpg"
+                }
                 alt=""
               />
               <div>
                 <p className="text-gray-400 text-sm tracking-wide font-semibold">
-                  Karan
+                  {oponentUser?.name}
                 </p>
                 <p className="text-[12px] leading-tight tracking-tight text-gray-500">
                   last seen 28-1-2023 , 7:31 pm
@@ -158,7 +199,7 @@ const MobileChatScreen = ({ setmoreOptionOpen, moreOptionOpen }) => {
             <TextMessage />
             <PdfMessage />
             <DateDivider />
-            <ImageMessage/>
+            <ImageMessage />
             <TextMessage />
           </div>
           <MoreOption

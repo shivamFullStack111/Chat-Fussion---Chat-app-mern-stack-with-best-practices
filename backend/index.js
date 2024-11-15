@@ -2,16 +2,18 @@ const express = require("express");
 const cors = require("cors");
 const connectDb = require("./dbConnect");
 const userRouter = require("./routes/userRoutes");
+const messageRoute = require("./routes/messageRoutes");
 
 const http = require("http");
 const { Server } = require("socket.io");
 const { connectSocket } = require("./socketController");
+const conversationRoute = require("./routes/conversationRoutes");
 
 require("dotenv").config();
 const app = express();
 const server = http.createServer(app);
 
-connectSocket(server)
+connectSocket(server);
 // Configure Cloudinary
 
 // Middleware
@@ -21,6 +23,8 @@ app.use(express.static("./uploads"));
 
 // Routes
 app.use(userRouter);
+app.use(conversationRoute);
+app.use(messageRoute);
 
 // Connect to database
 connectDb();

@@ -27,6 +27,7 @@ const Contacts = () => {
     <div className="flex h-[100vh] overflow-hidden">
       <HomeSideBar active={4}></HomeSideBar>
       <ContactLeft dimensions={dimensions} />
+      
       <HomeRight />
 
       {/* profile left side  */}

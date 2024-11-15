@@ -17,6 +17,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { Toaster, toast } from "react-hot-toast";
 import { setUser } from "../../store/slices/userSlice";
+import { createConversation } from "../../helpers/messageFunctions";
+import { setIsChatOpen, setOponentUser } from "../../store/slices/chatSlice";
 const ContactLeft = ({ dimensions }) => {
   const [groupedData, setgroupedData] = useState([]);
   const [searchText, setsearchText] = useState("");
@@ -68,7 +70,7 @@ const ContactLeft = ({ dimensions }) => {
   return (
     <>
       <Toaster />
-      <div className="w-full 1000px:min-w-[330px] 1000px:max-w-[330px]  h-[100vh] bg-darkbg_2">
+      <div className="w-full max-1000px:z-30 1000px:min-w-[330px] 1000px:max-w-[330px]  h-[100vh] bg-darkbg_2">
         <div className="p-7 pb-0">
           <div className="flex justify-between items-center">
             <p className="text-2xl font-semibold text-gray-500">Contacts</p>
@@ -171,7 +173,7 @@ const UserListItem = ({
       initial={{ y: 10, opacity: 0 }}
       transition={{ duration: 0.4 }}
       whileInView={{ y: 0, opacity: 1 }}
-      className=" flex items-center  gap-2"
+      className=" flex cursor-pointer items-center  gap-2"
       key={i}
     >
       <div className="flex gap-2 items-center w-full justify-between">
@@ -186,7 +188,7 @@ const UserListItem = ({
           <div>
             <p className="text-gray-500  text-[12px] flex gap-2 items-center">
               <p> {userr?.name} </p>
-              {isActive  && (
+              {isActive && (
                 <p className=" text-green-400 rounded-full text-[10px]">
                   online
                 </p>

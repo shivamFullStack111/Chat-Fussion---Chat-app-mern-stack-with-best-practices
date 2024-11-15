@@ -9,7 +9,7 @@ import { IoIosLogOut } from "react-icons/io";
 import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
 
-import { setisAuthenticated } from "../../store/slices/userSlice.js";
+import { setisAuthenticated, setUser } from "../../store/slices/userSlice.js";
 const SettingLeft = ({ dimensions }) => {
   const dispatch = useDispatch();
   return (
@@ -114,7 +114,9 @@ const SettingLeft = ({ dimensions }) => {
           <div
             onClick={() => {
               Cookies.remove("token");
+              dispatch(setUser(null));
               dispatch(setisAuthenticated(false));
+              window.location.reload();
             }}
             className="bg-red-500  py-1 rounded-sm ml-auto max-w-[130px] text-white hover:bg-red-400 cursor-pointer flex justify-center items-center gap-2"
           >
