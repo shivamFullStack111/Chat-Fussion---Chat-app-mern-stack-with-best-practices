@@ -13,7 +13,9 @@ const ChatLeft = ({ dimensions }) => {
   const { allUsers, user } = useSelector((state) => state.user);
   const { isChatOpen } = useSelector((state) => state.chat);
   const dispatch = useDispatch();
-  console.log(dimensions);
+
+
+
   return (
     <div className="w-full 1000px:min-w-[330px] 1000px:max-w-[330px]  h-[100vh] bg-darkbg_2">
       <div className="p-7 pb-0">
@@ -44,13 +46,13 @@ const ChatLeft = ({ dimensions }) => {
           }}
           className=" overflow-y-scroll"
         >
-          <p className="mt-6 text-[13px] text-gray-400">FAVOURITES</p>
+          {/* <p className="mt-6 text-[13px] text-gray-400">FAVOURITES</p> */}
           <div className="flex flex-col gap-2 mt-4">
             {allUsers?.map((userr, i) => (
               <UserCard key={i} dispatch={dispatch} userr={userr} user={user} />
             ))}
           </div>
-          <p className="mt-8 text-[13px] text-gray-400">FAVOURITES</p>
+          {/* <p className="mt-8 text-[13px] text-gray-400">FAVOURITES</p> */}
           <div className="flex flex-col gap-2 mt-4">
             {/* {["ram", "Karan", "priya", "Sham"].map((user, i) => (
               <div className=" flex items-center  gap-2" key={i}>
@@ -78,6 +80,7 @@ const UserCard = ({ userr, user, dispatch }) => {
   return (
     <div
       onClick={async () => {
+        dispatch(setIsChatOpen(true));
         const res = await createConversation([userr, user]);
         if (res.data.success) {
           dispatch(setIsChatOpen(true));
