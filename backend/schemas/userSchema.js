@@ -37,6 +37,8 @@ const userSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["active", "do not disturb"],
+      default: "active",
+
     },
     profilePicture: {
       type: String,

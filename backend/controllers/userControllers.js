@@ -303,11 +303,19 @@ const updateUser = async (req, res) => {
 
     if (!userr) return res.send({ success: false, message: "user not found" });
 
-    await Users.findOneAndUpdate({ email: userr.email }, req.body, {
-      new: true,
-    });
+    const user = await Users.findOneAndUpdate(
+      { email: userr.email },
+      req.body,
+      {
+        new: true,
+      }
+    );
 
-    return res.send({ success: true, message: "user updated successfully" });
+    return res.send({
+      success: true,
+      message: "user updated successfully",
+      user,
+    });
   } catch (error) {
     return res.send({ success: false, message: error.message });
   }

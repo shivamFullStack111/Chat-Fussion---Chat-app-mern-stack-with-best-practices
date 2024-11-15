@@ -34,6 +34,14 @@ const connectSocket = async (server) => {
     socket.on("me", (userEmail) => {
       addUserTo_activeUsers(userEmail, socket);
     });
+
+    socket.on("disconnect", () => {
+      const email = socketidToEmail.get(socket.id);
+      socketidToEmail.delete(socket.id);
+      emailToSocketid.delete(email);
+      activeUsers = activeUsers.filter((user) => user !== email);
+      io.emit("activeUsers", activeUsers);
+    });
   });
 
   console.log("Socket connection established");

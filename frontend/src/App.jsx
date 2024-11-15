@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Transparent_Loader from "./components/Transparent_Loader";
 import { useEffect } from "react";
 import {
+  setActiveUsers,
   setAllUsers,
   setisAuthenticated,
   setIsLoading,
@@ -23,12 +24,36 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { dbUrl } from "./utils";
 import { getAllUsers } from "../helpers/functions";
+import { useSocket } from "./SocketProvider";
 
 const App = () => {
   const { isLoading, user, isAuthenticated } = useSelector(
     (state) => state.user
   );
+  const { socket } = useSocket();
+
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("activeUsers", (activeUserss) => {
+      console.log(activeUserss);
+      dispatch(setActiveUsers(activeUserss));
+    });
+
+    return () => {
+      socket.off("activeUsers");
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    if (!socket || !isAuthenticated) return;
+
+    if (user?.status === "active") {
+      socket.emit("me", user?.email);
+    }
+  }, [socket]);
   // check-authentication
 
   const checkAuthentication = async (token) => {

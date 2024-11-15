@@ -37,6 +37,7 @@ const HomeLeft = ({
 
       if (res.data?.success) {
         toast.success(res.data.message);
+        console.log('update',res.data.user)
         dispatch(setUser(res.data.user));
       } else {
         toast.error(res.data.message);
@@ -50,7 +51,7 @@ const HomeLeft = ({
     if (user) {
       setdata(user);
     }
-  }, []);
+  }, [user]);
 
   const handleChangeBackgroundImage = async (userimagetype) => {
     try {
@@ -183,12 +184,12 @@ const HomeLeft = ({
             onClick={() => setstatusOpen((p) => !p)}
             className="text-white flex justify-center cursor-pointer items-center gap-1 mt-[50px] "
           >
-            <p className="h-3 w-3 rounded-full bg-green-400"></p>
-            <p className="text-[13px] text-gray-400 ">Active</p>
-            {/* <FaAngleDown className="text-gray-400" /> */}
+            <p className={`h-3 w-3 rounded-full ${data?.status=='active'?'bg-green-400':'bg-red-400'}`}></p>
+            <p className="text-[13px] text-gray-400 ">{data?.status}</p>
+            <FaAngleDown className="text-gray-400" />
           </div>
           {/* status change box  */}
-          {/* {statusOpen && (
+          {statusOpen && (
             <div className="flex absolute w-full justify-end mt-2  px-6">
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
@@ -197,23 +198,35 @@ const HomeLeft = ({
                   opacity: statusOpen ? 1 : 0,
                 }}
                 transition={{ duration: 0.4 }}
-                className="w-[60%] bg-black-700 flex-col rounded-sm grid grid-rows-3 h-[80px]  items-center "
+                className="w-[60%] bg-black-700 flex-col rounded-sm grid grid-rows-2 py-2  items-center "
               >
-                <div className="flex items-center gap-1 hover:bg-black-800 px-3 cursor-pointer w-full ">
+                <div
+                  onClick={() => {
+                    setdata((p) => ({ ...p, status: "active" }));
+                    setstatusOpen(false);
+                  }}
+                  className="flex items-center gap-1 hover:bg-black-800 px-3 cursor-pointer w-full "
+                >
                   <p className="h-2 w-2 rounded-full bg-green-400"></p>
                   <p className="text-[13px] text-gray-400 ">Active</p>
                 </div>
-                <div className="flex items-center gap-1 hover:bg-black-800 px-3 cursor-pointer w-full ">
+                {/* <div onClick={()=>setdata(p=>({...p,status:'active'}))} className="flex items-center gap-1 hover:bg-black-800 px-3 cursor-pointer w-full ">
                   <p className="h-2 w-2 rounded-full bg-yellow-400"></p>
                   <p className="text-[13px] text-gray-400 ">Offline</p>
-                </div>
-                <div className="flex items-center gap-1 hover:bg-black-800 px-3 cursor-pointer w-full ">
+                </div> */}
+                <div
+                  onClick={() => {
+                    setdata((p) => ({ ...p, status: "do not disturb" }));
+                    setstatusOpen(false);
+                  }}
+                  className="flex items-center gap-1 hover:bg-black-800 px-3 cursor-pointer w-full "
+                >
                   <p className="h-2 w-2 rounded-full bg-red-400"></p>
                   <p className="text-[13px] text-gray-400 ">Do not disturb</p>
                 </div>
               </motion.div>
             </div>
-          )} */}
+          )}
 
           {/* all about  */}
           <div

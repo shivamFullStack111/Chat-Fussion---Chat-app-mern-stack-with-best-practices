@@ -20,6 +20,7 @@ import { setUser } from "../../store/slices/userSlice";
 const ContactLeft = ({ dimensions }) => {
   const [groupedData, setgroupedData] = useState([]);
   const [searchText, setsearchText] = useState("");
+  const { user } = useSelector((state) => state.user);
 
   const getContactsBySearch = async () => {
     setgroupedData([]);
@@ -100,7 +101,8 @@ const ContactLeft = ({ dimensions }) => {
           >
             <div className="flex flex-col gap-2 mt-4">
               {groupedData.map((data, i) => {
-                if (data?.type == "user")
+                if (data?.type == "user") {
+                  if (data?.email == user?.email) return;
                   return (
                     <UserListItem
                       getContactsBySearch={getContactsBySearch}
@@ -110,7 +112,7 @@ const ContactLeft = ({ dimensions }) => {
                       userr={data}
                     />
                   );
-                else
+                } else
                   return (
                     <div className="flex gap-2 items-center" key={i}>
                       <p className="text-green-400 text-sm">{data?.letter}</p>
@@ -137,8 +139,22 @@ const UserListItem = ({
 }) => {
   const [optionActive, setoptionActive] = useState(false);
   const [isBlocked, setisBlocked] = useState(false);
-  const { user } = useSelector((state) => state.user);
+  const { user, activeUsers } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const [isActive, setisActive] = useState(false);
+
+  useEffect(() => {
+    if (activeUsers.length > 0 && userr) {
+      const isExist = activeUsers.includes(userr.email);
+      if (isExist) {
+        {
+          setisActive(true);
+        }
+      } else {
+        setisActive(false);
+      }
+    }
+  }, [activeUsers, userr]);
 
   useEffect(() => {
     if (user && userr) {
@@ -165,10 +181,17 @@ const UserListItem = ({
             src=""
             alt=""
           >
-            {userr?.name[0]}
+            <div>{userr?.name[0]}</div>
           </div>
           <div>
-            <p className="text-gray-500  text-[12px]">{userr?.name}</p>
+            <p className="text-gray-500  text-[12px] flex gap-2 items-center">
+              <p> {userr?.name} </p>
+              {isActive  && (
+                <p className=" text-green-400 rounded-full text-[10px]">
+                  online
+                </p>
+              )}
+            </p>
             <p className="text-[12px] text-gray-600">
               +91 {userr?.phoneNumber}
             </p>
