@@ -8,17 +8,24 @@ conversationRoute.post(
   isAuthenticate,
   async (req, res) => {
     try {
-      const { users } = req.body;
+      const { users, type, groupName } = req.body;
 
-      const isExist = await Conversations.findOne({ users: { $all: users } });
+      if (type !== "group") {
+        const isExist = await Conversations.findOne({ users: { $all: users } });
 
-      if (isExist)
-        return res.send({
-          success: true,
-          message: "conversation already exists",
-          conversation: isExist,
-        });
-      const newConversation = new Conversations({ users });
+        if (isExist)
+          return res.send({
+            success: true,
+            message: "conversation already exists",
+            conversation: isExist,
+          });
+      }
+      const newConversation = new Conversations({
+        users,
+        type,
+        groupName,
+        admins: type == "group" ? [req?.user?.email] : [],
+      });
 
       await newConversation.save();
 

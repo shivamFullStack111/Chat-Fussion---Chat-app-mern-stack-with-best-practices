@@ -402,9 +402,11 @@ const getContactsBySearch = async (req, res) => {
           },
           { _id: { $in: req.user?.contacts } },
         ],
-      });
+      }).sort({ createdAt: -1 });
     } else {
-      contacts = await Users.find({ _id: { $in: req.user?.contacts || [] } });
+      contacts = await Users.find({
+        _id: { $in: req.user?.contacts || [] },
+      }).sort({ createdAt: -1 });
     }
 
     return res.send({ success: true, message: "contacts get", contacts });

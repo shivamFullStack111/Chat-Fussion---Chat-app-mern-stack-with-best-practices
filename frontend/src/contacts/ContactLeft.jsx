@@ -17,8 +17,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { Toaster, toast } from "react-hot-toast";
 import { setUser } from "../../store/slices/userSlice";
-import { createConversation } from "../../helpers/messageFunctions";
-import { setIsChatOpen, setOponentUser } from "../../store/slices/chatSlice";
 const ContactLeft = ({ dimensions }) => {
   const [groupedData, setgroupedData] = useState([]);
   const [searchText, setsearchText] = useState("");
@@ -170,9 +168,9 @@ const UserListItem = ({
 
   return (
     <motion.div
-      initial={{ y: 10, opacity: 0 }}
-      transition={{ duration: 0.4 }}
-      whileInView={{ y: 0, opacity: 1 }}
+      // initial={{ y: 10, opacity: 0 }}
+      // transition={{ duration: 0.4 }}
+      // whileInView={{ y: 0, opacity: 1 }}
       className=" flex cursor-pointer items-center  gap-2"
       key={i}
     >

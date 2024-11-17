@@ -14,6 +14,12 @@ const conversationSchema = new mongoose.Schema(
       enum: ["private", "group"],
       default: "private",
     },
+    groupName: {
+      type: String,
+    },
+    admins: {
+      type: Array,
+    },
 
     lastMessage: {
       type: {

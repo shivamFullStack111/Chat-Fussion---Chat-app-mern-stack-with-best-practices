@@ -22,13 +22,19 @@ import {
   setIsChatOpen,
   setConversation,
 } from "../../store/slices/chatSlice";
+import moment from "moment";
 
 const ChatScreen = () => {
   const [moreOptionOpen, setmoreOptionOpen] = useState(false);
-  const { oponentUser, allMessages } = useSelector((state) => state.chat);
+  const { oponentUser,  } = useSelector((state) => state.chat);
   const { user } = useSelector((state) => state.user);
   const [isRequesting, setisRequesting] = useState(true);
   const dispatch = useDispatch();
+  const [inputText, setinputText] = useState("");
+
+  const handleMessageSend = () => {
+    alert("message send");
+  };
 
   useEffect(() => {
     const getMessages = async () => {
@@ -40,6 +46,20 @@ const ChatScreen = () => {
     if (oponentUser) getMessages();
   }, [oponentUser]);
 
+  useEffect(() => {
+    const handleSubmitButton = (e) => {
+      if (e.key === "Enter" && inputText.length > 0) {
+        handleMessageSend();
+      }
+    };
+
+    window.addEventListener("keypress", handleSubmitButton);
+
+    return () => {
+      window.removeEventListener("keypress", handleSubmitButton);
+    };
+  }, [inputText]);
+
   return (
     <>
       <div className="">
@@ -47,11 +67,17 @@ const ChatScreen = () => {
 
         {/* desktop chat screen  */}
         <DesktopChatScreen
+          handleMessageSend={handleMessageSend}
+          inputText={inputText}
+          setinputText={setinputText}
           moreOptionOpen={moreOptionOpen}
           setmoreOptionOpen={setmoreOptionOpen}
         />
         {/* mobile chat screen  */}
         <MobileChatScreen
+          handleMessageSend={handleMessageSend}
+          inputText={inputText}
+          setinputText={setinputText}
           moreOptionOpen={moreOptionOpen}
           setmoreOptionOpen={setmoreOptionOpen}
         />
@@ -62,8 +88,15 @@ const ChatScreen = () => {
 
 export default ChatScreen;
 
-const DesktopChatScreen = ({ moreOptionOpen, setmoreOptionOpen }) => {
+const DesktopChatScreen = ({
+  moreOptionOpen,
+  setmoreOptionOpen,
+  setinputText,
+  inputText,
+  handleMessageSend,
+}) => {
   const { oponentUser } = useSelector((state) => state.chat);
+  const { activeUsers } = useSelector((state) => state.user);
   const [isActive, setisActive] = useState(false);
 
   return (
@@ -92,7 +125,16 @@ const DesktopChatScreen = ({ moreOptionOpen, setmoreOptionOpen }) => {
                 {oponentUser?.name}
               </p>
               <p className="text-[12px] text-gray-500">
-                last seen 28-1-2023 , 7:31 pm
+                {activeUsers?.includes(oponentUser?.email) ? (
+                  <>
+                    <p className="text-[12px] text-green-400">online</p>
+                  </>
+                ) : (
+                  <>
+                    {oponentUser?.lastActive &&
+                      moment(oponentUser?.lastActive).format("LLL")}
+                  </>
+                )}
               </p>
             </div>
           </div>
@@ -127,14 +169,19 @@ const DesktopChatScreen = ({ moreOptionOpen, setmoreOptionOpen }) => {
           </div>
           <div className="bg-darkbg_2 w-full h-full rounded-md px-3 flex items-center gap-2">
             <input
+              value={inputText}
               placeholder="Type your message..."
+              onChange={(e) => setinputText(e.target.value)}
               className="w-full bg-transparent outline-none  h-full"
               type="text"
             />
           </div>
           <div className="flex items-center gap-2">
             <MdOutlineKeyboardVoice className="text-3xl p-1 bg-darkbg_2 rounded-md cursor-pointer text-white" />
-            <MdSend className="text-3xl p-1 bg-primary rounded-md cursor-pointer text-white" />
+            <MdSend
+              onClick={handleMessageSend}
+              className="text-3xl p-1  bg-primary rounded-md cursor-pointer text-white"
+            />
           </div>
         </div>
       </div>
@@ -142,12 +189,19 @@ const DesktopChatScreen = ({ moreOptionOpen, setmoreOptionOpen }) => {
   );
 };
 
-const MobileChatScreen = ({ setmoreOptionOpen, moreOptionOpen }) => {
+const MobileChatScreen = ({
+  setmoreOptionOpen,
+  moreOptionOpen,
+  setinputText,
+  inputText,
+  handleMessageSend,
+}) => {
   const { oponentUser } = useSelector((state) => state.chat);
+  const { activeUsers } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   return (
     <>
-      <div className="fixed 1000px:hidden bg-darkbg_2 w-full h-full top-0 left-0 z-30">
+      <div className="fixed 1000px:hidden bg-darkbg_2 w-full h-full top-0 left-0 z-50">
         <div
           style={
             {
@@ -181,7 +235,16 @@ const MobileChatScreen = ({ setmoreOptionOpen, moreOptionOpen }) => {
                   {oponentUser?.name}
                 </p>
                 <p className="text-[12px] leading-tight tracking-tight text-gray-500">
-                  last seen 28-1-2023 , 7:31 pm
+                  {activeUsers?.includes(oponentUser?.email) ? (
+                    <>
+                      <p className="text-[12px] text-green-400">online</p>
+                    </>
+                  ) : (
+                    <>
+                      {oponentUser?.lastActive &&
+                        moment(oponentUser?.lastActive).format("LLL")}
+                    </>
+                  )}
                 </p>
               </div>
             </div>
@@ -217,14 +280,19 @@ const MobileChatScreen = ({ setmoreOptionOpen, moreOptionOpen }) => {
             </div>
             <div className="bg-darkbg_2 w-full h-full rounded-md px-3 flex items-center gap-2">
               <input
+                value={inputText}
                 placeholder="Type your message..."
+                onChange={(e) => setinputText(e.target.value)}
                 className="w-full bg-transparent outline-none  h-full"
                 type="text"
               />
             </div>
             <div className="flex items-center gap-2">
               <MdOutlineKeyboardVoice className="text-3xl p-1 bg-darkbg_2 rounded-md cursor-pointer text-white" />
-              <MdSend className="text-3xl p-1 bg-primary rounded-md cursor-pointer text-white" />
+              <MdSend
+                onClick={handleMessageSend}
+                className="text-3xl p-1 bg-primary rounded-md cursor-pointer text-white"
+              />
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 const { Server } = require("socket.io");
-
+const Users = require("./schemas/userSchema");
 const emailToSocketid = new Map();
 const socketidToEmail = new Map();
 let activeUsers = [];
@@ -35,11 +35,12 @@ const connectSocket = async (server) => {
       addUserTo_activeUsers(userEmail, socket);
     });
 
-    socket.on("disconnect", () => {
+    socket.on("disconnect", async () => {
       const email = socketidToEmail.get(socket.id);
       socketidToEmail.delete(socket.id);
       emailToSocketid.delete(email);
       activeUsers = activeUsers.filter((user) => user !== email);
+      await Users.findOneAndUpdate({ email }, { lastActive: new Date() });
       io.emit("activeUsers", activeUsers);
     });
   });

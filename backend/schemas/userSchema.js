@@ -61,6 +61,9 @@ exports.userModal = {
   backgroundImage: {
     type: String,
   },
+  lastActive: {
+    type: Date,
+  },
   blockUsers: Array,
   contacts: Array,
 };
