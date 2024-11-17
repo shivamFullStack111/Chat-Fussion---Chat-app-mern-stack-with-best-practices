@@ -31,7 +31,7 @@ conversationRoute.post(
 
       return res.send({
         success: true,
-        message: "conversation created",
+        message: "conversation created;",
         conversation: newConversation,
       });
     } catch (error) {
