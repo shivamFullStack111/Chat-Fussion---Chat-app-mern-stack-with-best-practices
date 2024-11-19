@@ -7,16 +7,12 @@ const messageSchema = new mongoose.Schema(
       required: true,
     },
     sender: {
-      type: Object,
-      email: String,
-      userid: String,
+      type: String,
       required: true,
     },
 
     receiver: {
-      type: Object,
-      email: String,
-      userid: String,
+      type: String,
     },
 
     message: {
@@ -26,7 +22,7 @@ const messageSchema = new mongoose.Schema(
         default: "text",
       },
       text: String,
-      uri: String,
+      url: String,
     },
   },
   { timestamps: true }

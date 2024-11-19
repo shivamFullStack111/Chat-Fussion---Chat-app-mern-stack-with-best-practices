@@ -407,16 +407,14 @@ const ConversationCard = ({
   );
 };
 
-const GroupConversationCard = ({
-  conversation,
- 
-}) => {
+const GroupConversationCard = ({ conversation }) => {
   const dispatch = useDispatch();
   return (
     <div
       onClick={() => {
         dispatch(setIsChatOpen(true));
         dispatch(setConversation(conversation));
+        dispatch(setOponentUser(null));
       }}
       className="flex cursor-pointer justify-between items-center"
     >

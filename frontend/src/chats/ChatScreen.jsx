@@ -14,7 +14,10 @@ import MoreOption from "./MoreOption";
 import PdfMessage from "./messages_components/PdfMessage";
 import ImageMessage from "./messages_components/ImageMessage";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllMessages } from "../../helpers/messageFunctions";
+import {
+  getAllMessages,
+  handleMessageSend,
+} from "../../helpers/messageFunctions";
 import Transparent_Loader from "../components/Transparent_Loader";
 import {
   setallMessages,
@@ -23,6 +26,7 @@ import {
   setConversation,
 } from "../../store/slices/chatSlice";
 import moment from "moment";
+import AudioRecorder from "./AudioRecorder";
 
 const ChatScreen = () => {
   const [moreOptionOpen, setmoreOptionOpen] = useState(false);
@@ -30,11 +34,9 @@ const ChatScreen = () => {
   const { user } = useSelector((state) => state.user);
   const [isRequesting, setisRequesting] = useState(true);
   const dispatch = useDispatch();
-  const [inputText, setinputText] = useState("");
 
-  const handleMessageSend = () => {
-    alert("message send");
-  };
+  // data
+  const [inputText, setinputText] = useState("");
 
   useEffect(() => {
     const getMessages = async () => {
@@ -47,9 +49,14 @@ const ChatScreen = () => {
   }, [dispatch, conversation]);
 
   useEffect(() => {
-    const handleSubmitButton = (e) => {
+    const handleSubmitButton = async (e) => {
       if (e.key === "Enter" && inputText.length > 0) {
-        handleMessageSend();
+        const res = await handleMessageSend(
+          "text",
+          inputText,
+          oponentUser,
+          conversation?._id
+        );
       }
     };
 
@@ -187,7 +194,9 @@ const DesktopChatScreen = ({
             />
           </div>
           <div className="flex items-center gap-2">
-            <MdOutlineKeyboardVoice className="text-3xl p-1 bg-darkbg_2 rounded-md cursor-pointer text-white" />
+            <AudioRecorder
+            oponentUse={oponentUser}
+            conversation={conversation}/>
             <MdSend
               onClick={handleMessageSend}
               className="text-3xl p-1  bg-primary rounded-md cursor-pointer text-white"
@@ -307,7 +316,9 @@ const MobileChatScreen = ({
               />
             </div>
             <div className="flex items-center gap-2">
-              <MdOutlineKeyboardVoice className="text-3xl p-1 bg-darkbg_2 rounded-md cursor-pointer text-white" />
+              <AudioRecorder
+              oponentUse={oponentUser}
+              conversation={conversation}/>
               <MdSend
                 onClick={handleMessageSend}
                 className="text-3xl p-1 bg-primary rounded-md cursor-pointer text-white"

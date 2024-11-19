@@ -13,8 +13,8 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: process.env.C_NAME, // Specify a folder on Cloudinary to store the files
-    allowed_formats: ["jpg", "jpeg", "png", "gif", "webp"], // Specify allowed file formats
+    allowed_formats: ["jpg", "jpeg", "png", "gif", "webp", "wav", "mp3"],
   },
 });
 
-exports.upload = multer({ storage: storage });
+exports.upload = multer({ storage: multer.diskStorage({}) });

@@ -63,3 +63,31 @@ export const getContactsBySearch = async () => {
     console.log(error.message);
   }
 };
+
+export const handleMessageSend = async (
+  type = "text",
+  text,
+  receiver,
+  conversationid,
+  
+) => {
+  try {
+    const token = returnToken();
+    const res = await axios.post(
+      `${dbUrl}/create-message`,
+      {
+        type,
+        text,
+        receiver,
+        conversationid,
+       
+      },
+      { headers: { Authorization: token } }
+    );
+
+    console.log(res.data);
+    return res;
+  } catch (error) {
+    console.log(error.message);
+  }
+};
