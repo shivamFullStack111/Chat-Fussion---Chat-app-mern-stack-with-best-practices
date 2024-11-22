@@ -56,6 +56,7 @@ const VideoRenderingScreenOnCall = ({
         >
           <video
             ref={myVideoRef}
+            muted
             // src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
             className="w-full h-full border-2 rounded-lg"
             autoPlay
