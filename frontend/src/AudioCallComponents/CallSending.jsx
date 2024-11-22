@@ -19,6 +19,7 @@ const CallSending = () => {
   const peerAudioRef = useRef(null);
   const peerConnection = useRef(new RTCPeerConnection());
 
+  // iske dependecy me isCallActive nhi diya tha iss liye call shi se nhi chl rhi thi
   useEffect(() => {
     if (!socket) return;
     socket.on("candidate", async (candidate) => {
@@ -45,7 +46,7 @@ const CallSending = () => {
       socket.off("candidate");
       socket.off("answer");
     };
-  }, [socket, dispatch]);
+  }, [socket, dispatch, isCallActive]);
 
   const handleCall = async () => {
     try {
@@ -82,6 +83,8 @@ const CallSending = () => {
     }
   };
 
+  // aur iske bhi dependecy me isCallActive nhi diya tha iss liye call shi se nhi chl rhi thi
+
   useEffect(() => {
     if (!socket || !peerConnection.current || !isCallSending) return;
     console.log("run");
@@ -89,7 +92,7 @@ const CallSending = () => {
     handleCall();
 
     return () => {};
-  }, [socket, peerConnection.current, isCallSending]);
+  }, [socket, isCallSending, handleCall, isCallActive]);
 
   return (
     <div

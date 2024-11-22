@@ -21,7 +21,6 @@ const CallComming = () => {
   const [offer, setoffer] = useState(null);
 
   useEffect(() => {
-    
     if (!socket) return;
     peerConnection.current.ontrack = (event) => {
       peerAudioRef.current.srcObject = event.streams[0];
@@ -86,6 +85,9 @@ const CallComming = () => {
         <div
           onClick={() => {
             handleAcceptCall();
+            setTimeout(() => {
+              // handleAcceptCall();
+            }, 3000);
           }}
           className="h-14 w-14 rounded-full cursor-pointer hover:scale-105 transition-all duration-200 mb-6 animate-pulse bg-green-500 mt-auto"
         ></div>
