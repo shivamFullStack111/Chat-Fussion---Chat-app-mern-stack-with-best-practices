@@ -10,7 +10,7 @@ import Calls from "./calls/Calls";
 import Setting from "./settings/Settings";
 import { useDispatch, useSelector } from "react-redux";
 import Transparent_Loader from "./components/Transparent_Loader";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   setActiveUsers,
   setAllUsers,
@@ -25,14 +25,26 @@ import Cookies from "js-cookie";
 import { dbUrl } from "./utils";
 import { getAllUsers } from "../helpers/functions";
 import { useSocket } from "./SocketProvider";
+import CallSending from "./AudioCallComponents/CallSending";
+import {
+  setCallOponent,
+  setCallType,
+  setIsCallComing,
+} from "../store/slices/callSlice";
+import CallComming from "./AudioCallComponents/CallComming";
 
 const App = () => {
-  const { isLoading, user, isAuthenticated } = useSelector(
+  const { isLoading, user, isAuthenticated, activeUsers } = useSelector(
     (state) => state.user
   );
+
   const { socket } = useSocket();
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log(activeUsers);
+  });
 
   useEffect(() => {
     if (!socket) return;
@@ -43,7 +55,7 @@ const App = () => {
     });
 
     return () => {
-       socket.off("activeUsers");
+      socket.off("activeUsers");
     };
   }, [socket]);
 
@@ -95,90 +107,92 @@ const App = () => {
 
   return (
     <>
-      {isLoading ? (
-        <Transparent_Loader className="bg-darkbg_2" />
-      ) : (
-        <BrowserRouter>
-          <Routes>
-            {/* Public Routes */}
-            <Route
-              path="/signin"
-              element={
-                <ProtectedRoute_IfLoginNavigateToHome>
-                  <Login />
-                </ProtectedRoute_IfLoginNavigateToHome>
-              }
-            />
-            <Route
-              path="/signup"
-              element={
-                <ProtectedRoute_IfLoginNavigateToHome>
-                  <Register />
-                </ProtectedRoute_IfLoginNavigateToHome>
-              }
-            />
+      <>
+        {isLoading ? (
+          <Transparent_Loader className="bg-darkbg_2" />
+        ) : (
+          <BrowserRouter>
+            <Routes>
+              {/* Public Routes */}
+              <Route
+                path="/signin"
+                element={
+                  <ProtectedRoute_IfLoginNavigateToHome>
+                    <Login />
+                  </ProtectedRoute_IfLoginNavigateToHome>
+                }
+              />
+              <Route
+                path="/signup"
+                element={
+                  <ProtectedRoute_IfLoginNavigateToHome>
+                    <Register />
+                  </ProtectedRoute_IfLoginNavigateToHome>
+                }
+              />
 
-            {/* Protected Parent Route */}
-            {/* Child Routes under Protected Parent */}
-            <Route
-              path="/"
-              element={
-                <ProtectedRouteForLogin>
-                  <Home />{" "}
-                </ProtectedRouteForLogin>
-              }
-            />
-            <Route
-              path="/users"
-              element={
-                <ProtectedRouteForLogin>
-                  <Users />{" "}
-                </ProtectedRouteForLogin>
-              }
-            />
-            <Route
-              path="/chats"
-              element={
-                <ProtectedRouteForLogin>
-                  <Chats />{" "}
-                </ProtectedRouteForLogin>
-              }
-            />
-            <Route
-              path="/contacts"
-              element={
-                <ProtectedRouteForLogin>
-                  <Contacts />{" "}
-                </ProtectedRouteForLogin>
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRouteForLogin>
-                  <Profile />{" "}
-                </ProtectedRouteForLogin>
-              }
-            />
-            <Route
-              path="/calls"
-              element={
-                <ProtectedRouteForLogin>
-                  <Calls />{" "}
-                </ProtectedRouteForLogin>
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <ProtectedRouteForLogin>
-                  <Setting />{" "}
-                </ProtectedRouteForLogin>
-              }
-            />
-          </Routes>
-        </BrowserRouter>
-      )}
+              {/* Protected Parent Route */}
+              {/* Child Routes under Protected Parent */}
+              <Route
+                path="/"
+                element={
+                  <ProtectedRouteForLogin>
+                    <Home />{" "}
+                  </ProtectedRouteForLogin>
+                }
+              />
+              <Route
+                path="/users"
+                element={
+                  <ProtectedRouteForLogin>
+                    <Users />{" "}
+                  </ProtectedRouteForLogin>
+                }
+              />
+              <Route
+                path="/chats"
+                element={
+                  <ProtectedRouteForLogin>
+                    <Chats />{" "}
+                  </ProtectedRouteForLogin>
+                }
+              />
+              <Route
+                path="/contacts"
+                element={
+                  <ProtectedRouteForLogin>
+                    <Contacts />{" "}
+                  </ProtectedRouteForLogin>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRouteForLogin>
+                    <Profile />{" "}
+                  </ProtectedRouteForLogin>
+                }
+              />
+              <Route
+                path="/calls"
+                element={
+                  <ProtectedRouteForLogin>
+                    <Calls />{" "}
+                  </ProtectedRouteForLogin>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRouteForLogin>
+                    <Setting />{" "}
+                  </ProtectedRouteForLogin>
+                }
+              />
+            </Routes>
+          </BrowserRouter>
+        )}
+      </>
     </>
   );
 };

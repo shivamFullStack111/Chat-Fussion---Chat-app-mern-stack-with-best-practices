@@ -68,8 +68,7 @@ export const handleMessageSend = async (
   type = "text",
   text,
   receiver,
-  conversationid,
-  
+  conversationid
 ) => {
   try {
     const token = returnToken();
@@ -80,7 +79,6 @@ export const handleMessageSend = async (
         text,
         receiver,
         conversationid,
-       
       },
       { headers: { Authorization: token } }
     );

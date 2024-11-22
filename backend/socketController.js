@@ -20,6 +20,19 @@ const addUserTo_activeUsers = (userEmail, socket) => {
   io.emit("activeUsers", activeUsers);
 };
 
+const removeFromActiveUsers = async (socket, io) => {
+  try {
+    const email = socketidToEmail.get(socket.id);
+    socketidToEmail.delete(socket.id);
+    emailToSocketid.delete(email);
+    activeUsers = activeUsers.filter((user) => user !== email);
+    await Users.findOneAndUpdate({ email }, { lastActive: new Date() });
+    io.emit("activeUsers", activeUsers);
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
 const connectSocket = async (server) => {
   io = new Server(server, {
     cors: {
@@ -36,12 +49,7 @@ const connectSocket = async (server) => {
     });
 
     socket.on("disconnect", async () => {
-      const email = socketidToEmail.get(socket.id);
-      socketidToEmail.delete(socket.id);
-      emailToSocketid.delete(email);
-      activeUsers = activeUsers.filter((user) => user !== email);
-      await Users.findOneAndUpdate({ email }, { lastActive: new Date() });
-      io.emit("activeUsers", activeUsers);
+      removeFromActiveUsers(socket, io);
     });
   });
 

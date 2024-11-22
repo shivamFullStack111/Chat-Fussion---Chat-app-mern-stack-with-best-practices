@@ -341,10 +341,6 @@ const UserCard = ({
 const ConversationCard = ({
   conversation,
   user,
-
-  isGroupCreating,
-  selectedUsersForGroup,
-  setselectedUsersForGroup,
 }) => {
   const { activeUsers } = useSelector((state) => state.user);
   const dispatch = useDispatch();

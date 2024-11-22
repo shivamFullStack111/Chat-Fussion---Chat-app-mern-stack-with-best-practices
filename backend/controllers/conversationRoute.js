@@ -18,7 +18,13 @@ const createConversation = async (req, res) => {
         });
     }
     const newConversation = new Conversations({
-      users,
+      users: [
+        ...users,
+        {
+          email: req.user.email,
+          _id: req.user._id,
+        },
+      ],
       type,
       groupName,
       admins: type == "group" ? [req?.user?.email] : [],

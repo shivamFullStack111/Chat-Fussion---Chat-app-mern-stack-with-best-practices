@@ -26,33 +26,37 @@ messageRoute.post(
   isAuthenticate,
   upload.single("file"),
   async (req, res) => {
+    console.log(req.body);
     try {
       let newMessage;
       if (req.body.type == "text") {
         newMessage = new Messages({
           message: {
-            type: req.body.type,
-            text: req.body.text,
+            type: req?.body.type,
+            text: req?.body.text,
           },
-          receiver: req.body?.receiver?.email,
-          sender: req.user?.email,
+          receiver: req?.body?.receiver?.email,
+          sender: req?.user?.email,
           conversationid: req?.body?.conversationid,
         });
       }
       console.log("Uploaded file:", JSON.stringify(req.file, null, 2));
-      const result = await cloudinary.uploader.upload(req?.file?.path, {
-        resource_type: "video",
-      });
 
-      newMessage = new Messages({
-        sender: req.user?.email,
-        receiver: req.body?.receiver?.email,
-        conversationid: req.body?.conversationid,
-        message: {
-          type: "audio",
-          url: result.secure_url,
-        },
-      });
+      if (req.body.type == "group") {
+        const result = await cloudinary.uploader.upload(req?.file?.path, {
+          resource_type: "video",
+        });
+        
+        newMessage = new Messages({
+          sender: req?.user?.email,
+          receiver: req?.body?.receiver?.email,
+          conversationid: req?.body?.conversationid,
+          message: {
+            type: "audio",
+            url: result.secure_url,
+          },
+        });
+      }
       await newMessage.save();
 
       return res.send({

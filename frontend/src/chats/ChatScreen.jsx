@@ -27,6 +27,7 @@ import {
 } from "../../store/slices/chatSlice";
 import moment from "moment";
 import AudioRecorder from "./AudioRecorder";
+import Call_Audio from "./Call_Audio";
 
 const ChatScreen = () => {
   const [moreOptionOpen, setmoreOptionOpen] = useState(false);
@@ -157,7 +158,7 @@ const DesktopChatScreen = ({
           </div>
           <div className="flex gap-6 mr-5 text-xl text-gray-300 items-center">
             <FaSearch />
-            <FaPhoneAlt />
+            <Call_Audio oponentUser={oponentUser} />
             <FaVideo />
             <PiDotsThreeOutlineVerticalFill />
           </div>
@@ -195,8 +196,9 @@ const DesktopChatScreen = ({
           </div>
           <div className="flex items-center gap-2">
             <AudioRecorder
-            oponentUse={oponentUser}
-            conversation={conversation}/>
+              oponentUse={oponentUser}
+              conversation={conversation}
+            />
             <MdSend
               onClick={handleMessageSend}
               className="text-3xl p-1  bg-primary rounded-md cursor-pointer text-white"
@@ -279,7 +281,7 @@ const MobileChatScreen = ({
 
             <div className="flex gap-3 500px:gap-4 700px:gap-5 800px:gap-6  text-lg 500px:text-xl text-gray-300 items-center">
               {/* <FaSearch  /> */}
-              <FaPhoneAlt />
+              <Call_Audio oponentUser={oponentUser} />
               <FaVideo />
               <PiDotsThreeOutlineVerticalFill />
             </div>
@@ -317,8 +319,9 @@ const MobileChatScreen = ({
             </div>
             <div className="flex items-center gap-2">
               <AudioRecorder
-              oponentUse={oponentUser}
-              conversation={conversation}/>
+                oponentUse={oponentUser}
+                conversation={conversation}
+              />
               <MdSend
                 onClick={handleMessageSend}
                 className="text-3xl p-1 bg-primary rounded-md cursor-pointer text-white"
