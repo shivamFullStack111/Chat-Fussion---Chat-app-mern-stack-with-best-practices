@@ -28,6 +28,11 @@ import {
 import moment from "moment";
 import AudioRecorder from "./AudioRecorder";
 import Call_Audio from "./Call_Audio";
+import {
+  setCallOponent,
+  setCallType,
+  setIsCallSending,
+} from "../../store/slices/callSlice";
 
 const ChatScreen = () => {
   const [moreOptionOpen, setmoreOptionOpen] = useState(false);
@@ -116,6 +121,7 @@ const DesktopChatScreen = ({
   const { oponentUser, conversation } = useSelector((state) => state.chat);
   const { activeUsers } = useSelector((state) => state.user);
   const [isActive, setisActive] = useState(false);
+  const dispatch = useDispatch();
 
   return (
     <>
@@ -159,7 +165,13 @@ const DesktopChatScreen = ({
           <div className="flex gap-6 mr-5 text-xl text-gray-300 items-center">
             <FaSearch />
             <Call_Audio oponentUser={oponentUser} />
-            <FaVideo />
+            <FaVideo
+              onClick={() => {
+                dispatch(setCallOponent(oponentUser));
+                dispatch(setCallType("video"));
+                dispatch(setIsCallSending(true));
+              }}
+            />
             <PiDotsThreeOutlineVerticalFill />
           </div>
         </div>
@@ -282,7 +294,13 @@ const MobileChatScreen = ({
             <div className="flex gap-3 500px:gap-4 700px:gap-5 800px:gap-6  text-lg 500px:text-xl text-gray-300 items-center">
               {/* <FaSearch  /> */}
               <Call_Audio oponentUser={oponentUser} />
-              <FaVideo />
+              <FaVideo
+                onClick={() => {
+                  dispatch(setCallOponent(oponentUser));
+                  dispatch(setCallType("video"));
+                  dispatch(setIsCallSending(true));
+                }}
+              />
               <PiDotsThreeOutlineVerticalFill />
             </div>
           </div>

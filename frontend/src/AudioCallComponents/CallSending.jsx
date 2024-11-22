@@ -8,6 +8,7 @@ import {
   setIsCallSending,
 } from "../../store/slices/callSlice";
 import { useSocket } from "../SocketProvider";
+import VideoRenderingScreenOnCall from "./VideoRenderingScreenOnCall";
 
 const CallSending = () => {
   const { isCallComing, isCallActive, call_oponent, call_type, isCallSending } =
@@ -21,6 +22,7 @@ const CallSending = () => {
 
   // iske dependecy me isCallActive nhi diya tha iss liye call shi se nhi chl rhi thi
   useEffect(() => {
+
     if (!socket) return;
     socket.on("candidate", async (candidate) => {
       console.log("candidate on sender side", candidate);
@@ -52,6 +54,7 @@ const CallSending = () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
+        video: call_type === "video" ? true : false,
       });
 
       stream
@@ -77,6 +80,7 @@ const CallSending = () => {
         caller: user,
         receiver: call_oponent,
         offer: offer,
+        type: call_type,
       });
     } catch (error) {
       console.log(error.message);
@@ -101,8 +105,14 @@ const CallSending = () => {
         isCallSending ? "block" : "hidden"
       } top-0 left-0 bg-black-800  w-full h-full flex justify-center items-center`}
     >
-      <div className=" bg-black-900 rounded-lg w-[350px] items-center flex flex-col h-[95%] ">
-        <audio ref={peerAudioRef} controls></audio>
+      <div className=" bg-black-900 relative  rounded-lg w-[350px] items-center flex flex-col h-[95%] ">
+        {call_type == "video" ? (
+          <VideoRenderingScreenOnCall
+            oponentVideoRef={peerAudioRef}
+          ></VideoRenderingScreenOnCall>
+        ) : (
+          <audio ref={peerAudioRef} controls></audio>
+        )}
 
         <div
           onClick={() => {

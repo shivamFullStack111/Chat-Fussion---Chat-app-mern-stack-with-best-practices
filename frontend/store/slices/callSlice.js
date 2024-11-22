@@ -6,7 +6,7 @@ const callSlice = createSlice({
     isCallComing: false,
     isCallActive: false,
     call_oponent: null,
-    call_type: null,
+    call_type: "",
     isCallSending: false,
   },
 

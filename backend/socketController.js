@@ -55,11 +55,12 @@ const connectSocket = async (server) => {
       }
     });
 
-    socket.on("incomingCall", ({ caller, receiver, offer }) => {
+    socket.on("incomingCall", ({ caller, receiver, offer, type }) => {
+      console.log("type:---", type);
       console.log("candidate get");
       if (emailToSocketid.has(receiver.email)) {
         const receiverSocketid = emailToSocketid.get(receiver.email);
-        io.to(receiverSocketid).emit("incomingCall", { offer, caller });
+        io.to(receiverSocketid).emit("incomingCall", { offer, caller, type });
       }
     });
 
