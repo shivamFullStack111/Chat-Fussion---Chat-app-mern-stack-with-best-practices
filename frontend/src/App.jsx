@@ -38,6 +38,9 @@ const App = () => {
     (state) => state.user
   );
 
+  const { isCallComing, isCallActive, call_oponent, call_type, isCallSending } =
+    useSelector((state) => state.call);
+
   const { socket } = useSocket();
 
   const dispatch = useDispatch();
@@ -108,12 +111,15 @@ const App = () => {
   return (
     <>
       <>
+        {!isCallComing && <CallSending />}
+        {!isCallSending && <CallComming />}
         {isLoading ? (
           <Transparent_Loader className="bg-darkbg_2" />
         ) : (
           <BrowserRouter>
             <Routes>
               {/* Public Routes */}
+              
               <Route
                 path="/signin"
                 element={

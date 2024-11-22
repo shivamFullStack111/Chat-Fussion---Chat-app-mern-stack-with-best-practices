@@ -48,6 +48,29 @@ const connectSocket = async (server) => {
       addUserTo_activeUsers(userEmail, socket);
     });
 
+    socket.on("candidate", ({ candidate, toUser }) => {
+      const socketId = emailToSocketid.get(toUser.email);
+      if (socketId) {
+        io.to(socketId).emit("candidate", candidate);
+      }
+    });
+
+    socket.on("incomingCall", ({ caller, receiver, offer }) => {
+      console.log("candidate get");
+      if (emailToSocketid.has(receiver.email)) {
+        const receiverSocketid = emailToSocketid.get(receiver.email);
+        io.to(receiverSocketid).emit("incomingCall", { offer, caller });
+      }
+    });
+
+    socket.on("answer", ({ answer, caller }) => {
+      console.log("answer get ", answer);
+      if (emailToSocketid.has(caller.email)) {
+        const callerSocketid = emailToSocketid.get(caller.email);
+        io.to(callerSocketid).emit("answer", answer);
+      }
+    });
+
     socket.on("disconnect", async () => {
       removeFromActiveUsers(socket, io);
     });

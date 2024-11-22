@@ -13,9 +13,18 @@ import { useSocket } from "../SocketProvider";
 const Call_Audio = ({ oponentUser }) => {
   const dispatch = useDispatch();
 
+  
+
   return (
     <div>
-      <FaPhoneAlt className="cursor-pointer hover:text-green-200" />
+      <FaPhoneAlt
+        onClick={() => {
+          dispatch(setCallOponent(oponentUser));
+          dispatch(setCallType("audio"));
+          dispatch(setIsCallSending(true));
+        }}
+        className="cursor-pointer hover:text-green-200"
+      />
     </div>
   );
 };
