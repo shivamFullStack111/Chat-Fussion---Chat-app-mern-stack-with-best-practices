@@ -9,12 +9,4 @@ cloudinary.config({
   api_secret: process.env.C_SECRET,
 });
 
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: process.env.C_NAME, // Specify a folder on Cloudinary to store the files
-    allowed_formats: ["jpg", "jpeg", "png", "gif", "webp", "wav", "mp3"],
-  },
-});
-
 exports.upload = multer({ storage: multer.diskStorage({}) });

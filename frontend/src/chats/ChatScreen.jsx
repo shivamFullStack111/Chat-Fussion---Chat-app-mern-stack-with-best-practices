@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
-import { FaPhoneAlt, FaSearch, FaVideo } from "react-icons/fa";
+import { FaSearch, FaVideo } from "react-icons/fa";
 import {
   PiDotsThreeOutlineFill,
   PiDotsThreeOutlineVerticalFill,
   PiSmiley,
 } from "react-icons/pi";
-import { MdOutlineKeyboardVoice, MdSend } from "react-icons/md";
+import { MdSend } from "react-icons/md";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import TextMessage from "./messages_components/TextMessage";
 import DateDivider from "./messages_components/DateDivider";
@@ -33,13 +33,17 @@ import {
   setCallType,
   setIsCallSending,
 } from "../../store/slices/callSlice";
+import Audio_message from "./messages_components/Audio_message";
 
 const ChatScreen = () => {
   const [moreOptionOpen, setmoreOptionOpen] = useState(false);
-  const { conversation, oponentUser } = useSelector((state) => state.chat);
+  const { conversation, oponentUser, allMessages } = useSelector(
+    (state) => state.chat
+  );
   const { user } = useSelector((state) => state.user);
   const [isRequesting, setisRequesting] = useState(true);
   const dispatch = useDispatch();
+  const [groupedMessages, setgroupedMessages] = useState([]);
 
   // data
   const [inputText, setinputText] = useState("");
@@ -47,25 +51,28 @@ const ChatScreen = () => {
   useEffect(() => {
     const getMessages = async () => {
       setisRequesting(true);
-      const res = await getAllMessages();
+      const res = await getAllMessages(conversation?._id);
       dispatch(setallMessages(res.data?.messages));
       setisRequesting(false);
     };
     if (conversation) getMessages();
   }, [dispatch, conversation]);
 
-  useEffect(() => {
-    const handleSubmitButton = async (e) => {
-      if (e.key === "Enter" && inputText.length > 0) {
-        const res = await handleMessageSend(
-          "text",
-          inputText,
-          oponentUser,
-          conversation?._id
-        );
-      }
-    };
+  const handleSubmitButton = async (e) => {
+    console.log("first");
+    console.log(e.key);
+    if (e.key == "Enter" && inputText.length > 0) {
+      const res = await handleMessageSend(
+        "text",
+        inputText,
+        oponentUser,
+        conversation?._id
+      );
+      if (res.data?.success) setinputText("");
+    }
+  };
 
+  useEffect(() => {
     window.addEventListener("keypress", handleSubmitButton);
 
     return () => {
@@ -77,9 +84,54 @@ const ChatScreen = () => {
     console.log(isRequesting);
   }, 5);
 
+  // grouped chats by date
+  useEffect(() => {
+    if (allMessages.length == 0) return;
+    const groupedData = {};
+
+    allMessages.forEach((message) => {
+      const date = new Date(message.createdAt);
+      const day = date.getDate();
+      const month = date.getMonth();
+      const year = date.getFullYear();
+
+      const key = day + "-" + month + "-" + year;
+
+      if (!groupedData[key]) {
+        groupedData[key] = [];
+      }
+
+      groupedData[key].push(message);
+    });
+
+    Object.keys(groupedData).map((key) => {
+      setgroupedMessages((prev) => [
+        ...prev,
+        {
+          message: {
+            type: "date",
+            date: key,
+          },
+        },
+      ]);
+
+      groupedData[key].forEach((message) => {
+        setgroupedMessages((prev) => [...prev, message]);
+      });
+    });
+  }, [allMessages]);
+
+  useEffect(() => {
+    console.log("groupedMessages");
+    console.log(groupedMessages);
+  }, [groupedMessages]);
+
   return (
     <>
-      <div className="">
+      <div
+        className="w-full
+      "
+      >
         {isRequesting ? (
           <Transparent_Loader />
         ) : (
@@ -92,6 +144,8 @@ const ChatScreen = () => {
               setinputText={setinputText}
               moreOptionOpen={moreOptionOpen}
               setmoreOptionOpen={setmoreOptionOpen}
+              handleSubmitButton={handleSubmitButton}
+              groupedMessages={groupedMessages}
             />
           </>
         )}
@@ -101,6 +155,8 @@ const ChatScreen = () => {
           setinputText={setinputText}
           moreOptionOpen={moreOptionOpen}
           setmoreOptionOpen={setmoreOptionOpen}
+          handleSubmitButton={handleSubmitButton}
+          groupedMessages={groupedMessages}
         />
 
         {/* desktop chat screen  */}
@@ -117,8 +173,12 @@ const DesktopChatScreen = ({
   setinputText,
   inputText,
   handleMessageSend,
+  handleSubmitButton,
+  groupedMessages,
 }) => {
-  const { oponentUser, conversation } = useSelector((state) => state.chat);
+  const { oponentUser, conversation, allMessages } = useSelector(
+    (state) => state.chat
+  );
   const { activeUsers } = useSelector((state) => state.user);
   const [isActive, setisActive] = useState(false);
   const dispatch = useDispatch();
@@ -177,11 +237,21 @@ const DesktopChatScreen = ({
         </div>
         {/* messages  */}
         <div className="w-full h-full relative overflow-y-scroll scroll-smooth py-2 flex flex-col gap-2 px-2">
-          <TextMessage />
-          <DateDivider />
-          <ImageMessage />
-          <PdfMessage />
-          <DateDivider />
+          {groupedMessages?.map((message, i) => {
+            if (message?.message?.type == "date")
+              return <DateDivider key={i} date={message?.message?.date} />;
+            if (message?.message?.type == "text")
+              return <TextMessage message={message} key={i} />;
+
+            if (message?.message?.type == "audio")
+              return <Audio_message key={i} message={message} />;
+
+            if (message?.message?.type == "image")
+              return <ImageMessage key={i} message={message} />;
+
+            if (message?.message?.type == "document")
+              return <PdfMessage key={i} message={message} />;
+          })}
         </div>
         {/* more options like document camera audio pdf etc...  */}
         <MoreOption
@@ -212,7 +282,9 @@ const DesktopChatScreen = ({
               conversation={conversation}
             />
             <MdSend
-              onClick={handleMessageSend}
+              onClick={() => {
+                handleSubmitButton({ key: "Enter" });
+              }}
               className="text-3xl p-1  bg-primary rounded-md cursor-pointer text-white"
             />
           </div>
@@ -228,8 +300,12 @@ const MobileChatScreen = ({
   setinputText,
   inputText,
   handleMessageSend,
+  handleSubmitButton,
+  groupedMessages,
 }) => {
-  const { oponentUser, conversation } = useSelector((state) => state.chat);
+  const { oponentUser, conversation, allMessages } = useSelector(
+    (state) => state.chat
+  );
   const { activeUsers } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   return (
@@ -307,11 +383,26 @@ const MobileChatScreen = ({
 
           {/* messages  */}
           <div className="w-full h-full overflow-y-scroll scroll-smooth py-2 flex flex-col gap-2 px-2">
-            <TextMessage />
+            {groupedMessages?.map((message, i) => {
+              if (message?.message?.type == "date")
+                return <DateDivider key={i} date={message?.message?.date} />;
+              if (message?.message?.type == "text")
+                return <TextMessage message={message} key={i} />;
+
+              if (message?.message?.type == "audio")
+                return <Audio_message key={i} message={message} />;
+
+              if (message?.message?.type == "image")
+                return <ImageMessage key={i} message={message} />;
+
+              if (message?.message?.type == "document")
+                return <PdfMessage key={i} message={message} />;
+            })}
+            {/* <TextMessage />
             <PdfMessage />
             <DateDivider />
             <ImageMessage />
-            <TextMessage />
+            <TextMessage /> */}
           </div>
           <MoreOption
             moreOptionOpen={moreOptionOpen}
@@ -341,7 +432,9 @@ const MobileChatScreen = ({
                 conversation={conversation}
               />
               <MdSend
-                onClick={handleMessageSend}
+                onClick={() => {
+                  handleSubmitButton({ key: "Enter" });
+                }}
                 className="text-3xl p-1 bg-primary rounded-md cursor-pointer text-white"
               />
             </div>
