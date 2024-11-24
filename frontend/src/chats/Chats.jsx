@@ -26,9 +26,7 @@ const Chats = () => {
     };
   }, []);
 
-  useEffect(() => {
-    console.log(isChatOpen), [isChatOpen];
-  });
+ 
 
   return (
     <div className="flex h-[100vh] overflow-hidden">

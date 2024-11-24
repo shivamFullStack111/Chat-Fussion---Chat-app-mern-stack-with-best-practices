@@ -7,6 +7,7 @@ import {
   getContactsBySearch,
 } from "../../helpers/messageFunctions";
 import {
+  setallMessages,
   setConversation,
   setIsChatOpen,
   setOponentUser,
@@ -338,18 +339,12 @@ const UserCard = ({
   );
 };
 
-const ConversationCard = ({
-  conversation,
-  user,
-}) => {
+const ConversationCard = ({ conversation, user }) => {
   const { activeUsers } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [oponent, setoponent] = useState(null);
   const { allUsers } = useSelector((state) => state.user);
 
-  useEffect(() => {
-    console.log(activeUsers);
-  }, [activeUsers]);
 
   useEffect(() => {
     const userForSearch = conversation.users.find(
@@ -362,6 +357,8 @@ const ConversationCard = ({
   return (
     <div
       onClick={() => {
+        dispatch(setallMessages([]));
+
         dispatch(setIsChatOpen(true));
 
         dispatch(setOponentUser(oponent));

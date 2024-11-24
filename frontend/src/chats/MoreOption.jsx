@@ -68,6 +68,7 @@ function Attachment() {
     <>
       {" "}
       <input
+        accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.rtf,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.zip,.7z,.rar"
         id="attachment"
         className="hidden"
         onChange={async (e) => {
@@ -90,7 +91,6 @@ function Attachment() {
             { headers: { Authorization: token } }
           );
 
-          console.log(res.data);
         }}
         multiple
         type="file"
@@ -131,7 +131,6 @@ function Camera() {
           { headers: { Authorization: token } }
         );
 
-        console.log(res.data);
       } catch (error) {
         console.log(error.message);
       }

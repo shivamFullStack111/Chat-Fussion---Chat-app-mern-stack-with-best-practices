@@ -45,10 +45,7 @@ const App = () => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    console.log(activeUsers);
-  });
-
+ 
   useEffect(() => {
     if (!socket) return;
 
@@ -80,7 +77,6 @@ const App = () => {
         dispatch(setUser(res?.data?.user));
         dispatch(setisAuthenticated(true));
       }
-      console.log(res.data);
     } catch (error) {
       console.log(error.message);
     }
@@ -89,7 +85,6 @@ const App = () => {
   const getusers = async () => {
     const res = await getAllUsers();
     if (res.data?.success) {
-      console.log(res?.data);
       dispatch(setAllUsers(res?.data?.users));
     }
   };

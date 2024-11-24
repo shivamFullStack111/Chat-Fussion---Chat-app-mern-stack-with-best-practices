@@ -47,7 +47,6 @@ const AudioRecorder = ({ conversation }) => {
 
       mediaRecorder.current.onstop = () => {
         const audioBlob = new Blob(audioChunks.current, { type: "audio/wav" });
-        console.log(audioBlob);
         setAudioURL(URL.createObjectURL(audioBlob));
 
         // uploading
