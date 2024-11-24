@@ -1,0 +1,48 @@
+import { useEffect, useState } from "react";
+import { FaLocationCrosshairs } from "react-icons/fa6";
+import { useSelector } from "react-redux";
+import { dbUrl, returnToken } from "../../utils";
+import axios from "axios";
+
+function Location() {
+  const { user } = useSelector((state) => state.user);
+  const { oponentUser, conversation, allMessages } = useSelector(
+    (state) => state.chat
+  );
+
+  const handleGetCoords = async () => {
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+
+      const token = returnToken();
+
+      const res = await axios.post(
+        `${dbUrl}/send-current-location`,
+        {
+          conversationid: conversation._id,
+          latitude,
+          longitude,
+        },
+        { headers: { Authorization: token } }
+      );
+
+      console.log(res.data);
+    });
+  };
+
+  return (
+    <>
+      <div onClick={handleGetCoords} className="flex flex-col items-center">
+        <div className="p-2 1000px:text-xl bg-[#31fc5d21] text-[#31fc5d91] cursor-pointer rounded-full  ">
+          <FaLocationCrosshairs />
+        </div>
+        <p className="text-[8px] 1000px:text-[11px] mt-1 text-gray-300">
+          Location
+        </p>
+      </div>
+    </>
+  );
+}
+
+export default Location;

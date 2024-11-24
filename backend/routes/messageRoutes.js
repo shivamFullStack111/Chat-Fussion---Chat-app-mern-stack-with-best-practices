@@ -135,4 +135,36 @@ messageRoute.post(
   }
 );
 
+messageRoute.post(
+  "/send-current-location",
+  isAuthenticate,
+  async function (req, res) {
+    try {
+      const { latitude, longitude } = req.body;
+
+      console.log(latitude, longitude);
+
+      const newMessage = new Messages({
+        sender: req.user?.email,
+        message: {
+          type: "current-location",
+          latitude: latitude,
+          longitude: longitude,
+        },
+        conversationid: req.body?.conversationid,
+      });
+
+      await newMessage.save();
+
+      return res.send({
+        success: true,
+        message: "location send ",
+        mssg: newMessage,
+      });
+    } catch (error) {
+      return res.send({ success: false, message: error.message });
+    }
+  }
+);
+
 module.exports = messageRoute;

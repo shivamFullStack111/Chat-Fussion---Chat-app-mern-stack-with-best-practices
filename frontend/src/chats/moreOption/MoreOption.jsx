@@ -1,17 +1,11 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { FaHeadphones, FaRegImages } from "react-icons/fa";
-import { FaLocationCrosshairs } from "react-icons/fa6";
-import { MdCameraAlt, MdContacts, MdOutlineAttachment } from "react-icons/md";
-import { dbUrl, returnToken } from "../../utils";
-import { useSelector } from "react-redux";
-import axios from "axios";
 import Attachment from "./Attachment";
 import Camera from "./Camera";
 import Gallery from "./Gallery";
 import Audio from "./Audio";
+import Location from "./Location";
 
 const MoreOption = ({ moreOptionOpen, setmoreOptionOpen }) => {
   return (
@@ -27,23 +21,17 @@ const MoreOption = ({ moreOptionOpen, setmoreOptionOpen }) => {
       <Attachment />
       <Camera />
       <Gallery />
-    <Audio/>
-      <div className="flex flex-col items-center">
-        <div className="p-2 1000px:text-xl bg-[#31fc5d21] text-[#31fc5d91] cursor-pointer rounded-full  ">
-          <FaLocationCrosshairs />
-        </div>
-        <p className="text-[8px] 1000px:text-[11px] mt-1 text-gray-300">
-          Location
-        </p>
-      </div>
-      <div className="flex flex-col items-center">
+      <Audio />
+      <Location />
+
+      {/* <div className="flex flex-col items-center">
         <div className="p-2 1000px:text-xl  bg-[#31fc5d21] text-[#31fc5d91] cursor-pointer rounded-full  ">
           <MdContacts />
         </div>
         <p className="text-[8px] 1000px:text-[11px] mt-1 text-gray-300">
           Contact
         </p>
-      </div>
+      </div> */}
     </motion.div>
   );
 };
