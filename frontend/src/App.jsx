@@ -32,11 +32,14 @@ import {
   setIsCallComing,
 } from "../store/slices/callSlice";
 import CallComming from "./AudioCallComponents/CallComming";
+import { setallMessages } from "../store/slices/chatSlice";
 
 const App = () => {
   const { isLoading, user, isAuthenticated, activeUsers } = useSelector(
     (state) => state.user
   );
+
+  const { allMessages } = useSelector((state) => state.chat);
 
   const { isCallComing, isCallActive, call_oponent, call_type, isCallSending } =
     useSelector((state) => state.call);
@@ -45,7 +48,6 @@ const App = () => {
 
   const dispatch = useDispatch();
 
- 
   useEffect(() => {
     if (!socket) return;
 
@@ -114,7 +116,7 @@ const App = () => {
           <BrowserRouter>
             <Routes>
               {/* Public Routes */}
-              
+
               <Route
                 path="/signin"
                 element={

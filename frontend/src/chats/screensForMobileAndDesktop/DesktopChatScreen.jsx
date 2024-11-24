@@ -19,7 +19,7 @@ import TextMessage from "../messages_components/TextMessage";
 import Audio_message from "../messages_components/Audio_message";
 import ImageMessage from "../messages_components/ImageMessage";
 import PdfMessage from "../messages_components/PdfMessage";
-import MoreOption from "../MoreOption";
+import MoreOption from "../moreOption/MoreOption";
 import AudioRecorder from "../AudioRecorder";
 import { MdSend } from "react-icons/md";
 

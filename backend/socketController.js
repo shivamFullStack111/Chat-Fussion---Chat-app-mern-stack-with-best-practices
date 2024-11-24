@@ -34,6 +34,7 @@ const removeFromActiveUsers = async (socket, io) => {
 };
 
 const connectSocket = async (server) => {
+  if (io) return io;
   io = new Server(server, {
     cors: {
       origin: "*",
@@ -78,8 +79,16 @@ const connectSocket = async (server) => {
   });
 
   console.log("Socket connection established");
+  return io;
+};
+
+const getSocketIdByEmail = (email) => {
+  const socketid = emailToSocketid.get(email);
+  return socketid;
 };
 
 module.exports = {
   connectSocket,
+  io,
+  getSocketIdByEmail,
 };

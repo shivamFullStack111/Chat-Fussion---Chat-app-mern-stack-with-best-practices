@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -11,6 +11,7 @@ import { setallMessages } from "../../store/slices/chatSlice";
 
 import MobileChatScreen from "./screensForMobileAndDesktop/MobileChatScreen";
 import DesktopChatScreen from "./screensForMobileAndDesktop/DesktopChatScreen";
+import { useSocket } from "../SocketProvider";
 
 const ChatScreen = () => {
   const [moreOptionOpen, setmoreOptionOpen] = useState(false);
@@ -20,22 +21,35 @@ const ChatScreen = () => {
   const [isRequesting, setisRequesting] = useState(true);
   const dispatch = useDispatch();
   const [groupedMessages, setgroupedMessages] = useState([]);
+  const { socket } = useSocket();
 
   // data
   const [inputText, setinputText] = useState("");
 
   useEffect(() => {
-    const getMessages = async () => {
-      setisRequesting(true);
-      const res = await getAllMessages(conversation?._id);
-      dispatch(setallMessages(res.data?.messages));
-      setisRequesting(false);
+    console.log(groupedMessages);
+  }, [groupedMessages]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    return () => {
+      socket.off("progressMessage");
     };
+  }, [socket, groupedMessages]);
+
+  const getMessages = useCallback(async () => {
+    setisRequesting(true);
+    const res = await getAllMessages(conversation?._id);
+    dispatch(setallMessages(res.data?.messages));
+    setisRequesting(false);
+  }, [oponentUser]);
+
+  useEffect(() => {
     if (conversation) getMessages();
   }, [dispatch, conversation]);
 
   const handleSubmitButton = async (e) => {
-
     if (e.key == "Enter" && inputText.length > 0) {
       const res = await handleMessageSend(
         "text",
@@ -54,7 +68,6 @@ const ChatScreen = () => {
       window.removeEventListener("keypress", handleSubmitButton);
     };
   }, [inputText]);
-
 
   // grouped chats by date
   useEffect(() => {
@@ -93,31 +106,23 @@ const ChatScreen = () => {
     });
   }, [allMessages]);
 
-
-
   return (
     <>
-      <div
-        className="w-full
-      "
-      >
-        {isRequesting ? (
-          <Transparent_Loader />
-        ) : (
-          <>
-            {" "}
-            {/* mobile chat screen  */}
-            <MobileChatScreen
-              handleMessageSend={handleMessageSend}
-              inputText={inputText}
-              setinputText={setinputText}
-              moreOptionOpen={moreOptionOpen}
-              setmoreOptionOpen={setmoreOptionOpen}
-              handleSubmitButton={handleSubmitButton}
-              groupedMessages={groupedMessages}
-            />
-          </>
-        )}
+      <div className="w-full ">
+        {isRequesting && <Transparent_Loader />}
+        <>
+          {" "}
+          {/* mobile chat screen  */}
+          <MobileChatScreen
+            handleMessageSend={handleMessageSend}
+            inputText={inputText}
+            setinputText={setinputText}
+            moreOptionOpen={moreOptionOpen}
+            setmoreOptionOpen={setmoreOptionOpen}
+            handleSubmitButton={handleSubmitButton}
+            groupedMessages={groupedMessages}
+          />
+        </>
         <DesktopChatScreen
           handleMessageSend={handleMessageSend}
           inputText={inputText}

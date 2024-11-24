@@ -20,7 +20,7 @@ import TextMessage from "../messages_components/TextMessage";
 import Audio_message from "../messages_components/Audio_message";
 import ImageMessage from "../messages_components/ImageMessage";
 import PdfMessage from "../messages_components/PdfMessage";
-import MoreOption from "../MoreOption";
+import MoreOption from "../moreOption/MoreOption";
 import AudioRecorder from "../AudioRecorder";
 import { MdSend } from "react-icons/md";
 import {
@@ -58,7 +58,7 @@ const MobileChatScreen = ({
 
   return (
     <>
-      <div className="fixed 1000px:hidden bg-darkbg_2 w-full h-full top-0 left-0 z-50">
+      <div className="fixed 1000px:hidden bg-darkbg_2 w-full h-full top-0 left-0 z-50 ">
         <div
           style={
             {

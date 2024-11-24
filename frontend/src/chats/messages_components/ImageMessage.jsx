@@ -7,12 +7,13 @@ const ImageMessage = ({ message }) => {
   return (
     <>
       {user?.email == message?.sender ? (
-        <div className="w-[200px] ml-auto bg-[#31fc5d3e] p-1 rounded-lg min-h-[280px]">
+        <div className="w-[200px] relative ml-auto bg-[#31fc5d3e] p-1 rounded-lg min-h-[280px]">
           <img
             className="w-full h-full object-cover  rounded-lg"
             src={message?.message?.url}
             alt=""
           />
+        
         </div>
       ) : (
         <div className="w-[200px] bg-[#1964dd4b] p-1 rounded-lg min-h-[280px]">

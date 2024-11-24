@@ -1,5 +1,6 @@
 const { isAuthenticate } = require("../middlewares/isAuthenticate");
 const Messages = require("../schemas/messageSchema");
+const { connectSocket, getSocketIdByEmail } = require("../socketController");
 const { upload } = require("../uploadProvider");
 const cloudinary = require("cloudinary").v2;
 
@@ -70,46 +71,7 @@ messageRoute.post(
   }
 );
 
-messageRoute.post(
-  "/create-image-message",
-  isAuthenticate,
-  upload.single("file"),
-  async (req, res) => {
-    console.log(req.body);
-    try {
-      let newMessage;
-
-      const result = await cloudinary.uploader.upload(req?.file?.path, {
-        resource_type: "auto",
-      });
-
-      console.log(result);
-
-      newMessage = new Messages({
-        sender: req?.user?.email,
-        receiver: req?.body?.receiver?.email,
-        conversationid: req?.body?.conversationid,
-        message: {
-          type: req.body.type,
-          url: result.secure_url,
-          fileName: result?.original_filename,
-          width: result.width,
-          height: result.height,
-        },
-      });
-
-      await newMessage.save();
-
-      return res.send({
-        success: true,
-        message: "message saved successfully",
-        mssg: newMessage,
-      });
-    } catch (error) {
-      return res.send({ success: false, message: error.message });
-    }
-  }
-);
+const path = require("path"); // For file extension handling
 
 messageRoute.post(
   "/create-document-message",
@@ -117,37 +79,58 @@ messageRoute.post(
   upload.array("file"),
   async (req, res) => {
     try {
+      const { conversationid, receiver } = req.body;
+
       let messages = [];
 
       await Promise.all(
         req.files.map(async (file) => {
+          // Get file extension and determine type
+          const ext = path.extname(file.originalname).toLowerCase();
+          let type;
+
+          if (
+            [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"].includes(ext)
+          ) {
+            type = "image";
+          } else if (
+            [".mp4", ".mkv", ".mov", ".avi", ".flv", ".wmv"].includes(ext)
+          ) {
+            type = "video";
+          } else if ([".mp3", ".wav", ".aac", ".flac", ".ogg"].includes(ext)) {
+            type = "audio";
+          } else {
+            type = "document"; // Default fallback for unsupported types
+          }
+
           const result = await cloudinary.uploader.upload(file.path, {
             resource_type: "auto",
           });
 
           const newMessage = new Messages({
-            conversationid: req.body.conversationid,
+            conversationid,
             sender: req.user?.email,
-            receiver: req?.body?.receiver,
+            receiver,
             message: {
+              type, // Dynamically determined
               url: result?.secure_url,
-              type: req.body?.type,
               fileName: result?.original_filename,
             },
           });
-          messages.push(newMessage);
 
-          await newMessage?.save();
+          messages.push(newMessage);
+          await newMessage.save();
         })
       );
 
       return res.send({
         success: true,
-        message: "message send successfully",
-        messages: messages,
+        message: "Message sent successfully",
+        messages,
       });
     } catch (error) {
-      return res.send({ success: false, message: error.message });
+      console.error("Error in create-document-message route:", error);
+      return res.status(500).send({ success: false, message: error.message });
     }
   }
 );
