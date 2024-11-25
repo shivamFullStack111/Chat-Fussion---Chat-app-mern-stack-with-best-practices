@@ -1,11 +1,15 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { dbUrl, returnToken } from "../../utils";
 import axios from "axios";
 import { MdOutlineAttachment } from "react-icons/md";
+import { setallMessages } from "../../../store/slices/chatSlice";
 
 function Attachment() {
   const { user } = useSelector((state) => state.user);
-  const { oponentUser, conversation } = useSelector((state) => state.chat);
+  const { oponentUser, conversation, allMessages } = useSelector(
+    (state) => state.chat
+  );
+  const dispatch = useDispatch((state) => state.user);
 
   return (
     <>
@@ -33,6 +37,15 @@ function Attachment() {
             formdata,
             { headers: { Authorization: token } }
           );
+
+          if (res.data.success) {
+            dispatch(
+              setallMessages([
+                ...allMessages,
+                ...[...(res?.data?.messages || [])],
+              ])
+            );
+          }
         }}
         multiple
         type="file"
@@ -48,4 +61,4 @@ function Attachment() {
     </>
   );
 }
-export default Attachment
+export default Attachment;

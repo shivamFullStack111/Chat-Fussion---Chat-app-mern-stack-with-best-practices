@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaRegImages } from "react-icons/fa";
+import { setallMessages } from "../../../store/slices/chatSlice";
 
 function Gallery() {
   const [image, setimage] = useState();
@@ -34,6 +35,14 @@ function Gallery() {
             headers: { Authorization: token },
           }
         );
+        if (res.data.success) {
+          dispatch(
+            setallMessages([
+              ...allMessages,
+              ...[...(res?.data?.messages || [])],
+            ])
+          );
+        }
       } catch (error) {
         console.log(error.message);
       }

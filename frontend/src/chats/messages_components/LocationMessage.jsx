@@ -19,7 +19,7 @@ const LocationMessage = ({ message }) => {
 
   return (
     <>
-      {message?.message?.sender == user?.email ? (
+      {message?.sender == user?.email ? (
         <div className="p-2 w-[206px] ml-auto z-10   rounded-lg bg-[#31fc5d3e]">
           <MapContainer
             center={position}
@@ -44,7 +44,7 @@ const LocationMessage = ({ message }) => {
           </div>
         </div>
       ) : (
-        <div className="w-[200px] bg-[#1964dd4b] p-1 rounded-lg ">
+        <div className="w-[200px] z-10 bg-[#1964dd4b] p-1 rounded-lg ">
           <div>
             <MapContainer
               center={position}

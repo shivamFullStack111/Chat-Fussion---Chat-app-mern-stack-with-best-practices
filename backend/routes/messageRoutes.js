@@ -65,7 +65,6 @@ messageRoute.post(
       }
       await newMessage.save();
 
-      console.log("receiver---", newMessage?.receiver);
       if (newMessage?.receiver)
         sendMessageUsingSocket(newMessage, newMessage?.receiver);
 
@@ -127,6 +126,9 @@ messageRoute.post(
 
           messages.push(newMessage);
           await newMessage.save();
+
+          if (newMessage?.receiver)
+            sendMessageUsingSocket(newMessage, newMessage?.receiver);
         })
       );
 
@@ -153,6 +155,7 @@ messageRoute.post(
 
       const newMessage = new Messages({
         sender: req.user?.email,
+        receiver: req.body?.receiver?.email,
         message: {
           type: "current-location",
           latitude: latitude,
@@ -162,6 +165,9 @@ messageRoute.post(
       });
 
       await newMessage.save();
+
+      if (newMessage?.receiver)
+        sendMessageUsingSocket(newMessage, newMessage?.receiver);
 
       return res.send({
         success: true,

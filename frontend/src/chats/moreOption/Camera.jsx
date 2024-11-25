@@ -3,6 +3,7 @@ import { dbUrl, returnToken } from "../../utils";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { setallMessages } from "../../../store/slices/chatSlice";
 
 function Camera() {
   const [image, setimage] = useState();
@@ -33,6 +34,15 @@ function Camera() {
             headers: { Authorization: token },
           }
         );
+
+        if (res.data.success) {
+          dispatch(
+            setallMessages([
+              ...allMessages,
+              ...[...(res?.data?.messages || [])],
+            ])
+          );
+        }
       } catch (error) {
         console.log(error.message);
       }

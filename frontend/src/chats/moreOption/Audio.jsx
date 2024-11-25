@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaHeadphones, FaRegImages } from "react-icons/fa";
+import { setallMessages } from "../../../store/slices/chatSlice";
 
 function Audio() {
   const [image, setimage] = useState();
@@ -34,6 +35,15 @@ function Audio() {
             headers: { Authorization: token },
           }
         );
+
+        if (res.data.success) {
+          dispatch(
+            setallMessages([
+              ...allMessages,
+              ...[...(res?.data?.messages || [])],
+            ])
+          );
+        }
       } catch (error) {
         console.log(error.message);
       }
@@ -45,6 +55,7 @@ function Audio() {
   return (
     <>
       <input
+      multiple
         className="hidden"
         type="file"
         onChange={(e) => setimage(e.target.files[0])}
