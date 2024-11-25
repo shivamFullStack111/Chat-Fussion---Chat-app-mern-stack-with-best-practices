@@ -357,12 +357,13 @@ const ConversationCard = ({ conversation, user }) => {
   return (
     <div
       onClick={() => {
+        console.log(conversation);
+        dispatch(setConversation(conversation));
         dispatch(setallMessages([]));
 
         dispatch(setIsChatOpen(true));
 
         dispatch(setOponentUser(oponent));
-        dispatch(setConversation(conversation));
       }}
       className="flex cursor-pointer justify-between items-center "
     >

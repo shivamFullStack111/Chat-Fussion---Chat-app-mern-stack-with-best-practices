@@ -1,8 +1,13 @@
 const { isAuthenticate } = require("../middlewares/isAuthenticate");
 const Messages = require("../schemas/messageSchema");
-const { connectSocket, getSocketIdByEmail } = require("../socketController");
+const {
+  connectSocket,
+  getSocketIdByEmail,
+  sendMessageUsingSocket,
+} = require("../socketController");
 const { upload } = require("../uploadProvider");
 const cloudinary = require("cloudinary").v2;
+const path = require("path"); // For file extension handling
 
 const messageRoute = require("express").Router();
 
@@ -41,7 +46,6 @@ messageRoute.post(
           conversationid: req?.body?.conversationid,
         });
       }
-      console.log("Uploaded file:", JSON.stringify(req.file, null, 2));
 
       if (req.body.type == "audio") {
         const result = await cloudinary.uploader.upload(req?.file?.path, {
@@ -60,6 +64,9 @@ messageRoute.post(
       }
       await newMessage.save();
 
+      if (newMessage?.receiver)
+        sendMessageUsingSocket(newMessage, newMessage?.receiver);
+
       return res.send({
         success: true,
         message: "message saved successfully",
@@ -70,8 +77,6 @@ messageRoute.post(
     }
   }
 );
-
-const path = require("path"); // For file extension handling
 
 messageRoute.post(
   "/create-document-message",

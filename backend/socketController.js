@@ -87,8 +87,17 @@ const getSocketIdByEmail = (email) => {
   return socketid;
 };
 
+const sendMessageUsingSocket = (message, receiverEmail) => {
+  const receiverSocketid = emailToSocketid.get(receiverEmail);
+
+  if (!receiverSocketid) return;
+  console.log(receiverSocketid);
+  io.to(receiverSocketid).emit("newMessage", message);
+};
+
 module.exports = {
   connectSocket,
   io,
   getSocketIdByEmail,
+  sendMessageUsingSocket,
 };

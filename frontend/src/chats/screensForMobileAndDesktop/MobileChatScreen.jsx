@@ -38,6 +38,7 @@ const MobileChatScreen = ({
   setinputText,
   inputText,
   handleSubmitButton,
+  handleSendAudioMessage,
   groupedMessages,
 }) => {
   const { oponentUser, conversation, allMessages } = useSelector(
@@ -184,6 +185,7 @@ const MobileChatScreen = ({
             </div>
             <div className="flex items-center gap-2">
               <AudioRecorder
+              handleSendAudioMessage={handleSendAudioMessage}
                 oponentUse={oponentUser}
                 conversation={conversation}
               />

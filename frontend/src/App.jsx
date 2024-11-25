@@ -39,7 +39,7 @@ const App = () => {
     (state) => state.user
   );
 
-  const { allMessages } = useSelector((state) => state.chat);
+  const { allMessages, conversation } = useSelector((state) => state.chat);
 
   const { isCallComing, isCallActive, call_oponent, call_type, isCallSending } =
     useSelector((state) => state.call);
@@ -47,6 +47,8 @@ const App = () => {
   const { socket } = useSocket();
 
   const dispatch = useDispatch();
+
+
 
   useEffect(() => {
     if (!socket) return;
@@ -56,10 +58,19 @@ const App = () => {
       dispatch(setActiveUsers(activeUserss));
     });
 
+    // socket.on("newMessage", (message) => {
+    //   console.log(message?.conversationid == conversation?._id);
+    //   console.log(message?.conversationid, conversation);
+    //   if (message?.conversationid == conversation?._id) {
+    //     dispatch(setallMessages([...allMessages, message]));
+    //   }
+    // });
+
     return () => {
       socket.off("activeUsers");
+      socket.off("newMessage");
     };
-  }, [socket]);
+  }, [socket,conversation]);
 
   useEffect(() => {
     if (!socket || !isAuthenticated) return;

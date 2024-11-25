@@ -5,7 +5,7 @@ import axios from "axios";
 import { dbUrl, returnToken } from "../utils";
 import { useSelector } from "react-redux";
 
-const AudioRecorder = ({ conversation }) => {
+const AudioRecorder = ({ conversation ,handleSendAudioMessage}) => {
   const [isRecording, setIsRecording] = useState(false);
   const { oponentUser } = useSelector((state) => state.chat);
   const [audioURL, setAudioURL] = useState(null);
@@ -18,22 +18,7 @@ const AudioRecorder = ({ conversation }) => {
   const audioChunks = useRef([]);
   const intervalRef = useRef(null); // Use ref for interval
 
-  const handleMessageSend = async (audioBlob) => {
-    try {
-      const token = returnToken();
-      const formdata = new FormData();
-      formdata.append("type", "audio");
-      formdata.append("receiver", oponentUser);
-      formdata.append("conversationid", conversation?._id);
-      formdata.append("file", audioBlob);
-
-      const res = await axios.post(`${dbUrl}/create-message`, formdata, {
-        headers: { Authorization: token },
-      });
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
+ 
 
   const startRecording = async () => {
     try {
@@ -50,7 +35,7 @@ const AudioRecorder = ({ conversation }) => {
         setAudioURL(URL.createObjectURL(audioBlob));
 
         // uploading
-        handleMessageSend(audioBlob);
+        handleSendAudioMessage(audioBlob);
 
         audioChunks.current = []; // Clear chunks
       };

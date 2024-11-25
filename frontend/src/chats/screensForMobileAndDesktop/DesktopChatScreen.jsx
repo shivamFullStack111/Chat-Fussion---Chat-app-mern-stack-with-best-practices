@@ -31,6 +31,7 @@ const DesktopChatScreen = ({
   inputText,
   handleSubmitButton,
   groupedMessages,
+  handleSendAudioMessage,
 }) => {
   const { oponentUser, conversation, allMessages } = useSelector(
     (state) => state.chat
@@ -120,7 +121,7 @@ const DesktopChatScreen = ({
             if (message?.message?.type == "document")
               return <PdfMessage key={i} message={message} />;
           })}
-          <LocationMessage/>
+          <LocationMessage />
         </div>
         {/* more options like document camera audio pdf etc...  */}
         <MoreOption
@@ -147,6 +148,7 @@ const DesktopChatScreen = ({
           </div>
           <div className="flex items-center gap-2">
             <AudioRecorder
+              handleSendAudioMessage={handleSendAudioMessage}
               oponentUse={oponentUser}
               conversation={conversation}
             />
@@ -163,4 +165,4 @@ const DesktopChatScreen = ({
   );
 };
 
-export default DesktopChatScreen
+export default DesktopChatScreen;
