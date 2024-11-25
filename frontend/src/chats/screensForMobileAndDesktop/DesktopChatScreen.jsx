@@ -22,6 +22,7 @@ import PdfMessage from "../messages_components/PdfMessage";
 import MoreOption from "../moreOption/MoreOption";
 import AudioRecorder from "../AudioRecorder";
 import { MdSend } from "react-icons/md";
+import LocationMessage from "../messages_components/LocationMessage";
 
 const DesktopChatScreen = ({
   moreOptionOpen,
@@ -119,6 +120,7 @@ const DesktopChatScreen = ({
             if (message?.message?.type == "document")
               return <PdfMessage key={i} message={message} />;
           })}
+          <LocationMessage/>
         </div>
         {/* more options like document camera audio pdf etc...  */}
         <MoreOption

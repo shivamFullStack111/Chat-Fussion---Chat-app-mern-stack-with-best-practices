@@ -30,6 +30,7 @@ import {
   setOponentUser,
 } from "../../../store/slices/chatSlice";
 import { FaArrowLeftLong } from "react-icons/fa6";
+import LocationMessage from "../messages_components/LocationMessage";
 
 const MobileChatScreen = ({
   setmoreOptionOpen,
@@ -149,6 +150,9 @@ const MobileChatScreen = ({
 
               if (message?.message?.type == "document")
                 return <PdfMessage key={i} message={message} />;
+
+              if (message?.message?.type == "current-location")
+                return <LocationMessage key={i} message={message} />;
             })}
             {/* <TextMessage />
             <PdfMessage />
