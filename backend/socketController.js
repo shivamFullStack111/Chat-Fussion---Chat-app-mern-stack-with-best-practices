@@ -90,8 +90,8 @@ const getSocketIdByEmail = (email) => {
 const sendMessageUsingSocket = (message, receiverEmail) => {
   const receiverSocketid = emailToSocketid.get(receiverEmail);
 
+  console.log("receiverSocketid----", receiverSocketid);
   if (!receiverSocketid) return;
-  console.log(receiverSocketid);
   io.to(receiverSocketid).emit("newMessage", message);
 };
 

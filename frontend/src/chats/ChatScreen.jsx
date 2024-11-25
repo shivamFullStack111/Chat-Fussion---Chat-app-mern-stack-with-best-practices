@@ -104,7 +104,7 @@ const ChatScreen = () => {
       const token = returnToken();
       const formdata = new FormData();
       formdata.append("type", "audio");
-      formdata.append("receiver", oponentUser);
+      formdata.append("receiver", JSON.stringify(oponentUser));
       formdata.append("conversationid", conversation?._id);
       formdata.append("file", audioBlob);
 

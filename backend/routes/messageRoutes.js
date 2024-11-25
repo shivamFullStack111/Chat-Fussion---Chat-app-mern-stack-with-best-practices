@@ -32,7 +32,6 @@ messageRoute.post(
   isAuthenticate,
   upload.single("file"),
   async (req, res) => {
-    console.log(req.body);
     try {
       let newMessage;
       if (req.body.type == "text") {
@@ -52,9 +51,11 @@ messageRoute.post(
           resource_type: "video",
         });
 
+        let receiver = JSON.parse(req.body.receiver);
+
         newMessage = new Messages({
           sender: req?.user?.email,
-          receiver: req?.body?.receiver?.email,
+          receiver: receiver?.email,
           conversationid: req?.body?.conversationid,
           message: {
             type: "audio",
@@ -64,6 +65,7 @@ messageRoute.post(
       }
       await newMessage.save();
 
+      console.log("receiver---", newMessage?.receiver);
       if (newMessage?.receiver)
         sendMessageUsingSocket(newMessage, newMessage?.receiver);
 
