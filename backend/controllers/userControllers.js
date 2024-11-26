@@ -326,13 +326,15 @@ const uploadprofileImage = async (req, res) => {
     const { imageType } = req.body;
     const user = await Users.findOne({ email: req?.user?.email });
 
+    const result = await cloudinary.uploader.upload(req.file.path);
+
     if (!user) return res.send({ success: false, message: "User not found" });
     if (imageType === "background") {
-      user.backgroundImage = req.file.path;
+      user.backgroundImage = result.secure_url;
       await user.save();
     }
     if (imageType === "profile") {
-      user.profileImage = req.file.path;
+      user.profileImage = result.secure_url;
       await user.save();
     }
 
