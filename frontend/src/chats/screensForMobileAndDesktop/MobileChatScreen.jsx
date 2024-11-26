@@ -31,6 +31,7 @@ import {
 } from "../../../store/slices/chatSlice";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import LocationMessage from "../messages_components/LocationMessage";
+import EmojiPicker from "emoji-picker-react";
 
 const MobileChatScreen = ({
   setmoreOptionOpen,
@@ -46,6 +47,7 @@ const MobileChatScreen = ({
   );
   const { activeUsers } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const [emojiOpen, setemojiOpen] = useState(false);
 
   const scrollRef = useRef(null);
 
@@ -56,7 +58,7 @@ const MobileChatScreen = ({
         behavior: "instant",
       });
     }
-  }, [groupedMessages]);
+  }, [groupedMessages, allMessages]);
 
   return (
     <>
@@ -155,24 +157,37 @@ const MobileChatScreen = ({
               if (message?.message?.type == "current-location")
                 return <LocationMessage key={i} message={message} />;
             })}
-            {/* <TextMessage />
-            <PdfMessage />
-            <DateDivider />
-            <ImageMessage />
-            <TextMessage /> */}
           </div>
           <MoreOption
             moreOptionOpen={moreOptionOpen}
             setmoreOptionOpen={setmoreOptionOpen}
           />
+
           {/* bottom  */}
-          <div className="h-[60px] min-w-[100%] z-30  gap-4 max-w-[100%] bg-darkbg flex p-2 mt-auto bottom-0 items-center text-gray-400 justify-between">
+          <div className="h-[60px] relative min-w-[100%] z-30  gap-4 max-w-[100%] bg-darkbg flex p-2 mt-auto bottom-0 items-center text-gray-400 justify-between">
+            <div className="absolute bottom-20  z-50">
+              {" "}
+              <EmojiPicker
+                onEmojiClick={(e) => setinputText((p) => p + e.emoji)}
+                open={emojiOpen}
+                height={500}
+                className="bg-darkbg"
+                style={{ backgroundClip: "black" }}
+                theme="dark"
+              />
+            </div>
             <div className="flex text-lg gap-2 items-center">
               <PiDotsThreeOutlineFill
                 className="cursor-pointer"
                 onClick={() => setmoreOptionOpen((p) => !p)}
               />
-              <PiSmiley className="text-2xl" />
+
+              <PiSmiley
+                onClick={() => setemojiOpen((p) => !p)}
+                className={`text-2xl ${
+                  emojiOpen && "rotate-180"
+                } transition-all duration-200 cursor-pointer hover:text-white`}
+              />
             </div>
             <div className="bg-darkbg_2 w-full h-full rounded-md px-3 flex items-center gap-2">
               <input
@@ -185,13 +200,14 @@ const MobileChatScreen = ({
             </div>
             <div className="flex items-center gap-2">
               <AudioRecorder
-              handleSendAudioMessage={handleSendAudioMessage}
+                handleSendAudioMessage={handleSendAudioMessage}
                 oponentUse={oponentUser}
                 conversation={conversation}
               />
               <MdSend
                 onClick={() => {
                   handleSubmitButton({ key: "Enter" });
+                  setemojiOpen(false);
                 }}
                 className="text-3xl p-1 bg-primary rounded-md cursor-pointer text-white"
               />

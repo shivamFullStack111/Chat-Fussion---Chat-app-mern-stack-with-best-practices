@@ -65,8 +65,8 @@ messageRoute.post(
       }
       await newMessage.save();
 
-      if (newMessage?.receiver)
-        sendMessageUsingSocket(newMessage, newMessage?.receiver);
+      // if (newMessage?.receiver)
+      sendMessageUsingSocket(newMessage, newMessage?.receiver);
 
       return res.send({
         success: true,
@@ -127,8 +127,8 @@ messageRoute.post(
           messages.push(newMessage);
           await newMessage.save();
 
-          if (newMessage?.receiver)
-            sendMessageUsingSocket(newMessage, newMessage?.receiver);
+          // if (newMessage?.receiver)
+          sendMessageUsingSocket(newMessage, newMessage?.receiver);
         })
       );
 
@@ -166,8 +166,8 @@ messageRoute.post(
 
       await newMessage.save();
 
-      if (newMessage?.receiver)
-        sendMessageUsingSocket(newMessage, newMessage?.receiver);
+      // if (newMessage?.receiver)
+      sendMessageUsingSocket(newMessage, newMessage?.receiver);
 
       return res.send({
         success: true,

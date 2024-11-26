@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { FaLocationCrosshairs } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import { dbUrl, returnToken } from "../../utils";
@@ -6,7 +5,6 @@ import axios from "axios";
 import { setallMessages } from "../../../store/slices/chatSlice";
 
 function Location() {
-  const { user } = useSelector((state) => state.user);
   const { oponentUser, conversation, allMessages } = useSelector(
     (state) => state.chat
   );
@@ -32,7 +30,7 @@ function Location() {
       );
       if (res.data.success) {
         dispatch(
-          setallMessages([...allMessages, ...[...(res?.data?.messages || [])]])
+          setallMessages([...allMessages, res?.data?.mssg])
         );
       }
       

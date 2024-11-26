@@ -1,5 +1,6 @@
 const { Server } = require("socket.io");
 const Users = require("./schemas/userSchema");
+const Conversations = require("./schemas/conversationSchema");
 const emailToSocketid = new Map();
 const socketidToEmail = new Map();
 let activeUsers = [];
@@ -28,6 +29,22 @@ const removeFromActiveUsers = async (socket, io) => {
     activeUsers = activeUsers.filter((user) => user !== email);
     await Users.findOneAndUpdate({ email }, { lastActive: new Date() });
     io.emit("activeUsers", activeUsers);
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const joinUsersConversation = async (socket, user) => {
+  try {
+    const conversations = await Conversations.find({
+      type: "group",
+      users: { $elemMatch: { email: user?.email, _id: user?._id } },
+    });
+
+    conversations.forEach((conversation) => {
+      const conversationid = conversation._id.toString().split("'")[0];
+      socket.join(conversationid);
+    });
   } catch (error) {
     console.log(error.message);
   }
@@ -76,6 +93,11 @@ const connectSocket = async (server) => {
     socket.on("disconnect", async () => {
       removeFromActiveUsers(socket, io);
     });
+
+    socket.on("join-group-conversations", (user) => {
+      console.log("for group join ", user?.email);
+      joinUsersConversation(socket, user);
+    });
   });
 
   console.log("Socket connection established");
@@ -88,9 +110,10 @@ const getSocketIdByEmail = (email) => {
 };
 
 const sendMessageUsingSocket = (message, receiverEmail) => {
+  io.to(message?.conversationid).emit("newMessage", message);
   const receiverSocketid = emailToSocketid.get(receiverEmail);
+  console.log("message :", message);
 
-  console.log("receiverSocketid----", receiverSocketid);
   if (!receiverSocketid) return;
   io.to(receiverSocketid).emit("newMessage", message);
 };

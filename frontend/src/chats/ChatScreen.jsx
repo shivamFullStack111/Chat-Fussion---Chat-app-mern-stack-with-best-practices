@@ -20,6 +20,7 @@ const ChatScreen = () => {
   const { conversation, oponentUser, allMessages } = useSelector(
     (state) => state.chat
   );
+  const { user } = useSelector((state) => state.user);
   const [isRequesting, setisRequesting] = useState(true);
   const dispatch = useDispatch();
   const [groupedMessages, setgroupedMessages] = useState([]);
@@ -38,6 +39,8 @@ const ChatScreen = () => {
     if (!socket || !groupDataForKeyCheck) return;
 
     socket.on("newMessage", (message) => {
+      if (message?.sender == user?.email) return;
+      console.log("new message arrive", message);
       const date = new Date(message.createdAt);
       const day = date.getDate();
       const month = date.getMonth();

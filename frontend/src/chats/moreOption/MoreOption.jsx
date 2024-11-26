@@ -18,7 +18,7 @@ const MoreOption = ({ moreOptionOpen, setmoreOptionOpen }) => {
       }}
       className=" w-full absolute bottom-0 right-0 z-10 bg-darkbg_2 flex justify-between py-2 px-[6vw] items-center"
     >
-      <Attachment />
+      <Attachment  />
       <Camera />
       <Gallery />
       <Audio />
