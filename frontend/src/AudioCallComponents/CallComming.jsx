@@ -87,7 +87,7 @@ const CallComming = () => {
         isCallComing ? "block" : "hidden"
       } top-0 left-0 bg-black-800  w-full h-full flex justify-center items-center`}
     >
-      <div className="relative bg-black-900 rounded-lg w-[350px] items-center flex flex-col h-[95%] ">
+      <div className="relative bg-black-900 rounded-lg w-[350px] items-center flex flex-col h-full 350px:h-[95%] ">
         {call_type == "video" ? (
           <VideoRenderingScreenOnCall
             oponentVideoRef={peerAudioRef}

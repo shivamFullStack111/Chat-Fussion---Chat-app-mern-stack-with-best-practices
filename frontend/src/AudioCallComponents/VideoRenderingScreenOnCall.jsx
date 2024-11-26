@@ -1,4 +1,9 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { IoIosCall } from "react-icons/io";
+import { AiOutlineAudioMuted } from "react-icons/ai";
+import { GiSpeakerOff } from "react-icons/gi";
+import { IoVideocamOffOutline } from "react-icons/io5";
 
 const VideoRenderingScreenOnCall = ({
   oponentVideoRef,
@@ -6,6 +11,11 @@ const VideoRenderingScreenOnCall = ({
   handleAcceptCall,
 }) => {
   const myVideoRef = useRef(null);
+  const [isMute, setisMute] = useState(false);
+  const [isVideoOff, setisVideoOff] = useState(false);
+  const [isNotInSpeaker, setisNotInSpeaker] = useState(false);
+
+  const innderHeight = window.innerHeight;
 
   useEffect(() => {
     const getMyStream = async () => {
@@ -25,7 +35,7 @@ const VideoRenderingScreenOnCall = ({
   return (
     <div
       style={{ zIndex: 100 }}
-      className="w-full rounded-lg bg-white h-full absolute "
+      className="w-full 350px:rounded-lg bg-darkbg_2 border-2 h-full absolute "
     >
       <div className="w-full h-full relative rounded-lg ">
         <video
@@ -37,22 +47,67 @@ const VideoRenderingScreenOnCall = ({
         ></video>
         <div
           style={{ zIndex: 110 }}
-          className=" absolute bottom-0 h-28  flex justify-center items-center   w-full"
+          className=" absolute bottom-0 h-28   flex justify-center items-center   w-full"
         >
-          <div
-            onClick={() => {
-              if (isRecevingPage) {
-                handleAcceptCall();
-              }
-            }}
-            className={`h-14 w-14 rounded-full cursor-pointer ${
-              isRecevingPage ? "bg-green-500" : "bg-red-500"
-            } `}
-          ></div>
+          <div className="h-14  px-5  w-full">
+            <div className="w-full bg-darkbg rounded-lg flex items-center justify-evenly h-full">
+              <div
+                className={`h-10 w-10 rounded-full flex justify-center items-center  cursor-pointer ${
+                  isVideoOff ? "bg-green-500" : "bg-gray-500"
+                }`}
+              >
+                <IoVideocamOffOutline
+                  onClick={() => setisVideoOff((p) => !p)}
+                  className="text-2xl text-white"
+                />
+              </div>
+              <div
+                className={`h-10 w-10 rounded-full flex justify-center items-center  cursor-pointer ${
+                  isNotInSpeaker ? "bg-green-500" : "bg-gray-500"
+                }`}
+              >
+                <GiSpeakerOff
+                  onClick={() => setisNotInSpeaker((p) => !p)}
+                  className="text-2xl text-white"
+                />
+              </div>
+              <div
+                className={`h-10 w-10 rounded-full flex justify-center items-center  cursor-pointer ${
+                  isMute ? "bg-green-500" : "bg-gray-500"
+                }`}
+              >
+                <AiOutlineAudioMuted
+                  onClick={() => setisMute((p) => !p)}
+                  className="text-2xl text-white"
+                />
+              </div>
+
+              <div
+                onClick={() => {
+                  if (isRecevingPage) {
+                    handleAcceptCall();
+                  }
+                }}
+                className={`h-10 w-10 rounded-full flex justify-center items-center  cursor-pointer ${
+                  isRecevingPage ? "bg-green-500" : "bg-red-500"
+                } `}
+              >
+                <IoIosCall className="text-2xl text-white" />
+              </div>
+            </div>
+          </div>
         </div>
-        <div
+        <motion.div
+          drag
+          dragConstraints={{
+            left: -220,
+            top: innderHeight - (innerHeight + 500),
+            bottom: 0,
+            right: 0,
+          }} // Define boundaries
+          dragElastic={0.2} // Optional: Adds elasticity to the drag
           style={{ zIndex: 110 }}
-          className="h-40 w-28 rounded-lg  absolute bottom-3 right-3"
+          className="h-40 w-28 rounded-lg bg-darkbg_2 active:cursor-move  absolute bottom-3 right-3"
         >
           <video
             ref={myVideoRef}
@@ -63,7 +118,7 @@ const VideoRenderingScreenOnCall = ({
             loop
           ></video>
           {/* <video src="" className="w-full h-full rounded-lg" ref={myVideoRef}></video> */}
-        </div>
+        </motion.div>
       </div>
     </div>
   );
