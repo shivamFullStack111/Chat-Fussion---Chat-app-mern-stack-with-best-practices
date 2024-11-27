@@ -4,6 +4,8 @@ import { IoIosCall } from "react-icons/io";
 import { AiOutlineAudioMuted } from "react-icons/ai";
 import { GiSpeakerOff } from "react-icons/gi";
 import { IoVideocamOffOutline } from "react-icons/io5";
+import { useSelector } from "react-redux";
+import { useSocket } from "../SocketProvider";
 
 const VideoRenderingScreenOnCall = ({
   oponentVideoRef,
@@ -13,8 +15,14 @@ const VideoRenderingScreenOnCall = ({
   const myVideoRef = useRef(null);
   const [isMute, setisMute] = useState(false);
   const [isVideoOff, setisVideoOff] = useState(false);
-  // const [isNotInSpeaker, setisNotInSpeaker] = useState(false);
+  const { socket } = useSocket();
 
+  const [oponentIsVideoAndAudioOpen, setoponentIsVideoAndAudioOpen] = useState({
+    audio: true,
+    video: true,
+  });
+
+  const { call_oponent } = useSelector((state) => state.call);
   const innderHeight = window.innerHeight;
 
   useEffect(() => {
@@ -32,6 +40,30 @@ const VideoRenderingScreenOnCall = ({
     };
     getMyStream();
   }, []);
+
+  useEffect(() => {
+    socket.emit("handleMyVideoAudio", {
+      video: !isVideoOff,
+      audio: !isMute,
+      to: call_oponent?.email,
+    });
+  }, [isMute, isVideoOff]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("oponentAudioAndVideoIsOn", ({ video, audio }) => {
+      setoponentIsVideoAndAudioOpen({
+        video,
+        audio,
+      });
+      if (!video) {
+        oponentVideoRef.current.pause();
+      } else {
+        oponentVideoRef.current.play();
+      }
+    });
+  }, [socket]);
   return (
     <div
       style={{ zIndex: 100 }}
@@ -39,6 +71,7 @@ const VideoRenderingScreenOnCall = ({
     >
       <div className="w-full h-full relative rounded-lg ">
         <video
+          muted={!oponentIsVideoAndAudioOpen?.audio}
           ref={oponentVideoRef && oponentVideoRef}
           // src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
           className="w-full h-full rounded-lg"
@@ -57,7 +90,9 @@ const VideoRenderingScreenOnCall = ({
                 }`}
               >
                 <IoVideocamOffOutline
-                  onClick={() => setisVideoOff((p) => !p)}
+                  onClick={() => {
+                    setisVideoOff((p) => !p);
+                  }}
                   className="text-2xl text-white"
                 />
               </div>
@@ -77,7 +112,9 @@ const VideoRenderingScreenOnCall = ({
                 }`}
               >
                 <AiOutlineAudioMuted
-                  onClick={() => setisMute((p) => !p)}
+                  onClick={() => {
+                    setisMute((p) => !p);
+                  }}
                   className="text-2xl text-white"
                 />
               </div>

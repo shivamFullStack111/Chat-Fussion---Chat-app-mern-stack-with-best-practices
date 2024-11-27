@@ -90,6 +90,16 @@ const connectSocket = async (server) => {
       }
     });
 
+    socket.on("handleMyVideoAudio", ({ video, audio, to }) => {
+      const oponentSocketid = emailToSocketid.get(to);
+      console.log("oponentSocketid", oponentSocketid);
+      if (oponentSocketid)
+        io.to(oponentSocketid).emit("oponentAudioAndVideoIsOn", {
+          video,
+          audio,
+        });
+    });
+
     socket.on("disconnect", async () => {
       removeFromActiveUsers(socket, io);
     });
