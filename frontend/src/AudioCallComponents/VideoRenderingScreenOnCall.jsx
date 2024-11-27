@@ -4,25 +4,34 @@ import { IoIosCall } from "react-icons/io";
 import { AiOutlineAudioMuted } from "react-icons/ai";
 import { GiSpeakerOff } from "react-icons/gi";
 import { IoVideocamOffOutline } from "react-icons/io5";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useSocket } from "../SocketProvider";
+import {
+  setCallOponent,
+  setCallType,
+  setIsCallActive,
+  setIsCallComing,
+  setIsCallSending,
+} from "../../store/slices/callSlice";
 
 const VideoRenderingScreenOnCall = ({
   oponentVideoRef,
   isRecevingPage,
   handleAcceptCall,
+  peerConnection,
 }) => {
   const myVideoRef = useRef(null);
   const [isMute, setisMute] = useState(false);
   const [isVideoOff, setisVideoOff] = useState(false);
   const { socket } = useSocket();
+  const  dispatch  = useDispatch();
 
   const [oponentIsVideoAndAudioOpen, setoponentIsVideoAndAudioOpen] = useState({
     audio: true,
     video: true,
   });
 
-  const { call_oponent } = useSelector((state) => state.call);
+  const { call_oponent,isCallActive } = useSelector((state) => state.call);
   const innderHeight = window.innerHeight;
 
   useEffect(() => {
@@ -53,17 +62,48 @@ const VideoRenderingScreenOnCall = ({
     if (!socket) return;
 
     socket.on("oponentAudioAndVideoIsOn", ({ video, audio }) => {
-      setoponentIsVideoAndAudioOpen({
-        video,
-        audio,
-      });
+      setoponentIsVideoAndAudioOpen({ video, audio });
+
+      // Hide video while keeping audio active
       if (!video) {
-        oponentVideoRef.current.pause();
+        oponentVideoRef.current.style.visibility = "hidden";
       } else {
-        oponentVideoRef.current.play();
+        oponentVideoRef.current.style.visibility = "visible";
       }
     });
+
+    // receive call-cut socket emit and diconnect socket
+    socket.on("call-cut", () => {
+      dispatch(setIsCallActive(false));
+      dispatch(setIsCallSending(false));
+      dispatch(setCallOponent(null));
+      dispatch(setCallType(null));
+      dispatch(setIsCallComing(false));
+
+      // window.location.reload();
+    });
+
+    return () => {
+      socket.off("oponentAudioAndVideoIsOn");
+    };
   }, [socket]);
+
+  const handleCutCall = () => {
+    dispatch(setIsCallActive(false));
+    dispatch(setIsCallSending(false));
+    dispatch(setCallOponent(null));
+    dispatch(setCallType(null));
+    dispatch(setIsCallComing(false));
+
+    // emit cut call event
+
+    socket.emit("call-cut", { to: call_oponent?.email });
+
+    // window.location.reload();
+
+    return;
+  };
+
   return (
     <div
       style={{ zIndex: 100 }}
@@ -121,12 +161,14 @@ const VideoRenderingScreenOnCall = ({
 
               <div
                 onClick={() => {
-                  if (isRecevingPage) {
+                  if (isRecevingPage &&!isCallActive) {
                     handleAcceptCall();
+                  } else {
+                    handleCutCall();
                   }
                 }}
                 className={`h-10 w-10 rounded-full flex justify-center items-center  cursor-pointer ${
-                  isRecevingPage ? "bg-green-500" : "bg-red-500"
+                  isRecevingPage && !isCallActive ? "bg-green-500" : "bg-red-500"
                 } `}
               >
                 <IoIosCall className="text-2xl text-white" />

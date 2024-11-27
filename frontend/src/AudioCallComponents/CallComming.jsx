@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setCallOponent,
   setCallType,
+  setIsCallActive,
   setIsCallComing,
   setIsCallSending,
 } from "../../store/slices/callSlice";
@@ -75,6 +76,7 @@ const CallComming = () => {
       const answer = await peerConnection.current.createAnswer();
       await peerConnection.current.setLocalDescription(answer);
       socket.emit("answer", { answer, caller: call_oponent });
+      dispatch(setIsCallActive(true))
     } catch (error) {
       console.log(error.message);
     }

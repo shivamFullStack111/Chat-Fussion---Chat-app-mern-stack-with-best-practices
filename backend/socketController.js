@@ -100,6 +100,11 @@ const connectSocket = async (server) => {
         });
     });
 
+    socket.on("call-cut", ({ to }) => {
+      const oponentSocketid = emailToSocketid.get(to);
+      if (oponentSocketid) io.to(oponentSocketid).emit("call-cut");
+    });
+
     socket.on("disconnect", async () => {
       removeFromActiveUsers(socket, io);
     });

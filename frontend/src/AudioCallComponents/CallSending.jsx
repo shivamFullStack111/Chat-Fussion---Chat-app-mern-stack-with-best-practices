@@ -5,6 +5,7 @@ import {
   setCallOponent,
   setCallType,
   setIsCallActive,
+  setIsCallComing,
   setIsCallSending,
 } from "../../store/slices/callSlice";
 import { useSocket } from "../SocketProvider";
@@ -19,10 +20,13 @@ const CallSending = () => {
   const [isMute, setisMute] = useState(false);
   const [isVideoOff, setisVideoOff] = useState(false);
 
+  const [stream, setstream] = useState();
+
   const peerAudioRef = useRef(null);
   const peerConnection = useRef(new RTCPeerConnection());
 
   // iske dependecy me isCallActive nhi diya tha iss liye call shi se nhi chl rhi thi
+
   useEffect(() => {
     if (!socket) return;
     socket.on("candidate", async (candidate) => {
@@ -62,6 +66,8 @@ const CallSending = () => {
         .getTracks()
         .forEach((track) => peerConnection.current.addTrack(track, stream));
 
+      setstream(stream);
+
       peerConnection.current.onicecandidate = (event) => {
         if (event.candidate) {
           socket.emit("candidate", {
@@ -97,7 +103,7 @@ const CallSending = () => {
     handleCall();
 
     return () => {};
-  }, [socket, isCallSending, handleCall, isCallActive]);
+  }, [socket, isCallSending, isCallActive]);
 
   return (
     <div
@@ -109,6 +115,9 @@ const CallSending = () => {
       <div className=" bg-black-900 relative  rounded-lg w-[350px] items-center flex flex-col h-full 350px:h-[95%] ">
         {call_type == "video" ? (
           <VideoRenderingScreenOnCall
+            stream={stream}
+            peerConnection={peerConnection}
+            dispatch={dispatch}
             oponentVideoRef={peerAudioRef}
           ></VideoRenderingScreenOnCall>
         ) : (
