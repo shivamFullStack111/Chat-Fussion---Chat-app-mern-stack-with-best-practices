@@ -3,6 +3,7 @@ import { addToContact } from "../../helpers/functions";
 import { useDispatch, useSelector } from "react-redux";
 import { IoMdPersonAdd } from "react-icons/io";
 import { setUser } from "../../store/slices/userSlice";
+import { createConversation } from "../../helpers/messageFunctions";
 
 const UserContactCart_users = ({ userr }) => {
   const { user } = useSelector((state) => state.user);
@@ -25,6 +26,8 @@ const UserContactCart_users = ({ userr }) => {
       onClick={async () => {
         if (!isAlreadyInContact) {
           const res = await addToContact(userr?._id);
+          const res2 = createConversation([userr], "private", undefined);
+
           if (res.data.success) {
             setisAlreadyInContact(true);
             dispatch(

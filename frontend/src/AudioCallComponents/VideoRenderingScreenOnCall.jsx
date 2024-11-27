@@ -13,7 +13,7 @@ const VideoRenderingScreenOnCall = ({
   const myVideoRef = useRef(null);
   const [isMute, setisMute] = useState(false);
   const [isVideoOff, setisVideoOff] = useState(false);
-  const [isNotInSpeaker, setisNotInSpeaker] = useState(false);
+  // const [isNotInSpeaker, setisNotInSpeaker] = useState(false);
 
   const innderHeight = window.innerHeight;
 
@@ -61,7 +61,7 @@ const VideoRenderingScreenOnCall = ({
                   className="text-2xl text-white"
                 />
               </div>
-              <div
+              {/* <div
                 className={`h-10 w-10 rounded-full flex justify-center items-center  cursor-pointer ${
                   isNotInSpeaker ? "bg-green-500" : "bg-gray-500"
                 }`}
@@ -70,7 +70,7 @@ const VideoRenderingScreenOnCall = ({
                   onClick={() => setisNotInSpeaker((p) => !p)}
                   className="text-2xl text-white"
                 />
-              </div>
+              </div> */}
               <div
                 className={`h-10 w-10 rounded-full flex justify-center items-center  cursor-pointer ${
                   isMute ? "bg-green-500" : "bg-gray-500"

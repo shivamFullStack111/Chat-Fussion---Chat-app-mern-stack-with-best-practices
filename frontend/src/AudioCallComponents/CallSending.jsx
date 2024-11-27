@@ -16,13 +16,14 @@ const CallSending = () => {
   const { user } = useSelector((state) => state.user);
   const { socket } = useSocket();
   const dispatch = useDispatch();
+  const [isMute, setisMute] = useState(false);
+  const [isVideoOff, setisVideoOff] = useState(false);
 
   const peerAudioRef = useRef(null);
   const peerConnection = useRef(new RTCPeerConnection());
 
   // iske dependecy me isCallActive nhi diya tha iss liye call shi se nhi chl rhi thi
   useEffect(() => {
-
     if (!socket) return;
     socket.on("candidate", async (candidate) => {
       console.log("candidate on sender side", candidate);

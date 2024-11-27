@@ -314,9 +314,9 @@ const UserCard = ({
         <div
           onClick={(e) => {
             e.stopPropagation();
-            if (selectedUsersForGroup.find((usr) => usr.email == userr.email)) {
+            if (selectedUsersForGroup.find((usr) => usr?.email == userr?.email)) {
               const filterUsers = selectedUsersForGroup.filter(
-                (p) => p.email !== userr.email
+                (p) => p?.email !== userr?.email
               );
               setselectedUsersForGroup(filterUsers);
             } else {
@@ -328,7 +328,7 @@ const UserCard = ({
           }}
           className="ml-auto h-full w-[40px] flex justify-center items-center "
         >
-          {selectedUsersForGroup.find((usr) => usr.email == userr.email) ? (
+          {selectedUsersForGroup.find((usr) => usr?.email == userr?.email) ? (
             <RxCrossCircled className={` text-lg text-red-500 `} />
           ) : (
             <IoIosAddCircle className={`text-gray-500 text-lg `} />
@@ -348,9 +348,9 @@ const ConversationCard = ({ conversation, user }) => {
 
   useEffect(() => {
     const userForSearch = conversation.users.find(
-      (usrrr) => usrrr.email !== user?.email
+      (usrrr) => usrrr?.email !== user?.email
     );
-    const opnt = allUsers.find((usr) => usr.email == userForSearch.email);
+    const opnt = allUsers.find((usr) => usr?.email == userForSearch?.email);
     setoponent(opnt);
   }, [conversation]);
 
