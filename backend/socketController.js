@@ -102,6 +102,7 @@ const connectSocket = async (server) => {
 
     socket.on("call-cut", ({ to }) => {
       const oponentSocketid = emailToSocketid.get(to);
+      console.log("------------", oponentSocketid);
       if (oponentSocketid) io.to(oponentSocketid).emit("call-cut");
     });
 

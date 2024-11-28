@@ -11,7 +11,7 @@ import {
 import { useSocket } from "../SocketProvider";
 import VideoRenderingScreenOnCall from "./VideoRenderingScreenOnCall";
 import { IoIosCall } from "react-icons/io";
-import CallSpendTimer from "./CallSpendTimer";
+import OponentDetailsOnCall from "./OponentDetailsOnCall";
 
 const CallComming = () => {
   const { isCallComing, isCallActive, call_oponent, call_type, isCallSending } =
@@ -19,6 +19,7 @@ const CallComming = () => {
   const { user } = useSelector((state) => state.user);
   const { socket } = useSocket();
   const dispatch = useDispatch();
+  const [stream, setstream] = useState(null);
 
   const peerAudioRef = useRef(null);
   const peerConnection = useRef(new RTCPeerConnection());
@@ -64,6 +65,8 @@ const CallComming = () => {
         .getTracks()
         .forEach((track) => peerConnection.current.addTrack(track, stream));
 
+      setstream(stream);
+
       peerConnection.current.onicecandidate = (event) => {
         if (event.candidate) {
           socket.emit("candidate", {
@@ -84,6 +87,7 @@ const CallComming = () => {
   useEffect(() => {
     if (!socket) return;
     socket.on("call-cut", () => {
+      console.log("call cut request");
       dispatch(setIsCallActive(false));
       dispatch(setIsCallSending(false));
       dispatch(setCallOponent(null));
@@ -96,7 +100,8 @@ const CallComming = () => {
     return () => {
       socket.off("call-cut");
     };
-  }, [socket, dispatch, isCallActive]);
+  }, [socket, dispatch, isCallActive,offer]);
+  
   const handleCutCall = () => {
     dispatch(setIsCallActive(false));
     dispatch(setIsCallSending(false));
@@ -114,58 +119,47 @@ const CallComming = () => {
   };
 
   return (
-    <div
-      style={{ zIndex: 60 }}
-      className={`absolute ${
-        isCallComing ? "block" : "hidden"
-      } top-0 left-0 bg-black-800  w-full h-full flex justify-center items-center`}
-    >
-      <div className="relative bg-black-900 rounded-lg w-[350px] items-center flex flex-col h-full 350px:h-[95%] ">
-        {call_type == "video" ? (
-          <VideoRenderingScreenOnCall
-            oponentVideoRef={peerAudioRef}
-            handleAcceptCall={handleAcceptCall}
-            isRecevingPage={true}
-          ></VideoRenderingScreenOnCall>
-        ) : (
-          <audio
-            className="hidden"
-            ref={peerAudioRef}
-            autoPlay
-            controls
-          ></audio>
-        )}
-        {/* oponent profile image,oponent name,timer */}
-
-        <div className="flex mt-14 flex-col items-center text-gray-200">
-          {/* image  */}
-          <div className="h-16 w-16 rounded-full border-2 flex justify-center items-center bg-pink-500 text-xl  ">
-            {!call_oponent?.profileImage && call_oponent?.name[0]}
-            {call_oponent?.profileImage && (
-              <img
-                className="w-full h-full rounded-full"
-                src={call_oponent?.profileImage}
-              ></img>
-            )}
-          </div>
-          {/* name  */}
-          <p className="">{call_oponent?.name}</p>
-
-          <CallSpendTimer isCallActive={isCallActive} />
-        </div>
+    <>
+      {call_oponent && (
         <div
-          onClick={() => {
-            if (!isCallActive) handleAcceptCall();
-            else handleCutCall();
-          }}
-          className={`h-12 w-12 flex justify-center items-center rounded-full cursor-pointer text-white hover:scale-105 transition-all duration-200 mb-6 animate-pulse ${
-            isCallActive ? "bg-red-500" : "bg-green-500"
-          }  mt-auto`}
+          style={{ zIndex: 60 }}
+          className={`absolute ${
+            isCallComing ? "block" : "hidden"
+          } top-0 left-0 bg-black-800  w-full h-full flex justify-center items-center`}
         >
-          <IoIosCall className="text-3xl" />
+          <div className="relative bg-black-900 rounded-lg w-[350px] items-center flex flex-col h-full 350px:h-[95%] ">
+            {call_type == "video" ? (
+              <VideoRenderingScreenOnCall
+                oponentVideoRef={peerAudioRef}
+                handleAcceptCall={handleAcceptCall}
+                isRecevingPage={true}
+              ></VideoRenderingScreenOnCall>
+            ) : (
+              <audio
+                className="hidden"
+                ref={peerAudioRef}
+                autoPlay
+                controls
+              ></audio>
+            )}
+            {/* oponent profile image,oponent name,timer */}
+
+            <OponentDetailsOnCall></OponentDetailsOnCall>
+            <div
+              onClick={() => {
+                if (!isCallActive) handleAcceptCall();
+                else handleCutCall();
+              }}
+              className={`h-12 w-12 flex justify-center items-center rounded-full cursor-pointer text-white hover:scale-105 transition-all duration-200 mb-6 animate-pulse ${
+                isCallActive ? "bg-red-500" : "bg-green-500"
+              }  mt-auto`}
+            >
+              <IoIosCall className="text-3xl" />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 

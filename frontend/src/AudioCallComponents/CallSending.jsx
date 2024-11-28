@@ -11,7 +11,7 @@ import {
 import { useSocket } from "../SocketProvider";
 import VideoRenderingScreenOnCall from "./VideoRenderingScreenOnCall";
 import { IoIosCall } from "react-icons/io";
-import CallSpendTimer from "./CallSpendTimer";
+import OponentDetailsOnCall from "./OponentDetailsOnCall";
 
 const CallSending = () => {
   const { isCallComing, isCallActive, call_oponent, call_type, isCallSending } =
@@ -26,8 +26,6 @@ const CallSending = () => {
 
   const peerAudioRef = useRef(null);
   const peerConnection = useRef(new RTCPeerConnection());
-
-
 
   // iske dependecy me isCallActive nhi diya tha iss liye call shi se nhi chl rhi thi
 
@@ -118,7 +116,6 @@ const CallSending = () => {
       dispatch(setCallOponent(null));
       dispatch(setCallType(null));
       dispatch(setIsCallComing(false));
-      setcountDown({ minutes: 0, seconds: 0 });
 
       // window.location.reload();
     });
@@ -133,10 +130,9 @@ const CallSending = () => {
     dispatch(setCallOponent(null));
     dispatch(setCallType(null));
     dispatch(setIsCallComing(false));
-    setcountDown({ minutes: 0, seconds: 0 });
 
     // emit cut call event
-
+    console.log("sender))))))", call_oponent?.email);
     socket.emit("call-cut", { to: call_oponent?.email });
 
     // window.location.reload();
@@ -145,55 +141,46 @@ const CallSending = () => {
   };
 
   return (
-    <div
-      style={{ zIndex: 60 }}
-      className={`absolute ${
-        isCallSending ? "block" : "hidden"
-      } top-0 left-0 bg-black-800  w-full h-full flex justify-center items-center`}
-    >
-      <div className=" bg-black-900 relative  rounded-lg w-[350px] items-center flex flex-col h-full 350px:h-[95%] ">
-        {call_type == "video" ? (
-          <VideoRenderingScreenOnCall
-            stream={stream}
-            peerConnection={peerConnection}
-            dispatch={dispatch}
-            oponentVideoRef={peerAudioRef}
-          ></VideoRenderingScreenOnCall>
-        ) : (
-          <audio
-            ref={peerAudioRef}
-            controls
-            autoPlay
-            className="hidden"
-          ></audio>
-        )}
-
-        <div className="flex mt-14 flex-col items-center text-gray-200">
-          {/* image  */}
-          <div className="h-16 w-16 rounded-full border-2 flex justify-center items-center bg-pink-500 text-xl  ">
-            {!call_oponent?.profileImage && call_oponent?.name[0]}
-            {call_oponent?.profileImage && (
-              <img
-                className="w-full h-full rounded-full"
-                src={call_oponent?.profileImage}
-              ></img>
-            )}
-          </div>
-          {/* name  */}
-          <p className="">{call_oponent?.name}</p>
-         <CallSpendTimer isCallActive={isCallActive}/>
-        </div>
+    <>
+      {call_oponent && (
         <div
-          onClick={() => {
-            handleCutCall();
-          }}
-          className="h-12 w-12 rounded-full text-white flex justify-center items-center cursor-pointer hover:scale-105 transition-all duration-200 mb-6 animate-pulse bg-red-500 mt-auto"
+          style={{ zIndex: 60 }}
+          className={`absolute ${
+            isCallSending ? "block" : "hidden"
+          } top-0 left-0 bg-black-800  w-full h-full flex justify-center items-center`}
         >
-          {" "}
-          <IoIosCall className="text-3xl" />
+          <div className=" bg-black-900 relative  rounded-lg w-[350px] items-center flex flex-col h-full 350px:h-[95%] ">
+            {call_type == "video" ? (
+              <VideoRenderingScreenOnCall
+                stream={stream}
+                peerConnection={peerConnection}
+                dispatch={dispatch}
+                oponentVideoRef={peerAudioRef}
+              ></VideoRenderingScreenOnCall>
+            ) : (
+              <audio
+                ref={peerAudioRef}
+                controls
+                autoPlay
+                className="hidden"
+              ></audio>
+            )}
+
+            <OponentDetailsOnCall />
+
+            <div
+              onClick={() => {
+                handleCutCall();
+              }}
+              className="h-12 w-12 rounded-full text-white flex justify-center items-center cursor-pointer hover:scale-105 transition-all duration-200 mb-6 animate-pulse bg-red-500 mt-auto"
+            >
+              {" "}
+              <IoIosCall className="text-3xl" />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 
