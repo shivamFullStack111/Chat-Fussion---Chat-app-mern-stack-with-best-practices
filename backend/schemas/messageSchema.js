@@ -25,9 +25,11 @@ const messageSchema = new mongoose.Schema(
           "audio",
           "document",
           "current-location",
+          "call",
         ],
         default: "text",
       },
+
       text: String,
       url: String,
       latitude: String,
@@ -35,6 +37,13 @@ const messageSchema = new mongoose.Schema(
       fileName: String,
       width: Number,
       height: Number,
+    },
+
+    callData: {
+      callType: {
+        type: String,
+        enum: ["audio", "video"],
+      },
     },
   },
   { timestamps: true }

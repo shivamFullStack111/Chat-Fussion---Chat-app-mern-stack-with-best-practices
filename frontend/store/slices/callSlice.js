@@ -8,6 +8,7 @@ const callSlice = createSlice({
     call_oponent: null,
     call_type: "",
     isCallSending: false,
+    caller_user: null,
   },
 
   reducers: {
@@ -26,6 +27,9 @@ const callSlice = createSlice({
     setIsCallSending(state, action) {
       state.isCallSending = action.payload;
     },
+    setCallerUser(state, action) {
+      state.caller_user = action.payload;
+    },
   },
 });
 
@@ -36,4 +40,5 @@ export const {
   setCallType,
   setIsCallComing,
   setIsCallSending,
+  setCallerUser,
 } = callSlice.actions;

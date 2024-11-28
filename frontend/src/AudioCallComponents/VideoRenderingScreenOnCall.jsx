@@ -7,12 +7,15 @@ import { IoVideocamOffOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { useSocket } from "../SocketProvider";
 import {
+  setCallerUser,
   setCallOponent,
   setCallType,
   setIsCallActive,
   setIsCallComing,
   setIsCallSending,
 } from "../../store/slices/callSlice";
+import axios from "axios";
+import { dbUrl, returnToken } from "../utils";
 
 const VideoRenderingScreenOnCall = ({
   oponentVideoRef,
@@ -31,7 +34,11 @@ const VideoRenderingScreenOnCall = ({
     video: true,
   });
 
-  const { call_oponent, isCallActive } = useSelector((state) => state.call);
+  const { call_oponent, isCallActive, caller_user } = useSelector(
+    (state) => state.call
+  );
+  const { user } = useSelector((state) => state.user);
+  const { conversation } = useSelector((state) => state.chat);
   const innderHeight = window.innerHeight;
 
   useEffect(() => {
@@ -79,6 +86,7 @@ const VideoRenderingScreenOnCall = ({
       dispatch(setCallOponent(null));
       dispatch(setCallType(null));
       dispatch(setIsCallComing(false));
+      dispatch(setCallerUser(null));
 
       // window.location.reload();
     });
@@ -88,12 +96,30 @@ const VideoRenderingScreenOnCall = ({
     };
   }, [socket]);
 
-  const handleCutCall = () => {
+  const handleCutCall = async () => {
     dispatch(setIsCallActive(false));
     dispatch(setIsCallSending(false));
-    dispatch(setCallOponent(null));
     dispatch(setCallType(null));
     dispatch(setIsCallComing(false));
+
+    const token = returnToken();
+    console.log("API Payload: ", caller_user);
+
+    axios.post(
+      `${dbUrl}/create-call`,
+      {
+        sender: caller_user ? caller_user : call_oponent?.email,
+        receiver:
+          caller_user == user?.email ? call_oponent?.email : user?.email,
+        type: "call",
+        callType: "video",
+        conversationid:conversation?._id
+      },
+      { headers: { Authorization: token } }
+    );
+
+    dispatch(setCallOponent(null));
+    dispatch(setCallerUser(null));
 
     // emit cut call event
 

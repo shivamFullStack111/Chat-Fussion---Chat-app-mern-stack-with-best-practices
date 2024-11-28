@@ -6,6 +6,7 @@ import { FaSearch, FaVideo } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import Call_Audio from "../Call_Audio";
 import {
+  setCallerUser,
   setCallOponent,
   setCallType,
   setIsCallSending,
@@ -45,7 +46,7 @@ const MobileChatScreen = ({
   const { oponentUser, conversation, allMessages } = useSelector(
     (state) => state.chat
   );
-  const { activeUsers } = useSelector((state) => state.user);
+  const { activeUsers, user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [emojiOpen, setemojiOpen] = useState(false);
 
@@ -124,6 +125,7 @@ const MobileChatScreen = ({
               <Call_Audio oponentUser={oponentUser} />
               <FaVideo
                 onClick={() => {
+                  dispatch(setCallerUser(user?.email));
                   dispatch(setCallOponent(oponentUser));
                   dispatch(setCallType("video"));
                   dispatch(setIsCallSending(true));

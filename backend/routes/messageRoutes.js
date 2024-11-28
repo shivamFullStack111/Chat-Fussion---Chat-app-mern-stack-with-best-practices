@@ -180,4 +180,31 @@ messageRoute.post(
   }
 );
 
+messageRoute.post("/create-call", isAuthenticate, async (req, res) => {
+  try {
+    console.log(req.body);
+    const newMessage = new Messages({
+      sender: req.body.sender,
+      receiver: req.body.receiver,
+      message: {
+        type: "call",
+      },
+      callData: {
+        callType: req.body.callType,
+      },
+      conversationid: req.body.conversationid,
+    });
+
+    await newMessage.save();
+
+    return res.send({
+      success: true,
+      message: "call create successfully",
+      message: newMessage,
+    });
+  } catch (error) {
+    return res.send({ success: false, message: error.message });
+  }
+});
+
 module.exports = messageRoute;
