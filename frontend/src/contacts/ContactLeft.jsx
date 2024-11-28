@@ -184,14 +184,14 @@ const UserListItem = ({
             <div>{userr?.name[0]}</div>
           </div>
           <div>
-            <p className="text-gray-500  text-[12px] flex gap-2 items-center">
+            <div className="text-gray-500  text-[12px] flex gap-2 items-center">
               <p> {userr?.name} </p>
               {isActive && (
                 <p className=" text-green-400 rounded-full text-[10px]">
                   online
                 </p>
               )}
-            </p>
+            </div>
             <p className="text-[12px] text-gray-600">
               +91 {userr?.phoneNumber}
             </p>

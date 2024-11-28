@@ -207,4 +207,25 @@ messageRoute.post("/create-call", isAuthenticate, async (req, res) => {
   }
 });
 
+messageRoute.get("/get-call-messages", isAuthenticate, async (req, res) => {
+  try {
+    const messages = await Messages.find({
+      $and: [
+        {
+          $or: [{ sender: req?.user?.email }, { receiver: req?.user?.email }],
+        },
+        { "message.type": "call" },
+      ],
+    });
+
+    return res.send({
+      success: true,
+      message: "call messages get",
+      messages: messages,
+    });
+  } catch (error) {
+    return res.send({ success: false, message: error.message });
+  }
+});
+
 module.exports = messageRoute;
