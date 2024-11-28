@@ -368,13 +368,18 @@ const ConversationCard = ({ conversation, user }) => {
       className="flex cursor-pointer justify-between items-center "
     >
       <div className="flex gap-2 items-center">
-        <div className="h-9  w-9 bg-white rounded-full">
+        <div className="h-9 relative  w-9 bg-white rounded-full">
           {oponent?.profileImage ? (
+            <>
             <img
               src={oponent?.profileImage}
               className="h-full w-full rounded-full"
               alt=""
             />
+            {activeUsers?.includes(oponent?.email) && (
+              <p className="absolute  h-3 w-3 bg-green-400 rounded-full -bottom-1 right-1"></p>
+            )}
+            </>
           ) : (
             <div
               className="h-9 w-9  rounded-full relative bg-primary flex justify-center items-center"
