@@ -18,14 +18,17 @@ import CallSending from "./AudioCallComponents/CallSending";
 
 import CallComming from "./AudioCallComponents/CallComming";
 import AppFunctionProvider from "./AppFunctionProvider";
+import NewMessage_Notification from "./components/NewMessage_Notification";
 
 const App = () => {
-  const { isLoading } = useSelector((state) => state.user);
+  const { isLoading, user } = useSelector((state) => state.user);
+  const { isChatOpen } = useSelector((state) => state.chat);
 
   const { isCallComing, isCallSending } = useSelector((state) => state.call);
 
   return (
     <>
+      {user?.showNotifications && !isChatOpen && <NewMessage_Notification />}
       <AppFunctionProvider>
         <>
           {!isCallComing && <CallSending />}
