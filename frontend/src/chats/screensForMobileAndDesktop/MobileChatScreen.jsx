@@ -42,6 +42,7 @@ const MobileChatScreen = ({
   handleSubmitButton,
   handleSendAudioMessage,
   groupedMessages,
+  isImageShow,
 }) => {
   const { oponentUser, conversation, allMessages } = useSelector(
     (state) => state.chat
@@ -91,14 +92,18 @@ const MobileChatScreen = ({
                   alt=""
                 />
               ) : (
-                <img
-                  className="h-8 w-8 rounded-full bg-cover"
-                  src={
-                    oponentUser?.profileImage ||
-                    "https://dootnode.themesbrand.website/assets/images/users/user-dummy-img.jpg"
-                  }
-                  alt=""
-                />
+                <>
+                  {isImageShow && oponentUser?.profileImage ? (
+                    <img
+                      className="h-8 w-8 rounded-full bg-cover"
+                      src={oponentUser?.profileImage}
+                    />
+                  ) : (
+                    <div className="h-8 w-8 uppercase flex justify-center items-center rounded-full bg-pink-400 text-black ">
+                      {oponentUser?.name[0]}
+                    </div>
+                  )}
+                </>
               )}
 
               <div>
@@ -113,6 +118,7 @@ const MobileChatScreen = ({
                   ) : (
                     <>
                       {oponentUser?.lastActive &&
+                        oponentUser?.lastSeen &&
                         moment(oponentUser?.lastActive).format("LLL")}
                     </>
                   )}
@@ -122,8 +128,8 @@ const MobileChatScreen = ({
 
             <div className="flex gap-3 500px:gap-4 700px:gap-5 800px:gap-6  text-lg 500px:text-xl text-gray-300 items-center">
               {/* <FaSearch  /> */}
-              
-              <Call_Audio  oponentUser={oponentUser} />
+
+              <Call_Audio oponentUser={oponentUser} />
               <FaVideo
                 onClick={() => {
                   dispatch(setCallerUser(user?.email));

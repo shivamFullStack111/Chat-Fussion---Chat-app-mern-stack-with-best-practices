@@ -314,7 +314,9 @@ const UserCard = ({
         <div
           onClick={(e) => {
             e.stopPropagation();
-            if (selectedUsersForGroup.find((usr) => usr?.email == userr?.email)) {
+            if (
+              selectedUsersForGroup.find((usr) => usr?.email == userr?.email)
+            ) {
               const filterUsers = selectedUsersForGroup.filter(
                 (p) => p?.email !== userr?.email
               );
@@ -344,7 +346,23 @@ const ConversationCard = ({ conversation, user }) => {
   const dispatch = useDispatch();
   const [oponent, setoponent] = useState(null);
   const { allUsers } = useSelector((state) => state.user);
+  const [isImageShow, setisImageShow] = useState(false);
 
+  useEffect(() => {
+    if (!user || !oponent) return;
+    if (oponent?.profilePicture == "everyone") {
+      setisImageShow(true);
+    } else if (oponent?.profilePicture == "nobody") {
+      setisImageShow(false);
+    } else if (oponent?.profilePicture == "friends") {
+      const isExist = user?.contacts?.find((userid) => userid == oponent?._id);
+      if (isExist) {
+        setisImageShow(true);
+      }
+    }
+
+    // console.log(isImageShow);
+  }, [user, oponent, isImageShow]);
 
   useEffect(() => {
     const userForSearch = conversation.users.find(
@@ -369,16 +387,16 @@ const ConversationCard = ({ conversation, user }) => {
     >
       <div className="flex gap-2 items-center">
         <div className="h-9 relative  w-9 bg-white rounded-full">
-          {oponent?.profileImage ? (
+          {oponent?.profileImage&&isImageShow ? (
             <>
-            <img
-              src={oponent?.profileImage}
-              className="h-full w-full rounded-full"
-              alt=""
-            />
-            {activeUsers?.includes(oponent?.email) && (
-              <p className="absolute  h-3 w-3 bg-green-400 rounded-full -bottom-1 right-1"></p>
-            )}
+              <img
+                src={oponent?.profileImage}
+                className="h-full w-full rounded-full"
+                alt=""
+              />
+              {activeUsers?.includes(oponent?.email) && (
+                <p className="absolute  h-3 w-3 bg-green-400 rounded-full -bottom-1 right-1"></p>
+              )}
             </>
           ) : (
             <div

@@ -31,9 +31,28 @@ const ChatScreen = () => {
   // data
   const [inputText, setinputText] = useState("");
 
+  const [isImageShow, setisImageShow] = useState(false);
+
   useEffect(() => {
-    console.log("groupedMessages length", groupedMessages);
-  }, [groupedMessages]);
+    if (!user || !oponentUser) return;
+    if (oponentUser?.profilePicture == "everyone") {
+      setisImageShow(true);
+    } else if (oponentUser?.profilePicture == "nobody") {
+      setisImageShow(false);
+    } else if (oponentUser?.profilePicture == "friends") {
+      const isExist = user?.contacts?.find(
+        (userid) => userid == oponentUser?._id
+      );
+      if (isExist) {
+        setisImageShow(true);
+      }
+    }
+
+    // console.log(isImageShow);
+  }, [user, oponentUser]);
+  useEffect(() => {
+    console.log(isImageShow, oponentUser?.name);
+  }, [isImageShow]);
 
   useEffect(() => {
     if (!socket || !groupDataForKeyCheck) return;
@@ -176,6 +195,7 @@ const ChatScreen = () => {
           {" "}
           {/* mobile chat screen  */}
           <MobileChatScreen
+            isImageShow={isImageShow}
             handleSendAudioMessage={handleSendAudioMessage}
             handleMessageSend={handleMessageSend}
             inputText={inputText}
@@ -187,6 +207,7 @@ const ChatScreen = () => {
           />
         </>
         <DesktopChatScreen
+          isImageShow={isImageShow}
           handleSendAudioMessage={handleSendAudioMessage}
           handleMessageSend={handleMessageSend}
           inputText={inputText}

@@ -136,7 +136,7 @@ const VideoRenderingScreenOnCall = ({
       {call_oponent && (
         <div
           style={{ zIndex: 100 }}
-          className="w-full 350px:rounded-lg bg-darkbg_2 border-2 h-full absolute "
+          className="w-full 350px:rounded-lg bg-[#121212]  h-full absolute "
         >
           <div className="w-full h-full relative rounded-lg ">
             <video
@@ -152,7 +152,7 @@ const VideoRenderingScreenOnCall = ({
               className=" absolute bottom-0 h-28   flex justify-center items-center   w-full"
             >
               <div className="h-14  px-5  w-full">
-                <div className="w-full bg-darkbg rounded-lg flex items-center justify-evenly h-full">
+                <div className="w-full bg-darkbg_2 rounded-lg flex items-center justify-evenly h-full">
                   <div
                     className={`h-10 w-10 rounded-full flex justify-center items-center  cursor-pointer ${
                       isVideoOff ? "bg-green-500" : "bg-gray-500"
@@ -223,7 +223,7 @@ const VideoRenderingScreenOnCall = ({
                 ref={myVideoRef}
                 muted
                 // src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
-                className="w-full h-full border-2 rounded-lg"
+                className="w-full h-full  rounded-lg"
                 autoPlay
                 loop
               ></video>

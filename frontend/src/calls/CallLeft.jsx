@@ -37,10 +37,11 @@ const CallLeft = ({ dimensions }) => {
 
     getCallMessages();
   }, []);
+
   return (
     <div className="w-full 1000px:min-w-[330px] 1000px:max-w-[330px]  h-[100vh] bg-darkbg_2">
       <div className="p-7 pb-0">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between pb-6 items-center">
           <p className="text-2xl font-semibold text-gray-500">Calls</p>
           <img
             className="w-10 h-10 rounded-full bg-darkbg"
@@ -48,7 +49,7 @@ const CallLeft = ({ dimensions }) => {
             alt=""
           />
         </div>
-        <div className="flex items-center bg-darkbg p-3 py-1 mt-5 rounded-md">
+        {/* <div className="flex items-center bg-darkbg p-3 py-1 mt-5 rounded-md">
           <input
             placeholder="Search..."
             spellCheck={false}
@@ -56,7 +57,7 @@ const CallLeft = ({ dimensions }) => {
             type="text "
           />
           <FaSearch className=" text-gray-400" />
-        </div>
+        </div> */}
 
         <div
           style={{
@@ -85,6 +86,28 @@ function CallCard({ message }) {
   const { allUsers, user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
+  const [isImageShow, setisImageShow] = useState(false);
+
+  useEffect(() => {
+    if (!user || !otherUser) return;
+    if (otherUser?.profilePicture == "everyone") {
+      setisImageShow(true);
+    } else if (otherUser?.profilePicture == "nobody") {
+      setisImageShow(false);
+    } else if (otherUser?.profilePicture == "friends") {
+      const isExist = user?.contacts?.find(
+        (userid) => userid == otherUser?._id
+      );
+      if (isExist) {
+        setisImageShow(true);
+      }
+    }
+
+    // console.log(isImageShow);
+  }, [user, otherUser]);
+
+
+
   useEffect(() => {
     if (!user || !message || !allUsers?.length) return;
 
@@ -106,8 +129,8 @@ function CallCard({ message }) {
           src=""
           alt=""
         >
-          {!otherUser?.profileImage && otherUser?.name[0]}
-          {otherUser?.profileImage && (
+          {!isImageShow && otherUser?.name[0]}
+          {otherUser?.profileImage && isImageShow && (
             <img
               src={otherUser?.profileImage}
               className="w-full h-full rounded-full "
