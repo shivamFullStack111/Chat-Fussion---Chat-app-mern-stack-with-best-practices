@@ -22,6 +22,7 @@ import NewMessage_Notification from "./components/NewMessage_Notification";
 import FAQPage from "./helpPages/FAQPage";
 import Help from "./helpPages/Help";
 import TandP from "./helpPages/TandP";
+import NotFoundPage from "./notfoundpage/NotFoundPage";
 
 const App = () => {
   const { isLoading, user } = useSelector((state) => state.user);
@@ -135,6 +136,7 @@ const App = () => {
                     </ProtectedRouteForLogin>
                   }
                 />
+                <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </BrowserRouter>
           )}

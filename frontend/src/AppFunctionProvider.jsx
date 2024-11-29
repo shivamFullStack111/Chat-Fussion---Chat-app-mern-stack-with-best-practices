@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import {
   setActiveUsers,
+  setAllConversation,
   setAllUsers,
   setisAuthenticated,
   setIsLoading,
@@ -16,6 +17,18 @@ import { useSocket } from "./SocketProvider";
 function AppFunctionProvider({ children }) {
   const { user, isAuthenticated } = useSelector((state) => state.user);
   const { conversation } = useSelector((state) => state.chat);
+
+  useEffect(() => {
+    const getAllConversation = async () => {
+      const token = returnToken();
+      const res = await axios.get(`${dbUrl}/get-all-conversations`, {
+        headers: { Authorization: token },
+      });
+      if (res.data.success)
+        dispatch(setAllConversation(res?.data?.conversations));
+    };
+    if (user) getAllConversation();
+  }, [user]);
 
   const { socket } = useSocket();
 

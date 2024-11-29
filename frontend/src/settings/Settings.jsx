@@ -2,8 +2,11 @@ import HomeSideBar from "../components/HomeSideBar";
 import { useEffect, useState } from "react";
 import SettingLeft from "./SettingLeft";
 import HomeRight from '../home/HomeRight'
+import { useSelector } from "react-redux";
+
 
 const Settings = () => {
+
   const [dimensions, setdimensions] = useState({ width: 0, height: 0 });
 
   const handleResize = () => {
