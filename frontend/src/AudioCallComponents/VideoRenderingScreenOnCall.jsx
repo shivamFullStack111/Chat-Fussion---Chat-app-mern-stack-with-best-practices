@@ -105,6 +105,7 @@ const VideoRenderingScreenOnCall = ({
     const token = returnToken();
     console.log("API Payload: ", caller_user);
 
+    
     axios.post(
       `${dbUrl}/create-call`,
       {

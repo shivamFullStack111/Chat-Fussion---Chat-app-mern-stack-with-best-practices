@@ -10,7 +10,14 @@ import { dbUrl, returnToken } from "../utils";
 
 import { motion } from "framer-motion";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setCallerUser,
+  setCallOponent,
+  setCallType,
+  setIsCallSending,
+} from "../../store/slices/callSlice";
+import { setConversation } from "../../store/slices/chatSlice";
 const CallLeft = ({ dimensions }) => {
   const [callMessages, setcallMessages] = useState([]);
 
@@ -76,6 +83,7 @@ export default CallLeft;
 function CallCard({ message }) {
   const [otherUser, setotherUser] = useState(null);
   const { allUsers, user } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!user || !message || !allUsers?.length) return;
@@ -98,8 +106,13 @@ function CallCard({ message }) {
           src=""
           alt=""
         >
-          {!otherUser?.profileImage&&otherUser?.name[0]}
-          {otherUser?.profileImage&&<img src={otherUser?.profileImage} className="w-full h-full rounded-full "></img>}
+          {!otherUser?.profileImage && otherUser?.name[0]}
+          {otherUser?.profileImage && (
+            <img
+              src={otherUser?.profileImage}
+              className="w-full h-full rounded-full "
+            ></img>
+          )}
         </div>
         <div>
           <p className="text-[13px] text-gray-500 leading-tight">
@@ -127,7 +140,29 @@ function CallCard({ message }) {
       </div>
 
       <p className="text-green-500 text-xl">
-        {message?.callData?.type == "audio" ? <IoCall /> : <IoVideocam />}
+        {message?.callData?.callType == "audio" ? (
+          <IoCall
+            onClick={() => {
+              dispatch(setConversation({ _id: message?.conversationid }));
+              dispatch(setCallOponent(otherUser));
+              dispatch(setCallType("audio"));
+              dispatch(setCallerUser(user?.email));
+              dispatch(setIsCallSending(true));
+            }}
+            className="cursor-pointer"
+          />
+        ) : (
+          <IoVideocam
+            onClick={() => {
+              dispatch(setConversation({ _id: message?.conversationid }));
+              dispatch(setCallerUser(user?.email));
+              dispatch(setCallOponent(otherUser));
+              dispatch(setCallType("video"));
+              dispatch(setIsCallSending(true));
+            }}
+            className="cursor-pointer"
+          />
+        )}
       </p>
     </div>
   );

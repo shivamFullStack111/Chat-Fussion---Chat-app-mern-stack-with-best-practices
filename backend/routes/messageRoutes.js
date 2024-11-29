@@ -216,7 +216,7 @@ messageRoute.get("/get-call-messages", isAuthenticate, async (req, res) => {
         },
         { "message.type": "call" },
       ],
-    });
+    }).sort({ createdAt: -1 });
 
     return res.send({
       success: true,

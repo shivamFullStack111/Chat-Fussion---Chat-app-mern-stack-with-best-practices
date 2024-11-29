@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  setCallerUser,
   setCallOponent,
   setCallType,
   setIsCallActive,
@@ -12,10 +13,19 @@ import { useSocket } from "../SocketProvider";
 import VideoRenderingScreenOnCall from "./VideoRenderingScreenOnCall";
 import { IoIosCall } from "react-icons/io";
 import OponentDetailsOnCall from "./OponentDetailsOnCall";
+import axios from "axios";
+import { dbUrl, returnToken } from "../utils";
 
 const CallSending = () => {
-  const { isCallComing, isCallActive, call_oponent, call_type, isCallSending } =
-    useSelector((state) => state.call);
+  const {
+    isCallComing,
+    isCallActive,
+    call_oponent,
+    call_type,
+    isCallSending,
+    caller_user,
+  } = useSelector((state) => state.call);
+  const { conversation } = useSelector((state) => state.chat);
   const { user } = useSelector((state) => state.user);
   const { socket } = useSocket();
   const dispatch = useDispatch();
@@ -127,13 +137,25 @@ const CallSending = () => {
   const handleCutCall = () => {
     dispatch(setIsCallActive(false));
     dispatch(setIsCallSending(false));
-    dispatch(setCallOponent(null));
     dispatch(setCallType(null));
     dispatch(setIsCallComing(false));
 
-    // emit cut call event
-    console.log("sender))))))", call_oponent?.email);
-    socket.emit("call-cut", { to: call_oponent?.email });
+    const token = returnToken();
+    axios.post(
+      `${dbUrl}/create-call`,
+      {
+        sender: caller_user ? caller_user : call_oponent?.email,
+        receiver:
+          caller_user == user?.email ? call_oponent?.email : user?.email,
+        type: "call",
+        callType: "audio",
+        conversationid: conversation?._id,
+      },
+      { headers: { Authorization: token } }
+    );
+
+    dispatch(setCallOponent(null));
+    dispatch(setCallerUser(null));
 
     // window.location.reload();
 
