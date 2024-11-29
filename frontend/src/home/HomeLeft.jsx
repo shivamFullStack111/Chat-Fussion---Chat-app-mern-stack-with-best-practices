@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Button from "../components/Button";
 import axios from "axios";
 import { dbUrl, returnToken } from "../utils";
+import { Link } from "react-router-dom";
 const HomeLeft = ({
   setstatusOpen,
   statusOpen,
@@ -37,7 +38,7 @@ const HomeLeft = ({
 
       if (res.data?.success) {
         toast.success(res.data.message);
-        console.log('update',res.data.user)
+        console.log("update", res.data.user);
         dispatch(setUser(res.data.user));
       } else {
         toast.error(res.data.message);
@@ -184,7 +185,11 @@ const HomeLeft = ({
             onClick={() => setstatusOpen((p) => !p)}
             className="text-white flex justify-center cursor-pointer items-center gap-1 mt-[50px] "
           >
-            <p className={`h-3 w-3 rounded-full ${data?.status=='active'?'bg-green-400':'bg-red-400'}`}></p>
+            <p
+              className={`h-3 w-3 rounded-full ${
+                data?.status == "active" ? "bg-green-400" : "bg-red-400"
+              }`}
+            ></p>
             <p className="text-[13px] text-gray-400 ">{data?.status}</p>
             <FaAngleDown className="text-gray-400" />
           </div>
@@ -407,22 +412,6 @@ const HomeLeft = ({
                   {" "}
                   <p className="h-[1px] w-[95%] bg-darkbg "></p>
                 </div>{" "}
-                <div className="flex p-3 justify-between">
-                  <p className="text-[13px] text-gray-300 ">
-                    Notification Sound
-                  </p>
-                  <input
-                    checked={data?.notificationSound}
-                    onChange={(e) =>
-                      setdata((p) => ({
-                        ...p,
-                        notificationSound: e.target.checked,
-                      }))
-                    }
-                    className="w-4"
-                    type="checkbox"
-                  />{" "}
-                </div>
               </motion.div>
             </div>
             {/* box 4 personal help  */}
@@ -449,25 +438,25 @@ const HomeLeft = ({
                 animate={{ height: active == 4 ? "auto" : 0 }}
                 transition={{ duration: 0.4 }}
               >
-                <div className="flex p-3 justify-between">
+                <Link to={"/faq"} className="flex p-3 justify-between">
                   <p className="text-[13px] text-gray-300 ">FAQs</p>
-                </div>
+                </Link>
                 <div className="flex justify-center">
                   {" "}
                   <p className="h-[1px] w-[95%] bg-darkbg "></p>
                 </div>{" "}
-                <div className="flex p-3 justify-between">
+                <Link to={"/help"} className="flex p-3 justify-between">
                   <p className="text-[13px] text-gray-300 ">Contact</p>
-                </div>
+                </Link>
                 <div className="flex justify-center">
                   {" "}
                   <p className="h-[1px] w-[95%] bg-darkbg "></p>
                 </div>{" "}
-                <div className="flex p-3 justify-between">
+                <Link to={"/t&p"} className="flex p-3 justify-between">
                   <p className="text-[13px] text-gray-300 ">
                     Terms & Privacy Policy
                   </p>
-                </div>
+                </Link>
               </motion.div>
             </div>
             {user !== data && (

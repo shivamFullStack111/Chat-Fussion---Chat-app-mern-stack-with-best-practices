@@ -60,7 +60,7 @@ const NewMessage_Notification = () => {
         <div className=" flex justify-center">
           {" "}
           <img
-            className="w-12 h-20 rounded-md"
+            className="w-26 h-20 rounded-md"
             src={message?.message?.url}
             alt=""
           />

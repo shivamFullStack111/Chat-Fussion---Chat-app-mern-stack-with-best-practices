@@ -19,6 +19,9 @@ import CallSending from "./AudioCallComponents/CallSending";
 import CallComming from "./AudioCallComponents/CallComming";
 import AppFunctionProvider from "./AppFunctionProvider";
 import NewMessage_Notification from "./components/NewMessage_Notification";
+import FAQPage from "./helpPages/FAQPage";
+import Help from "./helpPages/Help";
+import TandP from "./helpPages/TandP";
 
 const App = () => {
   const { isLoading, user } = useSelector((state) => state.user);
@@ -112,6 +115,23 @@ const App = () => {
                   element={
                     <ProtectedRouteForLogin>
                       <Setting />{" "}
+                    </ProtectedRouteForLogin>
+                  }
+                />
+                <Route path="/faq" element={<FAQPage />} />
+                <Route
+                  path="/help"
+                  element={
+                    <ProtectedRouteForLogin>
+                      <Help />{" "}
+                    </ProtectedRouteForLogin>
+                  }
+                />
+                <Route
+                  path="/t&p"
+                  element={
+                    <ProtectedRouteForLogin>
+                      <TandP />{" "}
                     </ProtectedRouteForLogin>
                   }
                 />
