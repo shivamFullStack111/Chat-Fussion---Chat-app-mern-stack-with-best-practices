@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
-import { FaSearch, FaVideo } from "react-icons/fa";
+import {  FaVideo } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import Call_Audio from "../Call_Audio";
 import {
@@ -33,6 +33,7 @@ import {
 import { FaArrowLeftLong } from "react-icons/fa6";
 import LocationMessage from "../messages_components/LocationMessage";
 import EmojiPicker from "emoji-picker-react";
+import { FiLoader } from "react-icons/fi";
 
 const MobileChatScreen = ({
   setmoreOptionOpen,
@@ -50,6 +51,7 @@ const MobileChatScreen = ({
   const { activeUsers, user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [emojiOpen, setemojiOpen] = useState(false);
+  const [isSending, setisSending] = useState(false);
 
   const scrollRef = useRef(null);
 
@@ -213,13 +215,23 @@ const MobileChatScreen = ({
                 oponentUse={oponentUser}
                 conversation={conversation}
               />
-              <MdSend
-                onClick={() => {
-                  handleSubmitButton({ key: "Enter" });
-                  setemojiOpen(false);
-                }}
-                className="text-3xl p-1 bg-primary rounded-md cursor-pointer text-white"
-              />
+              {!isSending && (
+                <MdSend
+                  onClick={async () => {
+                    setisSending(true);
+                    await handleSubmitButton({ key: "Enter" });
+                    setemojiOpen(false);
+                    setisSending(false);
+                  }}
+                  className="text-3xl p-1 bg-primary rounded-md cursor-pointer text-white"
+                />
+              )}
+              {isSending && (
+                <div className="text-2xl  p-1 bg-primary rounded-md cursor-pointer text-white">
+                  {" "}
+                  <FiLoader className="animate-spin" />
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -32,8 +32,12 @@ messageRoute.post(
   isAuthenticate,
   upload.single("file"),
   async (req, res) => {
+    
     try {
       let newMessage;
+
+
+
       if (req.body.type == "text") {
         newMessage = new Messages({
           message: {
@@ -63,10 +67,13 @@ messageRoute.post(
           },
         });
       }
+
+      sendMessageUsingSocket(newMessage, newMessage?.receiver);
+
       await newMessage.save();
 
       // if (newMessage?.receiver)
-      sendMessageUsingSocket(newMessage, newMessage?.receiver);
+      // sendMessageUsingSocket(newMessage, newMessage?.receiver);
 
       return res.send({
         success: true,

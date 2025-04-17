@@ -6,10 +6,10 @@ import { useEffect, useState } from "react";
 import UserContactCart_users from "./UserContactCart_users";
 
 const UserLeft = ({ dimensions }) => {
-  const { allUsers } = useSelector((state) => state.user);
+  const { allUsers,user } = useSelector((state) => state.user);
   const [searchUsers, setsearchUsers] = useState([]);
 
-  const [searchText, setsearchText] = useState('');
+  const [searchText, setsearchText] = useState("");
 
   useEffect(() => {
     if (allUsers?.length) setsearchUsers(allUsers);
@@ -70,9 +70,9 @@ const UserLeft = ({ dimensions }) => {
         >
           <div className="flex flex-col gap-3 mt-4">
             {searchUsers?.length
-              ? searchUsers?.map((user, i) => (
-                  <UserContactCart_users key={i} userr={user} i={i} />
-                ))
+              ? searchUsers?.map((usr, i) => {
+                return <> {usr?._id!==user?._id&&<UserContactCart_users key={i} userr={usr} i={i} />}</>
+                })
               : null}
           </div>
         </div>
@@ -82,5 +82,3 @@ const UserLeft = ({ dimensions }) => {
 };
 
 export default UserLeft;
-
-

@@ -361,9 +361,15 @@ const getAllUsers = async (req, res) => {
 const addToContact = async (req, res) => {
   try {
     const { userid } = req.body;
+    console.log(userid)
     const user = await Users.findOne({ email: req.user.email });
     user.contacts = [...user.contacts, userid];
 
+    const otherUser = await Users.findOne({ _id: userid });
+    otherUser.contacts = [...otherUser?.contacts, user?._id];
+
+
+    await otherUser.save();
     await user.save();
 
     return res.send({ success: true, message: "Successfully added" });

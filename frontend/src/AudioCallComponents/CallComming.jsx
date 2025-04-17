@@ -22,7 +22,15 @@ const CallComming = () => {
   const [stream, setstream] = useState(null);
 
   const peerAudioRef = useRef(null);
-  const peerConnection = useRef(new RTCPeerConnection());
+  const peerConnection = useRef(
+    new RTCPeerConnection({
+      iceServers: [
+        { urls: "stun:stun.l.google.com:19302" },
+        { urls: "stun:stun1.l.google.com:19302" },
+        { urls: "stun:stun2.l.google.com:19302" },
+      ]
+    })
+  );
   const [offer, setoffer] = useState(null);
 
   useEffect(() => {
@@ -74,6 +82,7 @@ const CallComming = () => {
             toUser: call_oponent,
           });
         }
+        
       };
       const answer = await peerConnection.current.createAnswer();
       await peerConnection.current.setLocalDescription(answer);
@@ -100,8 +109,8 @@ const CallComming = () => {
     return () => {
       socket.off("call-cut");
     };
-  }, [socket, dispatch, isCallActive,offer]);
-  
+  }, [socket, dispatch, isCallActive, offer]);
+
   const handleCutCall = () => {
     dispatch(setIsCallActive(false));
     dispatch(setIsCallSending(false));
@@ -113,6 +122,8 @@ const CallComming = () => {
 
     socket.emit("call-cut", { to: call_oponent?.email });
 
+    stream?.getTracks().forEach((track) => track.stop());
+    setstream(null);
     // window.location.reload();
 
     return;

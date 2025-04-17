@@ -35,7 +35,15 @@ const CallSending = () => {
   const [stream, setstream] = useState();
 
   const peerAudioRef = useRef(null);
-  const peerConnection = useRef(new RTCPeerConnection());
+  const peerConnection = useRef(
+    new RTCPeerConnection({
+      iceServers: [
+        { urls: "stun:stun.l.google.com:19302" },
+        { urls: "stun:stun1.l.google.com:19302" },
+        { urls: "stun:stun2.l.google.com:19302" },
+      ],
+    })
+  );
 
   // iske dependecy me isCallActive nhi diya tha iss liye call shi se nhi chl rhi thi
 
@@ -134,31 +142,48 @@ const CallSending = () => {
       socket.off("call-cut");
     };
   }, [socket, dispatch, isCallActive]);
+
+  // const handleCutCall = () => {
+  //   dispatch(setIsCallActive(false));
+  //   dispatch(setIsCallSending(false));
+  //   dispatch(setCallType(null));
+  //   dispatch(setIsCallComing(false));
+
+  //   const token = returnToken();
+  //   axios.post(
+  //     `${dbUrl}/create-call`,
+  //     {
+  //       sender: caller_user ? caller_user : call_oponent?.email,
+  //       receiver:
+  //         caller_user == user?.email ? call_oponent?.email : user?.email,
+  //       type: "call",
+  //       callType: "audio",
+  //       conversationid: conversation?._id,
+  //     },
+  //     { headers: { Authorization: token } }
+  //   );
+
+  //   dispatch(setCallOponent(null));
+  //   dispatch(setCallerUser(null));
+
+  //   // window.location.reload();
+
+  //   return;
+  // };
+
   const handleCutCall = () => {
     dispatch(setIsCallActive(false));
     dispatch(setIsCallSending(false));
+    dispatch(setCallOponent(null));
     dispatch(setCallType(null));
     dispatch(setIsCallComing(false));
 
-    const token = returnToken();
-    axios.post(
-      `${dbUrl}/create-call`,
-      {
-        sender: caller_user ? caller_user : call_oponent?.email,
-        receiver:
-          caller_user == user?.email ? call_oponent?.email : user?.email,
-        type: "call",
-        callType: "audio",
-        conversationid: conversation?._id,
-      },
-      { headers: { Authorization: token } }
-    );
+    // emit cut call event
 
-    dispatch(setCallOponent(null));
-    dispatch(setCallerUser(null));
+    socket.emit("call-cut", { to: call_oponent?.email });
 
-    // window.location.reload();
-
+    stream?.getTracks().forEach((track) => track.stop());
+    setstream(null);
     return;
   };
 

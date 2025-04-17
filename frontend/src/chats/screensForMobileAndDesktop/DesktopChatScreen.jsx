@@ -23,8 +23,8 @@ import PdfMessage from "../messages_components/PdfMessage";
 import MoreOption from "../moreOption/MoreOption";
 import AudioRecorder from "../AudioRecorder";
 import { MdSend } from "react-icons/md";
-import LocationMessage from "../messages_components/LocationMessage";
 import EmojiPicker from "emoji-picker-react";
+import { FiLoader } from "react-icons/fi";
 
 const DesktopChatScreen = ({
   moreOptionOpen,
@@ -43,6 +43,7 @@ const DesktopChatScreen = ({
   const dispatch = useDispatch();
   const scrollRef = useRef(null);
   const [emojiOpen, setemojiOpen] = useState(false);
+  const [isSending, setisSending] = useState(false);
 
   useEffect(() => {
     if (scrollRef.current && groupedMessages.length > 0) {
@@ -87,23 +88,23 @@ const DesktopChatScreen = ({
               </>
             )}
             <div>
-                <p className="text-gray-400 text-sm tracking-wide font-semibold">
-                  {oponentUser?.name}
-                </p>
-                <p className="text-[12px] leading-tight tracking-tight text-gray-500">
-                  {activeUsers?.includes(oponentUser?.email) ? (
-                    <>
-                      <p className="text-[12px] text-green-400">online</p>
-                    </>
-                  ) : (
-                    <>
-                      {oponentUser?.lastActive &&
-                        oponentUser?.lastSeen &&
-                        moment(oponentUser?.lastActive).format("LLL")}
-                    </>
-                  )}
-                </p>
-              </div>
+              <p className="text-gray-400 text-sm tracking-wide font-semibold">
+                {oponentUser?.name}
+              </p>
+              <p className="text-[12px] leading-tight tracking-tight text-gray-500">
+                {activeUsers?.includes(oponentUser?.email) ? (
+                  <>
+                    <p className="text-[12px] text-green-400">online</p>
+                  </>
+                ) : (
+                  <>
+                    {oponentUser?.lastActive &&
+                      oponentUser?.lastSeen &&
+                      moment(oponentUser?.lastActive).format("LLL")}
+                  </>
+                )}
+              </p>
+            </div>
           </div>
           <div className="flex gap-6 mr-5 text-xl text-gray-300 items-center">
             <FaSearch />
@@ -185,13 +186,24 @@ const DesktopChatScreen = ({
               oponentUse={oponentUser}
               conversation={conversation}
             />
-            <MdSend
-              onClick={() => {
-                handleSubmitButton({ key: "Enter" });
-                setemojiOpen(false);
-              }}
-              className="text-3xl p-1  bg-primary rounded-md cursor-pointer text-white"
-            />
+            {!isSending && (
+              <MdSend
+                onClick={async () => {
+                  setisSending(true);
+
+                  await handleSubmitButton({ key: "Enter" });
+                  setemojiOpen(false);
+                  setisSending(false);
+                }}
+                className="text-3xl p-1  bg-primary rounded-md cursor-pointer text-white"
+              />
+            )}
+            {isSending && (
+              <div className="text-2xl  p-1 bg-primary rounded-md cursor-pointer text-white">
+                {" "}
+                <FiLoader className="animate-spin" />
+              </div>
+            )}
           </div>
         </div>
       </div>
