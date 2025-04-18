@@ -30,7 +30,7 @@ app.use(messageRoute);
 connectDb();
 
 app.get('/',()=>{
-  return res.json({success:true,'chat-fussion backend was running'})
+  return res.json({success:true,message:'chat-fussion backend was running'})
 })
 
 // Start server
