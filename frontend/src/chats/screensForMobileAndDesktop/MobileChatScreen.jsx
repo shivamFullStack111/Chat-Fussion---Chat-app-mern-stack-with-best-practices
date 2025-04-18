@@ -44,6 +44,8 @@ const MobileChatScreen = ({
   handleSendAudioMessage,
   groupedMessages,
   isImageShow,
+  isSending,
+  setisSending
 }) => {
   const { oponentUser, conversation, allMessages } = useSelector(
     (state) => state.chat
@@ -51,7 +53,6 @@ const MobileChatScreen = ({
   const { activeUsers, user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [emojiOpen, setemojiOpen] = useState(false);
-  const [isSending, setisSending] = useState(false);
 
   const scrollRef = useRef(null);
 

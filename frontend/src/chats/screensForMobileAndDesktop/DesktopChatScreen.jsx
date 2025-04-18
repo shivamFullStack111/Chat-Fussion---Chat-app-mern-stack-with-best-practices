@@ -35,6 +35,8 @@ const DesktopChatScreen = ({
   groupedMessages,
   handleSendAudioMessage,
   isImageShow,
+  isSending,
+  setisSending
 }) => {
   const { oponentUser, conversation, allMessages } = useSelector(
     (state) => state.chat
@@ -43,7 +45,6 @@ const DesktopChatScreen = ({
   const dispatch = useDispatch();
   const scrollRef = useRef(null);
   const [emojiOpen, setemojiOpen] = useState(false);
-  const [isSending, setisSending] = useState(false);
 
   useEffect(() => {
     if (scrollRef.current && groupedMessages.length > 0) {

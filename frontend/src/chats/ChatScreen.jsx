@@ -27,6 +27,7 @@ const ChatScreen = () => {
   // this is use when new message come from another user then we can cheack date is already in this is object or not
   const [groupDataForKeyCheck, setgroupDataForKeyCheck] = useState({});
   const { socket } = useSocket();
+  const [isSending, setisSending] = useState(false);
 
   // data
   const [inputText, setinputText] = useState("");
@@ -107,6 +108,7 @@ const ChatScreen = () => {
   }, [dispatch, conversation]);
 
   const handleSubmitButton = async (e) => {
+    setisSending(true);
     if (e.key == "Enter" && inputText.length > 0) {
       const res = await handleMessageSend(
         "text",
@@ -119,6 +121,7 @@ const ChatScreen = () => {
         setgroupedMessages((prev) => [...prev, res.data?.mssg]);
       }
     }
+    setisSending(false);
   };
 
   const handleSendAudioMessage = async (audioBlob) => {
@@ -158,7 +161,7 @@ const ChatScreen = () => {
     allMessages.forEach((message) => {
       const date = new Date(message.createdAt);
       const day = date.getDate();
-      const month = date.getMonth()+1;
+      const month = date.getMonth() + 1;
       const year = date.getFullYear();
 
       const key = day + "-" + month + "-" + year;
@@ -195,6 +198,8 @@ const ChatScreen = () => {
           {" "}
           {/* mobile chat screen  */}
           <MobileChatScreen
+            isSending={isSending}
+            setisSending={setisSending}
             isImageShow={isImageShow}
             handleSendAudioMessage={handleSendAudioMessage}
             handleMessageSend={handleMessageSend}
@@ -207,6 +212,8 @@ const ChatScreen = () => {
           />
         </>
         <DesktopChatScreen
+          isSending={isSending}
+          setisSending={isSending}
           isImageShow={isImageShow}
           handleSendAudioMessage={handleSendAudioMessage}
           handleMessageSend={handleMessageSend}
