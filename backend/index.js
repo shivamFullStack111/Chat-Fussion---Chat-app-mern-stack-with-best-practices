@@ -29,6 +29,10 @@ app.use(messageRoute);
 // Connect to database
 connectDb();
 
+app.get('/',()=>{
+  return res.json({success:true,'chat-fussion backend was running'})
+})
+
 // Start server
 server.listen(8000, () => {
   console.log("Server running on port 8000");
