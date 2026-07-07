@@ -4,6 +4,8 @@ const createConversation = async (req, res) => {
   try {
     const { users, type, groupName } = req.body;
 
+    console.log("users", users, "type", type, "groupName", groupName);
+
     if (type !== "group") {
       const isExist = await Conversations.findOne({
         users: { $all: users },

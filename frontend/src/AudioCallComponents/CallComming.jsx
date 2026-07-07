@@ -28,41 +28,55 @@ const CallComming = () => {
         { urls: "stun:stun.l.google.com:19302" },
         { urls: "stun:stun1.l.google.com:19302" },
         { urls: "stun:stun2.l.google.com:19302" },
-      ]
-    })
+      ],
+    }),
   );
   const [offer, setoffer] = useState(null);
 
   useEffect(() => {
     if (!socket) return;
-    peerConnection.current.ontrack = (event) => {
-      peerAudioRef.current.srcObject = event.streams[0];
+
+    const handleIncomingCandidate = async (candidate) => {
+      console.log("candidate on receiving side", candidate);
+      if (candidate) {
+        await peerConnection.current.addIceCandidate(
+          new RTCIceCandidate(candidate),
+        );
+      }
     };
 
-    socket.on("candidate", async (candidate) => {
-      console.log("candidate on receiving side", candidate);
-      await peerConnection.current.addIceCandidate(
-        new RTCIceCandidate(candidate)
-      );
-    });
-
-    socket.on("incomingCall", async ({ offer, caller, type }) => {
-      console.log(setoffer(offer));
+    const handleIncomingCall = async ({
+      offer: incomingOffer,
+      caller,
+      type,
+    }) => {
+      setoffer(incomingOffer);
       dispatch(setCallOponent(caller));
       dispatch(setIsCallComing(true));
       dispatch(setCallType(type));
-    });
+    };
+
+    peerConnection.current.ontrack = (event) => {
+      if (peerAudioRef.current) {
+        peerAudioRef.current.srcObject = event.streams[0];
+      }
+    };
+
+    socket.on("candidate", handleIncomingCandidate);
+    socket.on("incomingCall", handleIncomingCall);
 
     return () => {
-      socket.off("incomingCall");
-      socket.off("candidate");
+      socket.off("incomingCall", handleIncomingCall);
+      socket.off("candidate", handleIncomingCandidate);
     };
   }, [socket, dispatch]);
 
   const handleAcceptCall = async () => {
     try {
+      if (!socket || !offer || !call_oponent?.email) return;
+
       await peerConnection.current.setRemoteDescription(
-        new RTCSessionDescription(offer)
+        new RTCSessionDescription(offer),
       );
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
@@ -82,7 +96,6 @@ const CallComming = () => {
             toUser: call_oponent,
           });
         }
-        
       };
       const answer = await peerConnection.current.createAnswer();
       await peerConnection.current.setLocalDescription(answer);

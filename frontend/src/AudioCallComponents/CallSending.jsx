@@ -42,41 +42,52 @@ const CallSending = () => {
         { urls: "stun:stun1.l.google.com:19302" },
         { urls: "stun:stun2.l.google.com:19302" },
       ],
-    })
+    }),
   );
 
   // iske dependecy me isCallActive nhi diya tha iss liye call shi se nhi chl rhi thi
 
   useEffect(() => {
     if (!socket) return;
-    socket.on("candidate", async (candidate) => {
+
+    const handleIncomingCandidate = async (candidate) => {
       console.log("candidate on sender side", candidate);
-      await peerConnection.current.addIceCandidate(
-        new RTCIceCandidate(candidate)
-      );
-    });
-    peerConnection.current.ontrack = (event) => {
-      peerAudioRef.current.srcObject = event.streams[0];
+      if (candidate) {
+        await peerConnection.current.addIceCandidate(
+          new RTCIceCandidate(candidate),
+        );
+      }
     };
 
-    socket.on("answer", async (answer) => {
+    const handleAnswer = async (answer) => {
       console.log("answer", answer);
-
-      peerConnection.current.setRemoteDescription(
-        new RTCSessionDescription(answer)
-      );
-
+      if (answer) {
+        await peerConnection.current.setRemoteDescription(
+          new RTCSessionDescription(answer),
+        );
+      }
       dispatch(setIsCallActive(true));
-    });
+    };
+
+    socket.on("candidate", handleIncomingCandidate);
+    peerConnection.current.ontrack = (event) => {
+      if (peerAudioRef.current) {
+        peerAudioRef.current.srcObject = event.streams[0];
+      }
+    };
+
+    socket.on("answer", handleAnswer);
 
     return () => {
-      socket.off("candidate");
-      socket.off("answer");
+      socket.off("candidate", handleIncomingCandidate);
+      socket.off("answer", handleAnswer);
     };
-  }, [socket, dispatch, isCallActive]);
+  }, [socket, dispatch]);
 
   const handleCall = async () => {
     try {
+      if (!socket || !call_oponent?.email) return;
+
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
         video: call_type === "video" ? true : false,
@@ -97,7 +108,9 @@ const CallSending = () => {
         }
       };
       peerConnection.current.ontrack = (event) => {
-        peerAudioRef.current.srcObject = event.streams[0];
+        if (peerAudioRef.current) {
+          peerAudioRef.current.srcObject = event.streams[0];
+        }
       };
 
       const offer = await peerConnection.current.createOffer();
@@ -121,9 +134,7 @@ const CallSending = () => {
     console.log("run");
 
     handleCall();
-
-    return () => {};
-  }, [socket, isCallSending, isCallActive]);
+  }, [socket, isCallSending]);
 
   useEffect(() => {
     if (!socket) return;
