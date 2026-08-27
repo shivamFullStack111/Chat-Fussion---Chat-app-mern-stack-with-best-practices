@@ -129,7 +129,7 @@ const MobileChatScreen = ({
               </div>
             </div>
 
-            <div className="flex gap-3 500px:gap-4 700px:gap-5 800px:gap-6  text-lg 500px:text-xl text-gray-300 items-center">
+           {conversation?.type!=="group"&& <div className="flex gap-3 500px:gap-4 700px:gap-5 800px:gap-6  text-lg 500px:text-xl text-gray-300 items-center">
               {/* <FaSearch  /> */}
 
               <Call_Audio oponentUser={oponentUser} />
@@ -141,8 +141,7 @@ const MobileChatScreen = ({
                   dispatch(setIsCallSending(true));
                 }}
               />
-              <PiDotsThreeOutlineVerticalFill />
-            </div>
+            </div>}
           </div>
 
           {/* messages  */}

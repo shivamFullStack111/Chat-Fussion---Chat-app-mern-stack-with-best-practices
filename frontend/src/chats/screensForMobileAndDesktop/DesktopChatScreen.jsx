@@ -36,10 +36,10 @@ const DesktopChatScreen = ({
   handleSendAudioMessage,
   isImageShow,
   isSending,
-  setisSending
+  setisSending,
 }) => {
   const { oponentUser, conversation, allMessages } = useSelector(
-    (state) => state.chat
+    (state) => state.chat,
   );
   const { activeUsers, user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -107,19 +107,20 @@ const DesktopChatScreen = ({
               </p>
             </div>
           </div>
-          <div className="flex gap-6 mr-5 text-xl text-gray-300 items-center">
-            <FaSearch />
-            <Call_Audio oponentUser={oponentUser} />
-            <FaVideo
-              onClick={() => {
-                dispatch(setCallOponent(oponentUser));
-                dispatch(setCallType("video"));
-                dispatch(setIsCallSending(true));
-                dispatch(setCallerUser(user?.email));
-              }}
-            />
-            <PiDotsThreeOutlineVerticalFill />
-          </div>
+          {conversation?.type !== "group" && (
+            <div className="flex gap-6 mr-5 text-xl text-gray-300 items-center">
+              {" "}
+              <Call_Audio oponentUser={oponentUser} />
+              <FaVideo
+                onClick={() => {
+                  dispatch(setCallOponent(oponentUser));
+                  dispatch(setCallType("video"));
+                  dispatch(setIsCallSending(true));
+                  dispatch(setCallerUser(user?.email));
+                }}
+              />
+            </div>
+          )}
         </div>
         {/* messages  */}
         <div

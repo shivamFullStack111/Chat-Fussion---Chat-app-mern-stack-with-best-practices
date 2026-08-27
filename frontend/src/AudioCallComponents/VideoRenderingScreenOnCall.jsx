@@ -49,6 +49,8 @@ const VideoRenderingScreenOnCall = ({
           audio: true,
         });
 
+        console.log(stream)
+
         myVideoRef.current.srcObject = stream;
       } catch (error) {
         console.log(error.message);
