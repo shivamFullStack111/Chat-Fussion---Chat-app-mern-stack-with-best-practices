@@ -6,6 +6,6 @@ const config = {
   JWTSECRET: process.env.JWTSECRET,
 };
 
-c
+
 
 module.exports = { config };
