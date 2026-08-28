@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+import axios from 'axios'
 
 export const config = {
   APP_NAME: import.meta.env.VITE_APP_NAME,
@@ -15,7 +16,7 @@ export const config = {
 };
 
 // Dont need to set Content-Type manually axios automaticaly handle headers content type
-export const api = api.create({
+export const api = axios.create({
   baseURL: config?.API_URL,
 });
 
