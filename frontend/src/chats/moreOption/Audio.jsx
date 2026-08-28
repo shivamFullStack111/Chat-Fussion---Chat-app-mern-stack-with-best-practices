@@ -5,12 +5,13 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaHeadphones, FaRegImages } from "react-icons/fa";
 import { setallMessages } from "../../../store/slices/chatSlice";
+import { api } from "../../config/config";
 
 function Audio() {
   const [image, setimage] = useState();
   const { user } = useSelector((state) => state.user);
   const { oponentUser, conversation, allMessages } = useSelector(
-    (state) => state.chat
+    (state) => state.chat,
   );
 
   const dispatch = useDispatch();
@@ -28,12 +29,12 @@ function Audio() {
         formdata.append("type", "video");
         formdata.append("receiver", oponentUser?.email);
 
-        const res = await axios.post(
+        const res = await api.post(
           `${dbUrl}/create-document-message`,
           formdata,
           {
             headers: { Authorization: token },
-          }
+          },
         );
 
         if (res.data.success) {
@@ -41,7 +42,7 @@ function Audio() {
             setallMessages([
               ...allMessages,
               ...[...(res?.data?.messages || [])],
-            ])
+            ]),
           );
         }
       } catch (error) {
@@ -55,7 +56,7 @@ function Audio() {
   return (
     <>
       <input
-      multiple
+        multiple
         className="hidden"
         type="file"
         onChange={(e) => setimage(e.target.files[0])}

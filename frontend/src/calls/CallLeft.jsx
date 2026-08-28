@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
-import { FaSearch } from "react-icons/fa";
-import axios from "axios";
+
 import brandLogo from "../images/brandLogo.png";
 import { GoArrowDown } from "react-icons/go";
 import { IoCall } from "react-icons/io5";
@@ -18,6 +17,7 @@ import {
   setIsCallSending,
 } from "../../store/slices/callSlice";
 import { setConversation } from "../../store/slices/chatSlice";
+import { api } from "../config/config";
 const CallLeft = ({ dimensions }) => {
   const [callMessages, setcallMessages] = useState([]);
 
@@ -25,7 +25,7 @@ const CallLeft = ({ dimensions }) => {
     const getCallMessages = async () => {
       try {
         const token = returnToken();
-        const res = await axios.get(`${dbUrl}/get-call-messages`, {
+        const res = await api.get(`${dbUrl}/get-call-messages`, {
           headers: { Authorization: token },
         });
 

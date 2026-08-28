@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { IoIosCall } from "react-icons/io";
 import { AiOutlineAudioMuted } from "react-icons/ai";
-import { GiSpeakerOff } from "react-icons/gi";
 import { IoVideocamOffOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { useSocket } from "../SocketProvider";
@@ -14,8 +13,8 @@ import {
   setIsCallComing,
   setIsCallSending,
 } from "../../store/slices/callSlice";
-import axios from "axios";
 import { dbUrl, returnToken } from "../utils";
+import { api } from "../config/config";
 
 const VideoRenderingScreenOnCall = ({
   oponentVideoRef,
@@ -108,7 +107,7 @@ const VideoRenderingScreenOnCall = ({
     console.log("API Payload: ", caller_user);
 
     
-    axios.post(
+    api.post(
       `${dbUrl}/create-call`,
       {
         sender: caller_user ? caller_user : call_oponent?.email,

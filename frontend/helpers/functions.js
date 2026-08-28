@@ -1,9 +1,9 @@
-import axios from "axios";
 import { dbUrl, returnToken } from "../src/utils";
+import { api } from "../src/config/config";
 
 export const getAllUsers = async () => {
   try {
-    const res = await axios.get(`${dbUrl}/get-all-users`);
+    const res = await api.get(`${dbUrl}/get-all-users`);
 
     return res;
   } catch (error) {
@@ -14,7 +14,7 @@ export const getAllUsers = async () => {
 export const addToContact = async (userid) => {
   try {
     const token = returnToken();
-    const res = await axios.post(
+    const res = await api.post(
       `${dbUrl}/add-to-contact`,
       { userid },
       { headers: { Authorization: token } }
@@ -27,7 +27,7 @@ export const addToContact = async (userid) => {
 
 export const getUsersBySearchOrNumber = async (searchText) => {
   try {
-    const res = await axios.post(`${dbUrl}/get-users-by-search-or-number`, {
+    const res = await api.post(`${dbUrl}/get-users-by-search-or-number`, {
       searchText: searchText,
     });
     return res;
@@ -39,7 +39,7 @@ export const getUsersBySearchOrNumber = async (searchText) => {
 export const handleBlockUser = async (userid) => {
   try {
     const token = returnToken();
-    const res = await axios.post(
+    const res = await api.post(
       `${dbUrl}/block-user`,
       { userid },
       { headers: { Authorization: token } }
@@ -53,7 +53,7 @@ export const handleBlockUser = async (userid) => {
 export const handleUnblockUser = async (userid) => {
   try {
     const token = returnToken();
-    const res = await axios.post(
+    const res = await api.post(
       `${dbUrl}/unblock-user`,
       { userid },
       { headers: { Authorization: token } }
@@ -68,7 +68,7 @@ export const handleUnblockUser = async (userid) => {
 export const removeFromContact = async (userid) => {
   try {
     const token = returnToken();
-    const res = await axios.post(
+    const res = await api.post(
       `${dbUrl}/remove-from-contact`,
       { userid },
       { headers: { Authorization: token } }

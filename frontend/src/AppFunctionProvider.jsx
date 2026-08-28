@@ -8,11 +8,11 @@ import {
   setIsLoading,
   setUser,
 } from "../store/slices/userSlice";
-import axios from "axios";
 import Cookies from "js-cookie";
 import { dbUrl, returnToken } from "./utils";
 import { getAllUsers } from "../helpers/functions";
 import { useSocket } from "./SocketProvider";
+import { api } from "./config/config";
 
 function AppFunctionProvider({ children }) {
   const { user, isAuthenticated } = useSelector((state) => state.user);
@@ -21,7 +21,7 @@ function AppFunctionProvider({ children }) {
   useEffect(() => {
     const getAllConversation = async () => {
       const token = returnToken();
-      const res = await axios.get(`${dbUrl}/get-all-conversations`, {
+      const res = await api.get(`${dbUrl}/get-all-conversations`, {
         headers: { Authorization: token },
       });
       if (res.data.success)
@@ -58,7 +58,7 @@ function AppFunctionProvider({ children }) {
 
   const checkAuthentication = async (token) => {
     try {
-      const res = await axios.get(`${dbUrl}/check-authentication`, {
+      const res = await api.get(`${dbUrl}/check-authentication`, {
         headers: { Authorization: token },
       });
       if (res?.data?.success) {

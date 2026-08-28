@@ -5,7 +5,6 @@ const userRouter = require("./routes/userRoutes");
 const messageRoute = require("./routes/messageRoutes");
 
 const http = require("http");
-const { Server } = require("socket.io");
 const { connectSocket } = require("./socketController");
 const conversationRoute = require("./routes/conversationRoutes");
 

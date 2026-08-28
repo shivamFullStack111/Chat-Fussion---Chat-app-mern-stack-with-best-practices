@@ -1,6 +1,6 @@
-import axios from "axios";
 import { dbUrl } from "../src/utils";
 import { returnToken } from "../src/utils";
+import { api } from "../src/config/config";
 
 export const createConversation = async (
   users,
@@ -10,7 +10,7 @@ export const createConversation = async (
   try {
     const token = returnToken();
 
-    const res = await axios.post(
+    const res = await api.post(
       `${dbUrl}/create-conversation`,
       { users, type, groupName },
       { headers: { Authorization: token } }
@@ -25,7 +25,7 @@ export const createConversation = async (
 export const getAllMessages = async (conversationid) => {
   try {
     const token = returnToken();
-    const res = await axios.post(
+    const res = await api.post(
       `${dbUrl}/get-all-messages`,
       { conversationid },
       {
@@ -43,7 +43,7 @@ export const getAllMessages = async (conversationid) => {
 
 export const sendMessage = async () => {
   try {
-    const res = await axios.post(`${dbUrl}/send-message`);
+    const res = await api.post(`${dbUrl}/send-message`);
     return res;
   } catch (error) {
     console.log(error.message);
@@ -53,7 +53,7 @@ export const sendMessage = async () => {
 export const getContactsBySearch = async () => {
   try {
     const token = returnToken();
-    const res = await axios.post(
+    const res = await api.post(
       `${dbUrl}/get-contacts-by-search`,
       { searchTex: "" },
       { headers: { Authorization: token } }
@@ -72,7 +72,7 @@ export const handleMessageSend = async (
 ) => {
   try {
     const token = returnToken();
-    const res = await axios.post(
+    const res = await api.post(
       `${dbUrl}/create-message`,
       {
         type,

@@ -14,11 +14,12 @@ import DesktopChatScreen from "./screensForMobileAndDesktop/DesktopChatScreen";
 import { useSocket } from "../SocketProvider";
 import { dbUrl, returnToken } from "../utils";
 import axios from "axios";
+import { api } from "../config/config";
 
 const ChatScreen = () => {
   const [moreOptionOpen, setmoreOptionOpen] = useState(false);
   const { conversation, oponentUser, allMessages } = useSelector(
-    (state) => state.chat
+    (state) => state.chat,
   );
   const { user } = useSelector((state) => state.user);
   const [isRequesting, setisRequesting] = useState(true);
@@ -42,7 +43,7 @@ const ChatScreen = () => {
       setisImageShow(false);
     } else if (oponentUser?.profilePicture == "friends") {
       const isExist = user?.contacts?.find(
-        (userid) => userid == oponentUser?._id
+        (userid) => userid == oponentUser?._id,
       );
       if (isExist) {
         setisImageShow(true);
@@ -114,7 +115,7 @@ const ChatScreen = () => {
         "text",
         inputText,
         oponentUser,
-        conversation?._id
+        conversation?._id,
       );
       if (res.data?.success) {
         setinputText("");
@@ -133,7 +134,7 @@ const ChatScreen = () => {
       formdata.append("conversationid", conversation?._id);
       formdata.append("file", audioBlob);
 
-      const res = await axios.post(`${dbUrl}/create-message`, formdata, {
+      const res = await api.post(`${dbUrl}/create-message`, formdata, {
         headers: { Authorization: token },
       });
 

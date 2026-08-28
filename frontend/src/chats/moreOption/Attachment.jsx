@@ -3,11 +3,12 @@ import { dbUrl, returnToken } from "../../utils";
 import axios from "axios";
 import { MdOutlineAttachment } from "react-icons/md";
 import { setallMessages } from "../../../store/slices/chatSlice";
+import { api } from "../../config/config";
 
 function Attachment() {
   const { user } = useSelector((state) => state.user);
   const { oponentUser, conversation, allMessages } = useSelector(
-    (state) => state.chat
+    (state) => state.chat,
   );
   const dispatch = useDispatch((state) => state.user);
 
@@ -32,10 +33,10 @@ function Attachment() {
           formdata.append("type", "document");
           formdata.append("receiver", oponentUser?.email);
 
-          const res = await axios.post(
+          const res = await api.post(
             `${dbUrl}/create-document-message`,
             formdata,
-            { headers: { Authorization: token } }
+            { headers: { Authorization: token } },
           );
 
           if (res.data.success) {
@@ -43,7 +44,7 @@ function Attachment() {
               setallMessages([
                 ...allMessages,
                 ...[...(res?.data?.messages || [])],
-              ])
+              ]),
             );
           }
         }}

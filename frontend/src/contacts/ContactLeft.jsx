@@ -17,6 +17,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { Toaster, toast } from "react-hot-toast";
 import { setUser } from "../../store/slices/userSlice";
+import { api } from "../config/config";
 const ContactLeft = ({ dimensions }) => {
   const [groupedData, setgroupedData] = useState([]);
   const [searchText, setsearchText] = useState("");
@@ -26,16 +27,16 @@ const ContactLeft = ({ dimensions }) => {
     setgroupedData([]);
     try {
       const token = returnToken();
-      const res = await axios.post(
+      const res = await api.post(
         `${dbUrl}/get-contacts-by-search`,
         { searchText },
-        { headers: { Authorization: token } }
+        { headers: { Authorization: token } },
       );
       const resContacts = res.data.contacts || [];
       let alphabets = [];
 
       const sortedData = resContacts.sort((a, b) =>
-        a.name.localeCompare(b.name)
+        a.name.localeCompare(b.name),
       );
 
       sortedData.forEach((contact) => {

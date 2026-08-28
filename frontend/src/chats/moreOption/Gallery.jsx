@@ -5,12 +5,13 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaRegImages } from "react-icons/fa";
 import { setallMessages } from "../../../store/slices/chatSlice";
+import { api } from "../../config/config";
 
 function Gallery() {
   const [image, setimage] = useState();
   const { user } = useSelector((state) => state.user);
   const { oponentUser, conversation, allMessages } = useSelector(
-    (state) => state.chat
+    (state) => state.chat,
   );
 
   const dispatch = useDispatch();
@@ -28,19 +29,19 @@ function Gallery() {
         formdata.append("type", "video");
         formdata.append("receiver", oponentUser?.email);
 
-        const res = await axios.post(
+        const res = await api.post(
           `${dbUrl}/create-document-message`,
           formdata,
           {
             headers: { Authorization: token },
-          }
+          },
         );
         if (res.data.success) {
           dispatch(
             setallMessages([
               ...allMessages,
               ...[...(res?.data?.messages || [])],
-            ])
+            ]),
           );
         }
       } catch (error) {

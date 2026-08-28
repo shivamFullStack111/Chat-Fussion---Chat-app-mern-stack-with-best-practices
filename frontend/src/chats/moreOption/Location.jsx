@@ -3,10 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { dbUrl, returnToken } from "../../utils";
 import axios from "axios";
 import { setallMessages } from "../../../store/slices/chatSlice";
+import { api } from "../../config/config";
 
 function Location() {
   const { oponentUser, conversation, allMessages } = useSelector(
-    (state) => state.chat
+    (state) => state.chat,
   );
 
   const dispatch = useDispatch();
@@ -18,7 +19,7 @@ function Location() {
 
       const token = returnToken();
 
-      const res = await axios.post(
+      const res = await api.post(
         `${dbUrl}/send-current-location`,
         {
           conversationid: conversation._id,
@@ -26,14 +27,11 @@ function Location() {
           longitude,
           receiver: oponentUser,
         },
-        { headers: { Authorization: token } }
+        { headers: { Authorization: token } },
       );
       if (res.data.success) {
-        dispatch(
-          setallMessages([...allMessages, res?.data?.mssg])
-        );
+        dispatch(setallMessages([...allMessages, res?.data?.mssg]));
       }
-      
     });
   };
 
