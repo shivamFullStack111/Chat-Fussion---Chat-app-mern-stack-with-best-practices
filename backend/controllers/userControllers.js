@@ -5,6 +5,7 @@ const { generateOtp } = require("../utils");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { upload } = require("../uploadProvider");
+const { config } = require("../config/config");
 const cloudinary = require("cloudinary").v2;
 
 const checkAuthenticated = async (req, res) => {
