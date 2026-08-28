@@ -1,6 +1,6 @@
 const Users = require("../schemas/userSchema");
 const jwt = require("jsonwebtoken");
-const { JWTSECRET } = require("../utils");
+const { config } = require("../config/config");
 
 const isAuthenticate = async (req, res, next) => {
   try {
@@ -9,7 +9,7 @@ const isAuthenticate = async (req, res, next) => {
     if (!authorization)
       return res.send({ success: false, message: "token not found" });
 
-    const { user } = jwt.verify(authorization, JWTSECRET);
+    const { user } = jwt.verify(authorization, config?.JWTSECRET);
     const userr = await Users.findOne({ email: user.email });
     if (!userr)
       return res.send({ success: false, message: "token is invalid" });

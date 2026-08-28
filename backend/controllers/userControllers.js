@@ -1,7 +1,7 @@
 const { isAuthenticate } = require("../middlewares/isAuthenticate");
 const { transporter } = require("../middlewares/nodemailer");
 const Users = require("../schemas/userSchema");
-const { generateOtp, JWTSECRET } = require("../utils");
+const { generateOtp } = require("../utils");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { upload } = require("../uploadProvider");
@@ -256,7 +256,7 @@ const verifyOtp = async (req, res) => {
     user.isVarified = true;
 
     await user.save();
-    const token = jwt.sign({ user }, JWTSECRET, { expiresIn: "365d" });
+    const token = jwt.sign({ user }, config?.JWTSECRET, { expiresIn: "365d" });
     return res.send({
       success: true,
       message: "Registration successful",
@@ -284,7 +284,7 @@ const login = async (req, res) => {
     if (!isCompare)
       return res.send({ success: false, message: "Credentials mismatch" });
 
-    const token = jwt.sign({ user }, JWTSECRET, { expiresIn: "365d" });
+    const token = jwt.sign({ user }, config?.JWTSECRET, { expiresIn: "365d" });
 
     return res.send({
       success: true,
