@@ -3,6 +3,7 @@ const cors = require("cors");
 const connectDb = require("./dbConnect");
 const userRouter = require("./routes/userRoutes");
 const messageRoute = require("./routes/messageRoutes");
+const morgan = require('morgan')
 
 const http = require("http");
 const { connectSocket } = require("./socketController");
@@ -19,6 +20,7 @@ connectSocket(server);
 app.use(cors());
 app.use(express.json());
 app.use(express.static("./uploads"));
+app.use(morgan('dev'))
 
 // Routes
 app.use(userRouter);
@@ -28,7 +30,7 @@ app.use(messageRoute);
 // Connect to database
 connectDb();
 
-app.get('/',()=>{
+app.get('/',(req,res)=>{
   return res.json({success:true,message:'chat-fussion backend was running'})
 })
 
