@@ -8,6 +8,7 @@ const morgan = require('morgan')
 const http = require("http");
 const { connectSocket } = require("./socketController");
 const conversationRoute = require("./routes/conversationRoutes");
+const { transporter } = require("./middlewares/nodemailer");
 
 require("dotenv").config();
 const app = express();
@@ -29,6 +30,14 @@ app.use(messageRoute);
 
 // Connect to database
 connectDb();
+
+transporter.verify((error, success) => {
+  if (error) {
+    console.error("SMTP Verify Error:", error);
+  } else {
+    console.log("SMTP Server is ready");
+  }
+});
 
 app.get('/',(req,res)=>{
   return res.json({success:true,message:'chat-fussion backend was running'})
