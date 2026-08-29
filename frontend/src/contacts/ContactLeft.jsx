@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { RxCross1 } from "react-icons/rx";
 import { MdBlock, MdBlockFlipped, MdDelete } from "react-icons/md";
-import { dbUrl, returnToken } from "../utils";
+import { returnToken } from "../utils";
 import axios from "axios";
 import {
   handleBlockUser,
@@ -17,7 +17,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { Toaster, toast } from "react-hot-toast";
 import { setUser } from "../../store/slices/userSlice";
-import { api } from "../config/config";
+import { api, config } from "../config/config";
 const ContactLeft = ({ dimensions }) => {
   const [groupedData, setgroupedData] = useState([]);
   const [searchText, setsearchText] = useState("");
@@ -28,7 +28,7 @@ const ContactLeft = ({ dimensions }) => {
     try {
       const token = returnToken();
       const res = await api.post(
-        `${dbUrl}/get-contacts-by-search`,
+        `${config?.API_URL}/get-contacts-by-search`,
         { searchText },
         { headers: { Authorization: token } },
       );

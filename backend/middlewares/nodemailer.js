@@ -1,9 +1,10 @@
 const nodemailer = require("nodemailer");
+const { config } = require("../config/config");
 
 exports.transporter = nodemailer.createTransport({
   service: "gmail", // Gmail SMTP service use kar rahe hain
   auth: {
-    user: "shivamtestinghost@gmail.com", // Aapka Gmail address
-    pass: "awdxjdvzaksepqtv", // Generated app password (replace it with this one)
+    user: config.MAIL_USER, // Aapka Gmail address
+    pass: config.MAIL_PASSWORD, // Generated app password (replace it with this one)
   },
 });

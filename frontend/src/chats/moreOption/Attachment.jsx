@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
-import { dbUrl, returnToken } from "../../utils";
+import { returnToken } from "../../utils";
 import axios from "axios";
 import { MdOutlineAttachment } from "react-icons/md";
 import { setallMessages } from "../../../store/slices/chatSlice";
-import { api } from "../../config/config";
+import { api, config } from "../../config/config";
 
 function Attachment() {
   const { user } = useSelector((state) => state.user);
@@ -34,7 +34,7 @@ function Attachment() {
           formdata.append("receiver", oponentUser?.email);
 
           const res = await api.post(
-            `${dbUrl}/create-document-message`,
+            `${config?.API_URL}/create-document-message`,
             formdata,
             { headers: { Authorization: token } },
           );

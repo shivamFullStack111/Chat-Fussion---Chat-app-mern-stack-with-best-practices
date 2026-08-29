@@ -9,8 +9,7 @@ import { RxCross1 } from "react-icons/rx";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setisAuthenticated, setUser } from "../../store/slices/userSlice";
-import { dbUrl } from "../utils";
-import { api } from "../config/config";
+import { api, config } from "../config/config";
 
 const OtpModal = ({ setotpTakingOpen, email }) => {
   const [token, setTokens] = useState(null);
@@ -22,7 +21,7 @@ const OtpModal = ({ setotpTakingOpen, email }) => {
     const verifyWithOtp = async () => {
       setisRequesting(true);
       try {
-        const res = await api.post(`${dbUrl}/verify-otp`, {
+        const res = await api.post(`${config?.API_URL}/verify-otp`, {
           otp: token,
           email: email,
         });

@@ -9,8 +9,7 @@ import { Toaster, toast } from "react-hot-toast";
 import OtpModal from "./OtpModal";
 import axios from "axios";
 import Transparent_Loader from "../components/Transparent_Loader";
-import { dbUrl } from "../utils";
-import { api } from "../config/config";
+import { api, config } from "../config/config";
 
 const Register = () => {
   const [data, setdata] = useState(null);
@@ -41,7 +40,7 @@ const Register = () => {
         return toast.error("Password and confirm password must be the same");
 
       // api call here
-      const res = await api.post(`${dbUrl}/register`, data);
+      const res = await api.post(`${config?.API_URL}/register`, data);
       console.log(res.data);
       if (res.data?.success) {
         toast.success(res.data?.message);

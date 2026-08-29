@@ -30,6 +30,8 @@ const App = () => {
 
   const { isCallComing, isCallSending } = useSelector((state) => state.call);
 
+  console.log(import.meta.env)
+
   return (
     <>
       {user?.showNotifications && !isChatOpen && <NewMessage_Notification />}

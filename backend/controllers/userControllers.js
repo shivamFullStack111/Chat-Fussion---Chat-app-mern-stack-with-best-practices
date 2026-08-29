@@ -41,12 +41,13 @@ const register = async (req, res) => {
 
         const otpHash = await bcrypt.hash(otp, 10);
 
-        const info = await transporter.sendMail({
-          from: "shivamtestinghost@gmail.com", // sender address
-          to: email, // list of receivers
-          subject: "Registration otp", // Subject line
-          text: "use this otp to verify your chat fussion registration", // plain text body
-          html: `
+        try {
+          const info = await transporter.sendMail({
+            from: "shivamtestinghost@gmail.com", // sender address
+            to: email, // list of receivers
+            subject: "Registration otp", // Subject line
+            text: "use this otp to verify your chat fussion registration", // plain text body
+            html: `
           <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -108,7 +109,12 @@ const register = async (req, res) => {
     </body>
     </html>
     `, // html body
-        });
+          });
+
+          console.log(info)
+        } catch (error) {
+          console.log(error)
+        }
 
         isExistWithEmail.otpData.otp = otpHash;
         isExistWithEmail.otpData.createdAt = new Date();
@@ -309,7 +315,7 @@ const updateUser = async (req, res) => {
       req.body,
       {
         new: true,
-      }
+      },
     );
 
     return res.send({
@@ -362,13 +368,12 @@ const getAllUsers = async (req, res) => {
 const addToContact = async (req, res) => {
   try {
     const { userid } = req.body;
-    console.log(userid)
+    console.log(userid);
     const user = await Users.findOne({ email: req.user.email });
     user.contacts = [...user.contacts, userid];
 
     const otherUser = await Users.findOne({ _id: userid });
     otherUser.contacts = [...otherUser?.contacts, user?._id];
-
 
     await otherUser.save();
     await user.save();

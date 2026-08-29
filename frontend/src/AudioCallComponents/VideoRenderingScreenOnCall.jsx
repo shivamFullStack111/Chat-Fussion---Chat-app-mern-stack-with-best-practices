@@ -13,8 +13,8 @@ import {
   setIsCallComing,
   setIsCallSending,
 } from "../../store/slices/callSlice";
-import { dbUrl, returnToken } from "../utils";
-import { api } from "../config/config";
+import { returnToken } from "../utils";
+import { api, config } from "../config/config";
 
 const VideoRenderingScreenOnCall = ({
   oponentVideoRef,
@@ -108,7 +108,7 @@ const VideoRenderingScreenOnCall = ({
 
     
     api.post(
-      `${dbUrl}/create-call`,
+      `${config?.API_URL}/create-call`,
       {
         sender: caller_user ? caller_user : call_oponent?.email,
         receiver:

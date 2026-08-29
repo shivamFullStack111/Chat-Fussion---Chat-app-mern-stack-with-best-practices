@@ -1,8 +1,6 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { MdOutlineKeyboardVoice } from "react-icons/md";
 import { IoRecording } from "react-icons/io5";
-import axios from "axios";
-import { dbUrl, returnToken } from "../utils";
 import { useSelector } from "react-redux";
 
 const AudioRecorder = ({ conversation ,handleSendAudioMessage}) => {

@@ -13,9 +13,9 @@ import { toast, Toaster } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "../components/Button";
 import axios from "axios";
-import { dbUrl, returnToken } from "../utils";
+import { returnToken } from "../utils";
 import { Link } from "react-router-dom";
-import { api } from "../config/config";
+import { api, config } from "../config/config";
 const HomeLeft = ({
   setstatusOpen,
   statusOpen,
@@ -33,7 +33,7 @@ const HomeLeft = ({
     try {
       const token = returnToken();
       if (!token) toast.error("Login to continue");
-      const res = await api.post(`${dbUrl}/update-user`, data, {
+      const res = await api.post(`${config?.API_URL}/update-user`, data, {
         headers: { Authorization: token },
       });
 
@@ -62,7 +62,7 @@ const HomeLeft = ({
       const formdata = new FormData();
       formdata.append("file", backGroundNewImage);
       formdata.append("imageType", userimagetype);
-      const res = await api.post(`${dbUrl}/update-image`, formdata, {
+      const res = await api.post(`${config?.API_URL}/update-image`, formdata, {
         headers: { Authorization: token },
       });
 
@@ -84,7 +84,7 @@ const HomeLeft = ({
       const formdata = new FormData();
       formdata.append("file", image);
       formdata.append("imageType", "profile");
-      const res = await api.post(`${dbUrl}/update-image`, formdata, {
+      const res = await api.post(`${config?.API_URL}/update-image`, formdata, {
         headers: { Authorization: token },
       });
 

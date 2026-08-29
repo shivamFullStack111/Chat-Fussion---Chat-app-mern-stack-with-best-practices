@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Io from "socket.io-client";
-import { dbUrl } from "./utils";
+import { config } from "./config/config";
 
 const SocketContext = createContext();
 
@@ -16,7 +16,7 @@ const SocketProvider = ({ children }) => {
   useEffect(() => {
     let newSocket;
     if (isAuthenticated) {
-      newSocket = Io(`${dbUrl}`, {
+      newSocket = Io(`${config?.API_URL}`, {
         transports: ["websocket"],
       });
       setsocket(newSocket);

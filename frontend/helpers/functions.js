@@ -1,9 +1,9 @@
-import { dbUrl, returnToken } from "../src/utils";
-import { api } from "../src/config/config";
+import { returnToken } from "../src/utils";
+import { api, config } from "../src/config/config";
 
 export const getAllUsers = async () => {
   try {
-    const res = await api.get(`${dbUrl}/get-all-users`);
+    const res = await api.get(`${config?.API_URL}/get-all-users`);
 
     return res;
   } catch (error) {
@@ -15,7 +15,7 @@ export const addToContact = async (userid) => {
   try {
     const token = returnToken();
     const res = await api.post(
-      `${dbUrl}/add-to-contact`,
+      `${config?.API_URL}/add-to-contact`,
       { userid },
       { headers: { Authorization: token } }
     );
@@ -27,7 +27,7 @@ export const addToContact = async (userid) => {
 
 export const getUsersBySearchOrNumber = async (searchText) => {
   try {
-    const res = await api.post(`${dbUrl}/get-users-by-search-or-number`, {
+    const res = await api.post(`${config?.API_URL}/get-users-by-search-or-number`, {
       searchText: searchText,
     });
     return res;
@@ -40,7 +40,7 @@ export const handleBlockUser = async (userid) => {
   try {
     const token = returnToken();
     const res = await api.post(
-      `${dbUrl}/block-user`,
+      `${config?.API_URL}/block-user`,
       { userid },
       { headers: { Authorization: token } }
     );
@@ -54,7 +54,7 @@ export const handleUnblockUser = async (userid) => {
   try {
     const token = returnToken();
     const res = await api.post(
-      `${dbUrl}/unblock-user`,
+      `${config?.API_URL}/unblock-user`,
       { userid },
       { headers: { Authorization: token } }
     );
@@ -69,7 +69,7 @@ export const removeFromContact = async (userid) => {
   try {
     const token = returnToken();
     const res = await api.post(
-      `${dbUrl}/remove-from-contact`,
+      `${config?.API_URL}/remove-from-contact`,
       { userid },
       { headers: { Authorization: token } }
     );

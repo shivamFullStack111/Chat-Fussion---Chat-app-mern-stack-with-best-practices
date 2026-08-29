@@ -1,6 +1,5 @@
-import { dbUrl } from "../src/utils";
 import { returnToken } from "../src/utils";
-import { api } from "../src/config/config";
+import { api, config } from "../src/config/config";
 
 export const createConversation = async (
   users,
@@ -11,7 +10,7 @@ export const createConversation = async (
     const token = returnToken();
 
     const res = await api.post(
-      `${dbUrl}/create-conversation`,
+      `${config?.API_URL}/create-conversation`,
       { users, type, groupName },
       { headers: { Authorization: token } }
     );
@@ -26,7 +25,7 @@ export const getAllMessages = async (conversationid) => {
   try {
     const token = returnToken();
     const res = await api.post(
-      `${dbUrl}/get-all-messages`,
+      `${config?.API_URL}/get-all-messages`,
       { conversationid },
       {
         headers: {
@@ -43,7 +42,7 @@ export const getAllMessages = async (conversationid) => {
 
 export const sendMessage = async () => {
   try {
-    const res = await api.post(`${dbUrl}/send-message`);
+    const res = await api.post(`${config?.API_URL}/send-message`);
     return res;
   } catch (error) {
     console.log(error.message);
@@ -54,7 +53,7 @@ export const getContactsBySearch = async () => {
   try {
     const token = returnToken();
     const res = await api.post(
-      `${dbUrl}/get-contacts-by-search`,
+      `${config?.API_URL}/get-contacts-by-search`,
       { searchTex: "" },
       { headers: { Authorization: token } }
     );
@@ -73,7 +72,7 @@ export const handleMessageSend = async (
   try {
     const token = returnToken();
     const res = await api.post(
-      `${dbUrl}/create-message`,
+      `${config?.API_URL}/create-message`,
       {
         type,
         text,

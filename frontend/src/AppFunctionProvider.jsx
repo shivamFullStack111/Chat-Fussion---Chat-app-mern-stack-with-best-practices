@@ -9,10 +9,10 @@ import {
   setUser,
 } from "../store/slices/userSlice";
 import Cookies from "js-cookie";
-import { dbUrl, returnToken } from "./utils";
+import {  returnToken } from "./utils";
 import { getAllUsers } from "../helpers/functions";
 import { useSocket } from "./SocketProvider";
-import { api } from "./config/config";
+import { api, config } from "./config/config";
 
 function AppFunctionProvider({ children }) {
   const { user, isAuthenticated } = useSelector((state) => state.user);
@@ -21,7 +21,7 @@ function AppFunctionProvider({ children }) {
   useEffect(() => {
     const getAllConversation = async () => {
       const token = returnToken();
-      const res = await api.get(`${dbUrl}/get-all-conversations`, {
+      const res = await api.get(`${config?.API_URL}/get-all-conversations`, {
         headers: { Authorization: token },
       });
       if (res.data.success)
@@ -58,7 +58,7 @@ function AppFunctionProvider({ children }) {
 
   const checkAuthentication = async (token) => {
     try {
-      const res = await api.get(`${dbUrl}/check-authentication`, {
+      const res = await api.get(`${config?.API_URL}/check-authentication`, {
         headers: { Authorization: token },
       });
       if (res?.data?.success) {

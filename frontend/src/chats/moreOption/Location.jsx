@@ -1,9 +1,9 @@
 import { FaLocationCrosshairs } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
-import { dbUrl, returnToken } from "../../utils";
+import {  returnToken } from "../../utils";
 import axios from "axios";
 import { setallMessages } from "../../../store/slices/chatSlice";
-import { api } from "../../config/config";
+import { api, config } from "../../config/config";
 
 function Location() {
   const { oponentUser, conversation, allMessages } = useSelector(
@@ -20,7 +20,7 @@ function Location() {
       const token = returnToken();
 
       const res = await api.post(
-        `${dbUrl}/send-current-location`,
+        `${config?.API_URL}/send-current-location`,
         {
           conversationid: conversation._id,
           latitude,

@@ -12,8 +12,7 @@ import { setisAuthenticated, setUser } from "../../store/slices/userSlice.js";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
-import { dbUrl } from "../utils.js";
-import { api } from "../config/config.js";
+import { api, config } from "../config/config.js";
 const Login = () => {
   const [isRequesting, setisRequesting] = useState(false);
   const [data, setdata] = useState(null);
@@ -21,7 +20,7 @@ const Login = () => {
 
   const handleSubmit = async () => {
     try {
-      const res = await api.post(`${dbUrl}/login`, data);
+      const res = await api.post(`${config?.API_URL}/login`, data);
       if (res.data.success) {
         Cookies.set("token", res.data.token);
         toast.success(res.data.message);

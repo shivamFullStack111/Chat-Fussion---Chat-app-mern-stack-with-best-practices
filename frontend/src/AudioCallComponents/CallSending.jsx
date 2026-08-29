@@ -14,7 +14,7 @@ import VideoRenderingScreenOnCall from "./VideoRenderingScreenOnCall";
 import { IoIosCall } from "react-icons/io";
 import OponentDetailsOnCall from "./OponentDetailsOnCall";
 import axios from "axios";
-import { dbUrl, returnToken } from "../utils";
+import { returnToken } from "../utils";
 
 const CallSending = () => {
   const {
@@ -151,7 +151,7 @@ const CallSending = () => {
 
   //   const token = returnToken();
   //   api.post(
-  //     `${dbUrl}/create-call`,
+  //     `${config?.API_URL}/create-call`,
   //     {
   //       sender: caller_user ? caller_user : call_oponent?.email,
   //       receiver:

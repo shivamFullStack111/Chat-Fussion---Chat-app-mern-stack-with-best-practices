@@ -12,9 +12,9 @@ import { setallMessages } from "../../store/slices/chatSlice";
 import MobileChatScreen from "./screensForMobileAndDesktop/MobileChatScreen";
 import DesktopChatScreen from "./screensForMobileAndDesktop/DesktopChatScreen";
 import { useSocket } from "../SocketProvider";
-import { dbUrl, returnToken } from "../utils";
+import { returnToken } from "../utils";
 import axios from "axios";
-import { api } from "../config/config";
+import { api, config } from "../config/config";
 
 const ChatScreen = () => {
   const [moreOptionOpen, setmoreOptionOpen] = useState(false);
@@ -134,7 +134,7 @@ const ChatScreen = () => {
       formdata.append("conversationid", conversation?._id);
       formdata.append("file", audioBlob);
 
-      const res = await api.post(`${dbUrl}/create-message`, formdata, {
+      const res = await api.post(`${config?.API_URL}/create-message`, formdata, {
         headers: { Authorization: token },
       });
 

@@ -24,7 +24,6 @@ import { toast, Toaster } from "react-hot-toast";
 import { BiSolidMessageAdd } from "react-icons/bi";
 import { FaArrowLeft } from "react-icons/fa6";
 import axios from "axios";
-import { dbUrl, returnToken } from "../utils";
 
 const ChatLeft = ({ dimensions }) => {
   const { allUsers, user, allConversation } = useSelector(

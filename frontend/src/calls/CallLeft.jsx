@@ -5,7 +5,7 @@ import { GoArrowDown } from "react-icons/go";
 import { IoCall } from "react-icons/io5";
 import { IoVideocam } from "react-icons/io5";
 import { useEffect, useState } from "react";
-import { dbUrl, returnToken } from "../utils";
+import {  returnToken } from "../utils";
 
 import { motion } from "framer-motion";
 
@@ -17,7 +17,7 @@ import {
   setIsCallSending,
 } from "../../store/slices/callSlice";
 import { setConversation } from "../../store/slices/chatSlice";
-import { api } from "../config/config";
+import { api, config } from "../config/config";
 const CallLeft = ({ dimensions }) => {
   const [callMessages, setcallMessages] = useState([]);
 
@@ -25,7 +25,7 @@ const CallLeft = ({ dimensions }) => {
     const getCallMessages = async () => {
       try {
         const token = returnToken();
-        const res = await api.get(`${dbUrl}/get-call-messages`, {
+        const res = await api.get(`${config?.API_URL}/get-call-messages`, {
           headers: { Authorization: token },
         });
 
