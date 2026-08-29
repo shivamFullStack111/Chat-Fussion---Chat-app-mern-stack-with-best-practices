@@ -23,6 +23,7 @@ import FAQPage from "./helpPages/FAQPage";
 import Help from "./helpPages/Help";
 import TandP from "./helpPages/TandP";
 import NotFoundPage from "./notfoundpage/NotFoundPage";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   const { isLoading, user } = useSelector((state) => state.user);
@@ -30,10 +31,12 @@ const App = () => {
 
   const { isCallComing, isCallSending } = useSelector((state) => state.call);
 
-  console.log(import.meta.env)
+  console.log(import.meta.env);
 
   return (
     <>
+      <Toaster position="top-right" />
+
       {user?.showNotifications && !isChatOpen && <NewMessage_Notification />}
       <AppFunctionProvider>
         <>

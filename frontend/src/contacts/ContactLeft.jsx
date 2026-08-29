@@ -68,7 +68,6 @@ const ContactLeft = ({ dimensions }) => {
 
   return (
     <>
-      <Toaster />
       <div className="w-full max-1000px:z-30 1000px:min-w-[330px] 1000px:max-w-[330px]  h-[100vh] bg-darkbg_2">
         <div className="p-7 pb-0">
           <div className="flex justify-between items-center">

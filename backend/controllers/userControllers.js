@@ -16,6 +16,231 @@ const checkAuthenticated = async (req, res) => {
   }
 };
 
+// REGISTER With otp removed this feature because only in paid server nodemailer works properly
+// const register = async (req, res) => {
+//   try {
+//     const { name, email, password, confirmPassword, phoneNumber } = req.body;
+
+//     if (!name || !email || !password || !confirmPassword) {
+//       return res.send({ success: false, message: "all fields are required" });
+//     }
+
+//     const isExistWithEmail = await Users.findOne({ email: email });
+
+//     const hashPassword = await bcrypt.hash(password, 10);
+
+//     if (isExistWithEmail) {
+//       if (!isExistWithEmail.isVarified) {
+//         if (password !== confirmPassword) {
+//           return res.send({
+//             success: false,
+//             message: "password and confirm password do not match",
+//           });
+//         }
+
+//         let otp = generateOtp(4);
+
+//         const otpHash = await bcrypt.hash(otp, 10);
+
+//         try {
+//           const info = await transporter.sendMail({
+//             from: "shivamtestinghost@gmail.com", // sender address
+//             to: email, // list of receivers
+//             subject: "Registration otp", // Subject line
+//             text: "use this otp to verify your chat fussion registration", // plain text body
+//             html: `
+//           <!DOCTYPE html>
+//     <html lang="en">
+//     <head>
+//       <meta charset="UTF-8">
+//       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//       <title>OTP Email</title>
+//       <style>
+//         body {
+//           font-family: Arial, sans-serif;
+//           background-color: #121212;
+//           color: #ffffff;
+//           margin: 0;
+//           padding: 0;
+//           display: flex;
+//           justify-content: center;
+//           align-items: center;
+//           height: 100vh;
+//         }
+//         .email-container {
+//           max-width: 400px;
+//           background-color: #1e1e1e;
+//           border-radius: 8px;
+//           padding: 20px;
+//           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+//           text-align: center;
+//         }
+//         .header {
+//           font-size: 24px;
+//           font-weight: bold;
+//           color: #e0aaff;
+//           margin-bottom: 10px;
+//         }
+//         .message {
+//           font-size: 16px;
+//           color: #bdbdbd;
+//           margin-bottom: 20px;
+//         }
+//         .otp-code {
+//           font-size: 32px;
+//           font-weight: bold;
+//           color: #00e676;
+//           letter-spacing: 2px;
+//           margin: 10px 0;
+//         }
+//         .footer {
+//           font-size: 12px;
+//           color: #757575;
+//           margin-top: 20px;
+//         }
+//       </style>
+//     </head>
+//     <body>
+//       <div class="email-container">
+//         <div class="header">ChatFussion</div>
+//         <p class="message">Thank you for registering with ChatFussion! Use the OTP below to complete your registration:</p>
+//         <div class="otp-code">${otp}</div>
+//         <p class="footer">If you didn’t request this, please ignore this email.</p>
+//       </div>
+//     </body>
+//     </html>
+//     `, // html body
+//           });
+
+//           console.log(info)
+//         } catch (error) {
+//           console.log(error)
+//         }
+
+//         isExistWithEmail.otpData.otp = otpHash;
+//         isExistWithEmail.otpData.createdAt = new Date();
+//         isExistWithEmail.name = name;
+//         isExistWithEmail.phoneNumber = phoneNumber;
+//         isExistWithEmail.password = hashPassword;
+
+//         await isExistWithEmail.save();
+//         return res.send({ success: true, message: "otp send to your email " });
+//       } else {
+//         return res.send({
+//           success: false,
+//           message: "account already exists with this email",
+//         });
+//       }
+//     }
+
+//     const isExistWithNumber = await Users.findOne({ phoneNumber });
+
+//     if (isExistWithNumber) {
+//       return res.send({
+//         success: false,
+//         message: "account already exists with this phone number",
+//       });
+//     }
+
+//     if (password !== confirmPassword) {
+//       return res.send({
+//         success: false,
+//         message: "password and confirm password do not match",
+//       });
+//     }
+
+//     let otp = generateOtp(4);
+
+//     const otpHash = await bcrypt.hash(otp, 10);
+
+//     const info = await transporter.sendMail({
+//       from: "shivamtestinghost@gmail.com", // sender address
+//       to: email, // list of receivers
+//       subject: "Registration otp", // Subject line
+//       text: "use this otp to verify your chat fussion registration", // plain text body
+//       html: `<!DOCTYPE html>
+// <html lang="en">
+// <head>
+//   <meta charset="UTF-8">
+//   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//   <title>OTP Email</title>
+//   <style>
+//     body {
+//       font-family: Arial, sans-serif;
+//       background-color: #121212;
+//       color: #ffffff;
+//       margin: 0;
+//       padding: 0;
+//       display: flex;
+//       justify-content: center;
+//       align-items: center;
+//       height: 100vh;
+//     }
+//     .email-container {
+//       max-width: 400px;
+//       background-color: #1e1e1e;
+//       border-radius: 8px;
+//       padding: 20px;
+//       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+//       text-align: center;
+//     }
+//     .header {
+//       font-size: 24px;
+//       font-weight: bold;
+//       color: #e0aaff;
+//       margin-bottom: 10px;
+//     }
+//     .message {
+//       font-size: 16px;
+//       color: #bdbdbd;
+//       margin-bottom: 20px;
+//     }
+//     .otp-code {
+//       font-size: 32px;
+//       font-weight: bold;
+//       color: #00e676;
+//       letter-spacing: 2px;
+//       margin: 10px 0;
+//     }
+//     .footer {
+//       font-size: 12px;
+//       color: #757575;
+//       margin-top: 20px;
+//     }
+//   </style>
+// </head>
+// <body>
+//   <div class="email-container">
+//     <div class="header">ChatFussion</div>
+//     <p class="message">Thank you for registering with ChatFussion! Use the OTP below to complete your registration:</p>
+//     <div class="otp-code">${otp}</div>
+//     <p class="footer">If you didn’t request this, please ignore this email.</p>
+//   </div>
+// </body>
+// </html>
+// `, // html body
+//     });
+
+//     const newUser = new Users({
+//       name,
+//       email,
+//       phoneNumber,
+//       otpData: {
+//         otp: otpHash,
+//         createdAt: new Date(),
+//       },
+//       password: hashPassword,
+//       isVarified: false,
+//     });
+
+//     await newUser.save();
+
+//     return res.send({ success: true, message: "otp send to your email " });
+//   } catch (error) {
+//     return res.send({ success: false, message: error.message });
+//   }
+// };
+
 const register = async (req, res) => {
   try {
     const { name, email, password, confirmPassword, phoneNumber } = req.body;
@@ -26,111 +251,11 @@ const register = async (req, res) => {
 
     const isExistWithEmail = await Users.findOne({ email: email });
 
-    const hashPassword = await bcrypt.hash(password, 10);
-
-    if (isExistWithEmail) {
-      if (!isExistWithEmail.isVarified) {
-        if (password !== confirmPassword) {
-          return res.send({
-            success: false,
-            message: "password and confirm password do not match",
-          });
-        }
-
-        let otp = generateOtp(4);
-
-        const otpHash = await bcrypt.hash(otp, 10);
-
-        try {
-          const info = await transporter.sendMail({
-            from: "shivamtestinghost@gmail.com", // sender address
-            to: email, // list of receivers
-            subject: "Registration otp", // Subject line
-            text: "use this otp to verify your chat fussion registration", // plain text body
-            html: `
-          <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>OTP Email</title>
-      <style>
-        body {
-          font-family: Arial, sans-serif;
-          background-color: #121212;
-          color: #ffffff;
-          margin: 0;
-          padding: 0;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 100vh;
-        }
-        .email-container {
-          max-width: 400px;
-          background-color: #1e1e1e;
-          border-radius: 8px;
-          padding: 20px;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-          text-align: center;
-        }
-        .header {
-          font-size: 24px;
-          font-weight: bold;
-          color: #e0aaff;
-          margin-bottom: 10px;
-        }
-        .message {
-          font-size: 16px;
-          color: #bdbdbd;
-          margin-bottom: 20px;
-        }
-        .otp-code {
-          font-size: 32px;
-          font-weight: bold;
-          color: #00e676;
-          letter-spacing: 2px;
-          margin: 10px 0;
-        }
-        .footer {
-          font-size: 12px;
-          color: #757575;
-          margin-top: 20px;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="email-container">
-        <div class="header">ChatFussion</div>
-        <p class="message">Thank you for registering with ChatFussion! Use the OTP below to complete your registration:</p>
-        <div class="otp-code">${otp}</div>
-        <p class="footer">If you didn’t request this, please ignore this email.</p>
-      </div>
-    </body>
-    </html>
-    `, // html body
-          });
-
-          console.log(info)
-        } catch (error) {
-          console.log(error)
-        }
-
-        isExistWithEmail.otpData.otp = otpHash;
-        isExistWithEmail.otpData.createdAt = new Date();
-        isExistWithEmail.name = name;
-        isExistWithEmail.phoneNumber = phoneNumber;
-        isExistWithEmail.password = hashPassword;
-
-        await isExistWithEmail.save();
-        return res.send({ success: true, message: "otp send to your email " });
-      } else {
-        return res.send({
-          success: false,
-          message: "account already exists with this email",
-        });
-      }
-    }
+    if (isExistWithEmail)
+      return res.send({
+        success: false,
+        message: "account already exists with this email",
+      });
 
     const isExistWithNumber = await Users.findOne({ phoneNumber });
 
@@ -148,93 +273,19 @@ const register = async (req, res) => {
       });
     }
 
-    let otp = generateOtp(4);
-
-    const otpHash = await bcrypt.hash(otp, 10);
-
-    const info = await transporter.sendMail({
-      from: "shivamtestinghost@gmail.com", // sender address
-      to: email, // list of receivers
-      subject: "Registration otp", // Subject line
-      text: "use this otp to verify your chat fussion registration", // plain text body
-      html: `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OTP Email</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #121212;
-      color: #ffffff;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .email-container {
-      max-width: 400px;
-      background-color: #1e1e1e;
-      border-radius: 8px;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      text-align: center;
-    }
-    .header {
-      font-size: 24px;
-      font-weight: bold;
-      color: #e0aaff;
-      margin-bottom: 10px;
-    }
-    .message {
-      font-size: 16px;
-      color: #bdbdbd;
-      margin-bottom: 20px;
-    }
-    .otp-code {
-      font-size: 32px;
-      font-weight: bold;
-      color: #00e676;
-      letter-spacing: 2px;
-      margin: 10px 0;
-    }
-    .footer {
-      font-size: 12px;
-      color: #757575;
-      margin-top: 20px;
-    }
-  </style>
-</head>
-<body>
-  <div class="email-container">
-    <div class="header">ChatFussion</div>
-    <p class="message">Thank you for registering with ChatFussion! Use the OTP below to complete your registration:</p>
-    <div class="otp-code">${otp}</div>
-    <p class="footer">If you didn’t request this, please ignore this email.</p>
-  </div>
-</body>
-</html>
-`, // html body
-    });
+    const hashPassword = await bcrypt.hash(password, 10);
 
     const newUser = new Users({
       name,
       email,
       phoneNumber,
-      otpData: {
-        otp: otpHash,
-        createdAt: new Date(),
-      },
       password: hashPassword,
-      isVarified: false,
+      isVarified: true,
     });
 
     await newUser.save();
 
-    return res.send({ success: true, message: "otp send to your email " });
+    return res.send({ success: true, message: "User registed successfully" });
   } catch (error) {
     return res.send({ success: false, message: error.message });
   }

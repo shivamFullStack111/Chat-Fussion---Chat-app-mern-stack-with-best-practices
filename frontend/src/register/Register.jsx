@@ -3,7 +3,7 @@ import { FaPhoneAlt } from "react-icons/fa";
 import { LogoInput } from "../components/loginAndRegister";
 import { PiPassword } from "react-icons/pi";
 import Button from "../components/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import OtpModal from "./OtpModal";
@@ -15,6 +15,7 @@ const Register = () => {
   const [data, setdata] = useState(null);
   const [otpTakingOpen, setotpTakingOpen] = useState(false);
   const [isRequesting, setisRequesting] = useState(false);
+  const navigate = useNavigate()
 
   const handleSubmit = async () => {
     try {
@@ -44,7 +45,10 @@ const Register = () => {
       console.log(res.data);
       if (res.data?.success) {
         toast.success(res.data?.message);
-        setotpTakingOpen(true);
+        // setotpTakingOpen(true);
+       setTimeout(() => {
+         navigate('/signin')
+       }, 500);
       } else {
         toast.error(res.data?.message);
       }
@@ -59,7 +63,6 @@ const Register = () => {
         <OtpModal email={data?.email} setotpTakingOpen={setotpTakingOpen} />
       )}
       {isRequesting && <Transparent_Loader />}
-      <Toaster position="top-right" />
       <div className="h-screen w-full dark:bg-darkbg bg-primary  flex  max-1000px:justify-center items-center ">
         <div className="w-[30%] max-1000px:hidden flex fle-col   min-h-[100vh] pt-[7vh] justify-center ">
           <div>

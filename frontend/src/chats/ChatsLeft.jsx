@@ -73,7 +73,6 @@ const ChatLeft = ({ dimensions }) => {
 
   return (
     <>
-      <Toaster position="top-right" />
       <div className="w-full relative 1000px:min-w-[330px] 1000px:max-w-[330px]  h-[100vh] bg-darkbg_2">
         {!creatingConversation && (
           <>

@@ -4,7 +4,7 @@ const { config } = require("../config/config");
 
 const isAuthenticate = async (req, res, next) => {
   try {
-    const { authorization } = req.headers;
+    const authorization = req.headers.authorization?.split(" ")[1];
 
     if (!authorization)
       return res.send({ success: false, message: "token not found" });

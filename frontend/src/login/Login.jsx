@@ -36,7 +36,6 @@ const Login = () => {
   return (
     <>
       {isRequesting && <Transparent_Loader />}
-      <Toaster />
       <div
         style={{
           backgroundImage: `url("https://res.cloudinary.com/dosyxpa1r/image/upload/v1731433036/dosyxpa1r/t6pmii4rrkz3b659vloa.gif")`,
