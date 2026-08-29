@@ -38,11 +38,9 @@ export const getUsersBySearchOrNumber = async (searchText) => {
 
 export const handleBlockUser = async (userid) => {
   try {
-    const token = returnToken();
     const res = await api.post(
       `${config?.API_URL}/block-user`,
       { userid },
-      { headers: { Authorization: token } }
     );
     return res;
   } catch (error) {
@@ -52,11 +50,9 @@ export const handleBlockUser = async (userid) => {
 
 export const handleUnblockUser = async (userid) => {
   try {
-    const token = returnToken();
     const res = await api.post(
       `${config?.API_URL}/unblock-user`,
       { userid },
-      { headers: { Authorization: token } }
     );
 
     return res;

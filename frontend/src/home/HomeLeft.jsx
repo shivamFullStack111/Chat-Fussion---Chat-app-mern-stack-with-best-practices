@@ -155,7 +155,7 @@ const HomeLeft = ({
             {/* profile image  */}
             <div className="h-20 w-20 bg-white rounded-full absolute -bottom-10  ">
               <img
-                className="w-full h-full border-4 border-white rounded-full"
+                className="w-full h-full border-2 object-cover border-white rounded-full"
                 src={
                   user?.profileImage
                     ? user?.profileImage

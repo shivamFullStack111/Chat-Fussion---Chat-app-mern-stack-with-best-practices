@@ -67,11 +67,11 @@ const navigation = [
     Icon: MdWifiCalling3,
     name: "Calls",
   },
-  {
-    to: "/users",
-    Icon: FaUsers,
-    name: "Users",
-  },
+  // {
+  //   to: "/users",
+  //   Icon: FaUsers,
+  //   name: "Users",
+  // },
   {
     to: "/settings",
     Icon: MdSettings,

@@ -1,5 +1,5 @@
 const { isAuthenticate } = require("../middlewares/isAuthenticate");
-const { transporter } = require("../middlewares/nodemailer");
+// const { transporter } = require("../middlewares/nodemailer");
 const Users = require("../schemas/userSchema");
 const { generateOtp } = require("../utils");
 const bcrypt = require("bcryptjs");
@@ -457,20 +457,15 @@ const getContactsBySearch = async (req, res) => {
     if (req.body?.searchText) {
       const searchValue = req.body.searchText.toLowerCase();
       contacts = await Users.find({
-        $and: [
-          {
-            $or: [
-              { name: { $regex: searchValue, $options: "i" } },
-              { email: { $regex: searchValue, $options: "i" } },
-              { phoneNumber: { $regex: searchValue, $options: "i" } },
-            ],
-          },
-          { _id: { $in: req.user?.contacts } },
+        $or: [
+          { name: { $regex: searchValue, $options: "i" } },
+          { email: { $regex: searchValue, $options: "i" } },
+          { phoneNumber: { $regex: searchValue, $options: "i" } },
         ],
       }).sort({ createdAt: -1 });
     } else {
       contacts = await Users.find({
-        _id: { $in: req.user?.contacts || [] },
+        // _id: { $in: req.user?.contacts || [] },
       }).sort({ createdAt: -1 });
     }
 
